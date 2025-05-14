@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Amwal Checkout Implementation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Amwal Checkout Button -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/amwal-checkout-button@latest/dist/checkout/checkout.esm.js"></script>
+    <style type="text/tailwindcss">
+        /* Base styles */
+        body {
+            @apply bg-gray-100 min-h-screen;
+        }
+        .container {
+            @apply mx-auto px-4 py-8 max-w-6xl;
+        }
+
+        /* Tabs */
+        .tab-active {
+            @apply bg-blue-600 text-white;
+        }
+        .tab-inactive {
+            @apply bg-gray-200 hover:bg-gray-300 transition-colors;
+        }
+
+        /* Cards and sections */
+        .card {
+            @apply bg-white rounded-lg shadow-md p-6 mb-6;
+        }
+        .section-title {
+            @apply text-xl font-bold mb-4;
+        }
+
+        /* Form elements */
+        .form-group {
+            @apply mb-4;
+        }
+        .form-label {
+            @apply block text-gray-700 mb-2 font-medium;
+        }
+        .qty-control {
+            @apply flex items-center border rounded-md overflow-hidden;
+        }
+        .qty-btn {
+            @apply py-2 px-4 bg-gray-100 hover:bg-gray-200 transition-colors;
+        }
+        .qty-input {
+            @apply py-2 px-4 text-center w-full;
+        }
+
+        /* Payment methods */
+        .payment-option {
+            @apply flex items-center p-3 border rounded-lg cursor-pointer bg-white hover:bg-gray-50 mb-3 transition-colors;
+        }
+        .payment-option.selected {
+            @apply bg-blue-50 border-blue-300;
+        }
+
+        /* Toast notification */
+        .toast {
+            @apply fixed top-5 right-5 p-4 rounded-lg shadow-lg;
+            z-index: 100;
+            max-width: 300px;
+            transition: all 0.3s ease-in-out;
+            transform: translateY(-100px);
+            opacity: 0;
+        }
+        .toast.success {
+            @apply bg-green-500 text-white;
+        }
+        .toast.error {
+            @apply bg-red-500 text-white;
+        }
+        .toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Debug console */
+        .debug-console {
+            @apply fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 h-60 overflow-y-auto;
+            display: none;
+            z-index: 50;
+            font-family: monospace;
+        }
+        .debug-handle {
+            @apply fixed bottom-0 right-5 bg-gray-900 text-white px-3 py-1 rounded-t-lg cursor-pointer;
+            z-index: 51;
+        }
+        .debug-entry {
+            @apply mb-1 border-l-4 pl-2;
+        }
+        .debug-entry.INFO {
+            @apply border-blue-500;
+        }
+        .debug-entry.WARN {
+            @apply border-yellow-500;
+        }
+        .debug-entry.ERROR {
+            @apply border-red-500;
+        }
+        .debug-entry.DEBUG {
+            @apply border-gray-500;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            @apply fixed inset-0 bg-black/50 flex items-center justify-center;
+            z-index: 200;
+            display: none;
+        }
+        .spinner {
+            @apply w-10 h-10 border-4 border-white/30 border-t-white rounded-full;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .bg-gray-100{
+            background-color: #f3f4f6 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+<div class="container">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-center text-blue-800">Amwal Checkout Implementation</h1>
+        <p class="text-center text-gray-600 mt-2">Complete implementation for both products and services</p>
+    </header>
+
+    <!-- Documentation Card -->
+    <div class="card">
+        <h2 class="text-xl font-semibold text-blue-700 mb-4">Documentation & Getting Started</h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="font-medium text-lg mb-2">Official Documentation</h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li><a href="https://docs.amwal.tech" class="text-blue-600 hover:underline flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Amwal Developer Documentation
+                    </a></li>
+
+                    <li><a href="https://docs.amwal.tech/docs/woocommerce-installation-guide#/" class="text-blue-600 hover:underline flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        WooCommerce Plugin Documentation
+                    </a></li>
+                    <li><a href="https://docs.amwal.tech/docs/magento-installation#/" class="text-blue-600 hover:underline flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Magento Plugin Documentation
+                    </a></li>
+                    <li><a href="https://docs.amwal.tech/docs/shopify-installation-guide#/" class="text-blue-600 hover:underline flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Shopify Plugin Documentation
+                    </a></li>
+                </ul>
+
+                <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <h3 class="font-medium text-blue-800 mb-2 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Implementation Notes
+                    </h3>
+                    <ul class="list-disc list-inside space-y-1 text-blue-900">
+                        <li>Amounts should be in the smallest currency unit (e.g., 100 = 1.00 SAR)</li>
+                        <li>Always implement proper error handling for failed transactions</li>
+                        <li>Use the debug console in this example to track events and troubleshoot issues</li>
+                    </ul>
+                </div>
+              </div>
+
+            <div>
+                <h3 class="font-medium text-lg mb-2">Getting Started</h3>
+                <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                    <li>Sign up for an Amwal account at <a href="https://merchant.sa.amwal.tech" class="text-blue-600 hover:underline">merchant.sa.amwal.tech</a></li>
+                    <li>Create a new merchant and get your <span class="bg-gray-100 px-1 rounded">merchant-id</span></li>
+                    <li>Install the Amwal Checkout button:</li>
+                    <div class="bg-gray-100 p-2 rounded my-2 text-sm font-mono">
+                        &lt;script type="module" src="https://cdn.jsdelivr.net/npm/amwal-checkout-button@latest/dist/checkout/checkout.esm.js"&gt;&lt;/script&gt;
+                    </div>
+                    <li>Add the Amwal Checkout button to your page:</li>
+                    <div class="bg-gray-100 p-2 rounded my-2 text-sm font-mono">
+                        &lt;amwal-checkout-button<br>
+                        &nbsp;&nbsp;merchant-id="your-merchant-id"<br>
+                        &nbsp;&nbsp;amount="100"<br>
+                        &nbsp;&nbsp;country-code="SA"<br>
+                        &nbsp;&nbsp;locale="en"&gt;<br>
+                        &lt;/amwal-checkout-button&gt;
+                    </div>
+                    <li>Set up event listeners to handle checkout results</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="flex justify-center mb-6">
+        <button id="product-tab" class="tab-active py-2 px-4 rounded-l-lg font-medium" aria-selected="true" role="tab">
+            Product Example
+        </button>
+        <button id="service-tab" class="tab-inactive py-2 px-4 rounded-r-lg font-medium" aria-selected="false" role="tab">
+            Service Example
+        </button>
+    </div>
+
+    <!-- Product Checkout Example -->
+    <div id="product-content" class="card" role="tabpanel" aria-labelledby="product-tab">
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Product Image and Details -->
+            <div>
+                <div class="bg-gray-200 h-72 rounded-lg flex items-center justify-center">
+                    <span class="text-gray-500">Product Image</span>
+                </div>
+                <h2 class="text-xl font-bold mt-4">Premium Wireless Headphones</h2>
+                <div class="flex items-center mt-2">
+                    <div class="flex text-yellow-400">
+                        <!-- 5 stars -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                    </div>
+                    <span class="text-gray-600 ml-2">5.0 (128 reviews)</span>
+                </div>
+                <p class="text-gray-600 mt-4">Experience premium sound quality with these wireless headphones. Features noise cancellation, long battery life, and comfortable ear cushions.</p>
+
+                <div class="mt-4">
+                    <h3 class="font-semibold">Features:</h3>
+                    <ul class="list-disc pl-5 mt-2 text-gray-600">
+                        <li>Active noise cancellation</li>
+                        <li>40+ hours of battery life</li>
+                        <li>Fast charging - 5min for 3hrs of playback</li>
+                        <li>Bluetooth 5.2 connectivity</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Checkout Section -->
+            <div>
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <div class="flex justify-between mb-4">
+                        <span class="font-medium">Price:</span>
+                        <span class="font-bold" id="product-price">SAR 399.00</span>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <span class="font-medium">Shipping:</span>
+                        <span id="product-shipping">SAR 20.00</span>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <span class="font-medium">Tax:</span>
+                        <span id="product-tax">SAR 21.00</span>
+                    </div>
+                    <div class="border-t pt-4 mt-4 flex justify-between">
+                        <span class="font-bold">Total:</span>
+                        <span class="font-bold text-lg" id="product-total">SAR 440.00</span>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="form-label" for="product-qty">Quantity:</label>
+                        <div class="qty-control">
+                            <button id="decrease-qty" class="qty-btn" aria-label="Decrease quantity">-</button>
+                            <input type="text" id="product-qty" value="1" readonly class="qty-input" aria-label="Product quantity">
+                            <button id="increase-qty" class="qty-btn" aria-label="Increase quantity">+</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-medium mb-3">Select Payment Method</h3>
+
+                            <div class="space-y-3">
+                                <!-- Credit Card Option -->
+                                <label class="payment-option selected" id="card-payment-option">
+                                    <input type="radio" name="payment-method" value="card" checked class="mr-3">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium">Credit/Debit Card</div>
+                                            <div class="text-sm text-gray-600">Pay the full amount now</div>
+                                        </div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-800">42% OFF</span>
+                                    </div>
+                                </label>
+
+                                <!-- Installments Option -->
+                                <label class="payment-option" id="installment-payment-option">
+                                    <input type="radio" name="payment-method" value="installment" class="mr-3">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium">Split Payment</div>
+                                            <div class="text-sm text-gray-600">Pay in installments with your bank</div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <!-- Apple Pay Option -->
+                                <label class="payment-option" id="apple-payment-option">
+                                    <input type="radio" name="payment-method" value="apple" class="mr-3">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M17.005 19.762c-.937 1.382-1.866 2.764-3.414 2.857-1.42.091-1.893-.865-3.544-.865-1.659 0-2.179.865-3.552.923-1.47.065-2.568-1.46-3.551-2.806-1.87-2.736-3.29-7.732-1.396-11.052.898-1.55 2.507-2.52 4.231-2.52 1.659-.037 3.21 1.1 4.231 1.1.939 0 2.694-1.37 4.513-1.16.768.037 2.905.316 4.276 2.318-2.058 1.244-2.986 2.87-2.986 4.876 0 2.488 1.519 4.37 3.192 5.33zm-3.245-17.098c.91-1.096 1.58-2.575 1.397-4.101-1.47.065-3.197.98-4.187 2.114-.91 1.024-1.611 2.576-1.397 4.03 1.524.073 3.116-.846 4.187-2.043z"/>
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium">Apple Pay</div>
+                                            <div class="text-sm text-gray-600">Quick checkout with Apple Pay</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Amwal Checkout Buttons Container -->
+                        <div id="payment-method-buttons">
+                            <!-- Credit Card Payment -->
+                            <div id="card-payment" class="payment-button block">
+                                <amwal-checkout-button
+                                        id="card-checkout"
+                                        merchant-id="sandbox-amwal-e09ee380-d8c7-4710-a6ab-c9b39c7ffd47"
+                                        test-environment="qa"
+                                        amount="440"
+                                        tax="21"
+                                        country-code="SA"
+                                        locale="en"
+                                        dark-mode="off"
+                                        label="Pay Now"
+                                        address-required="true"
+                                        discount="200"
+                                        show-discount-ribbon="true"
+                                        enable-pre-checkout-trigger="true"
+                                        debug="true"
+                                        class="w-full">
+                                </amwal-checkout-button>
+                            </div>
+
+                            <!-- Installment Payment -->
+                            <div id="installment-payment" class="payment-button hidden">
+                                <amwal-checkout-button
+                                        id="installment-checkout"
+                                        merchant-id="sandbox-amwal-e09ee380-d8c7-4710-a6ab-c9b39c7ffd47"
+                                        test-environment="qa"
+                                        amount="440"
+                                        country-code="SA"
+                                        locale="en"
+                                        dark-mode="off"
+                                        label="Split Payment"
+                                        only-show-bank-installment="true"
+                                        address-required="true"
+                                        enable-pre-checkout-trigger="true"
+                                        class="w-full">
+                                </amwal-checkout-button>
+                            </div>
+
+                            <!-- Apple Pay -->
+                            <div id="apple-payment" class="payment-button hidden">
+                                <amwal-checkout-button
+                                        id="apple-checkout"
+                                        merchant-id="sandbox-amwal-e09ee380-d8c7-4710-a6ab-c9b39c7ffd47"
+                                        test-environment="qa"
+                                        amount="440"
+                                        country-code="SA"
+                                        locale="en"
+                                        dark-mode="off"
+                                        label="Pay with Apple Pay"
+                                        address-required="true"
+                                        enable-apple-checkout="true"
+                                        enable-pre-checkout-trigger="true"
+                                        class="w-full">
+                                </amwal-checkout-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Checkout Example -->
+    <div id="service-content" class="card hidden" role="tabpanel" aria-labelledby="service-tab">
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Service Details -->
+            <div>
+                <div class="bg-gray-200 h-72 rounded-lg flex items-center justify-center">
+                    <span class="text-gray-500">Service Image</span>
+                </div>
+                <h2 class="text-xl font-bold mt-4">Premium Website Development</h2>
+                <div class="flex items-center mt-2">
+                    <div class="flex text-yellow-400">
+                        <!-- 5 stars -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                    </div>
+                    <span class="text-gray-600 ml-2">5.0 (53 reviews)</span>
+                </div>
+                <p class="text-gray-600 mt-4">Professional website development service tailored to your business needs. Includes responsive design, SEO optimization, and user-friendly interface.</p>
+
+                <div class="mt-4">
+                    <h3 class="font-semibold">Service Includes:</h3>
+                    <ul class="list-disc pl-5 mt-2 text-gray-600">
+                        <li>Custom design based on your requirements</li>
+                        <li>Mobile-responsive layout</li>
+                        <li>Basic SEO setup</li>
+                        <li>Contact form integration</li>
+                        <li>3 rounds of revisions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Checkout Section -->
+            <div>
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <div class="flex justify-between mb-4">
+                        <span class="font-medium">Base Price:</span>
+                        <span class="font-bold">SAR 2,499.00</span>
+                    </div>
+
+                    <div class="mt-4 mb-6">
+                        <h3 class="font-semibold mb-3">Select Package:</h3>
+                        <div class="space-y-3">
+                            <label class="payment-option selected" id="basic-package-option">
+                                <input type="radio" name="service-package" value="basic" checked class="mr-3">
+                                <div>
+                                    <div class="font-medium">Basic Package</div>
+                                    <div class="text-sm text-gray-600">5-page website with basic features</div>
+                                </div>
+                                <div class="ml-auto font-medium">SAR 2,499.00</div>
+                            </label>
+                            <label class="payment-option" id="standard-package-option">
+                                <input type="radio" name="service-package" value="standard" class="mr-3">
+                                <div>
+                                    <div class="font-medium">Standard Package</div>
+                                    <div class="text-sm text-gray-600">10-page website with blog integration</div>
+                                </div>
+                                <div class="ml-auto font-medium">SAR 3,999.00</div>
+                            </label>
+                            <label class="payment-option" id="premium-package-option">
+                                <input type="radio" name="service-package" value="premium" class="mr-3">
+                                <div>
+                                    <div class="font-medium">Premium Package</div>
+                                    <div class="text-sm text-gray-600">E-commerce website with payment integration</div>
+                                </div>
+                                <div class="ml-auto font-medium">SAR 5,999.00</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-4 mt-4 flex justify-between">
+                        <span class="font-bold">Total:</span>
+                        <span class="font-bold text-lg" id="service-total">SAR 2,499.00</span>
+                    </div>
+
+                    <div class="mt-6">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-medium mb-3">Select Payment Method</h3>
+
+                            <div class="space-y-3">
+                                <!-- Credit Card Option -->
+                                <label class="payment-option selected" id="service-card-option">
+                                    <input type="radio" name="service-payment-method" value="card" checked class="mr-3">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium">Credit/Debit Card</div>
+                                            <div class="text-sm text-gray-600">Pay the full amount now</div>
+                                        </div>
+                                    </div>
+                                    <div class="ml-auto">
+                                        <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-800">42% OFF</span>
+                                    </div>
+                                </label>
+
+                                <!-- Installments Option -->
+                                <label class="payment-option" id="service-installment-option">
+                                    <input type="radio" name="service-payment-method" value="installment" class="mr-3">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium">Split Payment</div>
+                                            <div class="text-sm text-gray-600">Pay in installments with your bank</div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <!-- Apple Pay Option -->
+                                <label class="payment-option" id="service-apple-option">
+                                    <input type="radio" name="service-payment-method" value="apple" class="mr-3">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M17.005 19.762c-.937 1.382-1.866 2.764-3.414 2.857-1.42.091-1.893-.865-3.544-.865-1.659 0-2.179.865-3.552.923-1.47.065-2.568-1.46-3.551-2.806-1.87-2.736-3.29-7.732-1.396-11.052.898-1.55 2.507-2.52 4.231-2.52 1.659-.037 3.21 1.1 4.231 1.1.939 0 2.694-1.37 4.513-1.16.768.037 2.905.316 4.276 2.318-2.058 1.244-2.986 2.87-2.986 4.876 0 2.488 1.519 4.37 3.192 5.33zm-3.245-17.098c.91-1.096 1.58-2.575 1.397-4.101-1.47.065-3.197.98-4.187 2.114-.91 1.024-1.611 2.576-1.397 4.03 1.524.073 3.116-.846 4.187-2.043z"/>
+                                        </svg>
+                                        <div>
+                                            <div class="font-medium">Apple Pay</div>
+                                            <div class="text-sm text-gray-600">Quick checkout with Apple Pay</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Service Amwal Checkout Buttons -->
+                        <div id="service-payment-buttons">
+                            <!-- Credit Card Payment -->
+                            <div id="service-card-payment" class="payment-button block">
+                                <amwal-checkout-button
+                                        id="service-card-checkout"
+                                        merchant-id="sandbox-amwal-e09ee380-d8c7-4710-a6ab-c9b39c7ffd47"
+                                        test-environment="qa"
+                                        amount="2499"
+                                        country-code="SA"
+                                        locale="en"
+                                        dark-mode="off"
+                                        label="Pay Now"
+                                        address-required="false"
+                                        email-required="true"
+                                        discount="200"
+                                        show-discount-ribbon="true"
+                                        enable-pre-checkout-trigger="true"
+                                        class="w-full">
+                                </amwal-checkout-button>
+                            </div>
+
+                            <!-- Installment Payment -->
+                            <div id="service-installment-payment" class="payment-button hidden">
+                                <amwal-checkout-button
+                                        id="service-installment-checkout"
+                                        merchant-id="sandbox-amwal-e09ee380-d8c7-4710-a6ab-c9b39c7ffd47"
+                                        test-environment="qa"
+                                        amount="2499"
+                                        country-code="SA"
+                                        locale="en"
+                                        dark-mode="off"
+                                        label="Split Payment"
+                                        only-show-bank-installment="true"
+                                        address-required="false"
+                                        email-required="true"
+                                        enable-pre-checkout-trigger="true"
+                                        class="w-full">
+                                </amwal-checkout-button>
+                            </div>
+
+                            <!-- Apple Pay -->
+                            <div id="service-apple-payment" class="payment-button hidden">
+                                <amwal-checkout-button
+                                        id="service-apple-checkout"
+                                        merchant-id="sandbox-amwal-e09ee380-d8c7-4710-a6ab-c9b39c7ffd47"
+                                        test-environment="qa"
+                                        amount="2499"
+                                        country-code="SA"
+                                        locale="en"
+                                        dark-mode="off"
+                                        label="Pay with Apple Pay"
+                                        address-required="false"
+                                        enable-apple-checkout="true"
+                                        email-required="true"
+                                        enable-pre-checkout-trigger="true"
+                                        class="w-full">
+                                </amwal-checkout-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Debug Console -->
+    <div id="debug-console" class="debug-console">
+        <div class="flex justify-between items-center mb-2">
+            <div>
+                <span class="font-bold">Debug Console</span>
+                <span class="ml-2">
+                    <button id="debug-clear" class="text-xs bg-red-600 text-white px-2 py-1 rounded">Clear</button>
+                    <button id="debug-export" class="text-xs bg-green-600 text-white px-2 py-1 rounded ml-1">Export Logs</button>
+                </span>
+            </div>
+            <div>
+                <label class="text-xs mr-2">
+                    <input type="checkbox" id="debug-auto-scroll" checked> Auto-scroll
+                </label>
+                <select id="debug-level" class="text-xs bg-gray-800 text-white px-2 py-1 rounded">
+                    <option value="DEBUG">All Levels</option>
+                    <option value="INFO">Info & Above</option>
+                    <option value="WARN">Warnings & Errors</option>
+                    <option value="ERROR">Errors Only</option>
+                </select>
+            </div>
+        </div>
+        <div id="debug-content"></div>
+    </div>
+    <div id="debug-handle" class="debug-handle">Debug</div>
+</div>
+<!-- JavaScript -->
+<script>
+    /**
+     * Logger - Handles logging and debugging
+     */
+    class Logger {
+        constructor() {
+            this.levels = {
+                DEBUG: 0,
+                INFO: 1,
+                WARN: 2,
+                ERROR: 3
+            };
+            this.currentLevel = this.levels.DEBUG;
+            this.consoleOutput = true;
+            this.entries = [];
+            this.maxEntries = 100;
+        }
+
+        debug(message, data) {
+            this._log(this.levels.DEBUG, message, data);
+        }
+
+        info(message, data) {
+            this._log(this.levels.INFO, message, data);
+        }
+
+        warn(message, data) {
+            this._log(this.levels.WARN, message, data);
+        }
+
+        error(message, data) {
+            this._log(this.levels.ERROR, message, data);
+        }
+
+        _log(level, message, data) {
+            this._logToConsole(level, message, data);
+            this._logToDebugConsole(level, message, data);
+        }
+
+        _logToConsole(level, message, data) {
+            if (!this.consoleOutput) return;
+
+            switch (level) {
+                case this.levels.DEBUG:
+                    console.debug(message, data || '');
+                    break;
+                case this.levels.INFO:
+                    console.info(message, data || '');
+                    break;
+                case this.levels.WARN:
+                    console.warn(message, data || '');
+                    break;
+                case this.levels.ERROR:
+                    console.error(message, data || '');
+                    break;
+            }
+        }
+
+        _logToDebugConsole(level, message, data) {
+            if (level < this.currentLevel) return;
+
+            const debugContent = document.getElementById('debug-content');
+            if (!debugContent) return;
+
+            // Create log entry
+            const entry = {
+                timestamp: new Date(),
+                level: Object.keys(this.levels)[level],
+                message,
+                data
+            };
+
+            // Add to entries array
+            this.entries.unshift(entry);
+            if (this.entries.length > this.maxEntries) {
+                this.entries.pop();
+            }
+
+            // Create DOM element
+            const entryDiv = document.createElement('div');
+            entryDiv.className = `debug-entry ${entry.level}`;
+
+            const timestamp = entry.timestamp.toISOString().split('T')[1].slice(0, -1);
+            let content = `<span class="text-gray-400">[${timestamp}]</span> <span class="font-bold">[${entry.level}]</span> ${entry.message}`;
+
+            if (data) {
+                if (typeof data === 'object') {
+                    try {
+                        content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">${JSON.stringify(data, null, 2)}</pre>`;
+                    } catch (e) {
+                        content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">[Object cannot be stringified]</pre>`;
+                    }
+                } else {
+                    content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">${data}</pre>`;
+                }
+            }
+
+            entryDiv.innerHTML = content;
+            debugContent.insertBefore(entryDiv, debugContent.firstChild);
+
+            // Auto-scroll
+            if (document.getElementById('debug-auto-scroll').checked) {
+                debugContent.scrollTop = 0;
+            }
+        }
+
+        setLevel(level) {
+            if (typeof level === 'string' && this.levels[level] !== undefined) {
+                this.currentLevel = this.levels[level];
+            } else if (typeof level === 'number' && level >= 0 && level <= 3) {
+                this.currentLevel = level;
+            }
+        }
+
+        enableConsole(enable) {
+            this.consoleOutput = Boolean(enable);
+        }
+
+        getEntries() {
+            return [...this.entries];
+        }
+
+        clear() {
+            this.entries = [];
+            const debugContent = document.getElementById('debug-content');
+            if (debugContent) {
+                debugContent.innerHTML = '';
+            }
+        }
+
+        export() {
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                entries: this.entries
+            };
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+            const exportLink = document.createElement('a');
+            exportLink.setAttribute('href', dataUri);
+            exportLink.setAttribute('download', `amwal-debug-${new Date().toISOString()}.json`);
+            document.body.appendChild(exportLink);
+            exportLink.click();
+            document.body.removeChild(exportLink);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the Logger
+        const logger = new Logger();
+        logger.info('Initializing Amwal Checkout application', { timestamp: new Date().toISOString() });
+
+        // Initialize the app
+        const app = {
+            // UI elements
+            elements: {
+                productTab: document.getElementById('product-tab'),
+                serviceTab: document.getElementById('service-tab'),
+                productContent: document.getElementById('product-content'),
+                serviceContent: document.getElementById('service-content'),
+                // Product elements
+                decreaseQty: document.getElementById('decrease-qty'),
+                increaseQty: document.getElementById('increase-qty'),
+                productQty: document.getElementById('product-qty'),
+                productPrice: document.getElementById('product-price'),
+                productShipping: document.getElementById('product-shipping'),
+                productTax: document.getElementById('product-tax'),
+                productTotal: document.getElementById('product-total'),
+                // Payment buttons
+                cardPayment: document.getElementById('card-payment'),
+                installmentPayment: document.getElementById('installment-payment'),
+                applePayment: document.getElementById('apple-payment'),
+                // Checkout buttons
+                cardCheckout: document.getElementById('card-checkout'),
+                installmentCheckout: document.getElementById('installment-checkout'),
+                appleCheckout: document.getElementById('apple-checkout'),
+                serviceCardCheckout: document.getElementById('service-card-checkout'),
+                serviceInstallmentCheckout: document.getElementById('service-installment-checkout'),
+                serviceAppleCheckout: document.getElementById('service-apple-checkout'),
+
+                // Service elements
+                serviceTotal: document.getElementById('service-total'),
+                serviceCardPayment: document.getElementById('service-card-payment'),
+                serviceInstallmentPayment: document.getElementById('service-installment-payment'),
+                serviceApplePayment: document.getElementById('service-apple-payment'),
+                // Toast and loading
+                toast: document.getElementById('toast'),
+                loadingOverlay: document.getElementById('loading-overlay'),
+                // Debug console
+                debugConsole: document.getElementById('debug-console'),
+                debugHandle: document.getElementById('debug-handle'),
+                debugContent: document.getElementById('debug-content'),
+                debugClear: document.getElementById('debug-clear'),
+                debugExport: document.getElementById('debug-export'),
+                debugLevel: document.getElementById('debug-level'),
+                debugAutoScroll: document.getElementById('debug-auto-scroll')
+            },
+            // State
+            state: {
+                product: {
+                    basePrice: 399,
+                    shipping: 20,
+                    taxRate: 0.15,
+                    quantity: 1,
+                    tax: 21,
+                    total: 440,
+                    shippingMethods: [
+                        { id: 'standard', name: 'Standard Shipping', price: 20, deliveryDays: '3-5' },
+                        { id: 'express', name: 'Express Shipping', price: 50, deliveryDays: '1-2' },
+                        { id: 'same-day', name: 'Same Day Delivery', price: 100, deliveryDays: 'Today' }
+                    ],
+                    selectedShippingMethod: 'standard',
+                    demoAddress: {
+                        firstName: 'Mohammed',
+                        lastName: 'Al-Saud',
+                        addressLine1: '123 King Fahd Road',
+                        addressLine2: 'Apartment 4B',
+                        city: 'Riyadh',
+                        state: 'Riyadh Province',
+                        postalCode: '12345',
+                        country: 'SA',
+                        phoneNumber: '+966501234567',
+                        email: 'customer@example.com'
+                    }
+                },
+                service: {
+                    packages: {
+                        basic: { price: 2499, name: 'Basic Package' },
+                        standard: { price: 3999, name: 'Standard Package' },
+                        premium: { price: 5999, name: 'Premium Package' }
+                    },
+                    selectedPackage: 'basic',
+                    total: 2499
+                },
+            },
+
+            // Initialize the app
+            init: function() {
+                this.initTabs();
+                this.initProductQuantity();
+                this.initPaymentMethods();
+                this.initServicePackages();
+                this.initCheckoutEvents();
+                this.applyDemoDataToCheckout();
+                this.setupDebugConsole();
+                logger.info('Amwal Checkout initialized', { timestamp: new Date().toISOString() });
+            },
+
+            // Initialize tab navigation
+            initTabs: function() {
+                // Switch to product tab
+                this.elements.productTab.addEventListener('click', () => {
+                    this.elements.productTab.classList.add('tab-active');
+                    this.elements.productTab.classList.remove('tab-inactive');
+                    this.elements.serviceTab.classList.remove('tab-active');
+                    this.elements.serviceTab.classList.add('tab-inactive');
+                    this.elements.productContent.classList.remove('hidden');
+                    this.elements.serviceContent.classList.add('hidden');
+                    logger.info('Switched to Product tab');
+                });
+
+                // Switch to service tab
+                this.elements.serviceTab.addEventListener('click', () => {
+                    this.elements.serviceTab.classList.add('tab-active');
+                    this.elements.serviceTab.classList.remove('tab-inactive');
+                    this.elements.productTab.classList.remove('tab-active');
+                    this.elements.productTab.classList.add('tab-inactive');
+                    this.elements.serviceContent.classList.remove('hidden');
+                    this.elements.productContent.classList.add('hidden');
+                    logger.info('Switched to Service tab');
+                });
+            },
+
+            // Initialize product quantity controls
+            initProductQuantity: function() {
+                // Decrease quantity
+                this.elements.decreaseQty.addEventListener('click', () => {
+                    if (this.state.product.quantity > 1) {
+                        this.state.product.quantity--;
+                        this.updateProductPrice();
+                        logger.debug('Quantity decreased', { newQuantity: this.state.product.quantity });
+                    } else {
+                        logger.debug('Cannot decrease quantity below 1');
+                    }
+                });
+
+                // Increase quantity
+                this.elements.increaseQty.addEventListener('click', () => {
+                    this.state.product.quantity++;
+                    this.updateProductPrice();
+                    logger.debug('Quantity increased', { newQuantity: this.state.product.quantity });
+                });
+            },
+
+            // Update product price based on quantity
+            updateProductPrice: function() {
+                const subtotal = this.state.product.basePrice * this.state.product.quantity;
+                const tax = Math.round(subtotal * this.state.product.taxRate);
+                const total = subtotal + this.state.product.shipping + tax;
+
+                this.elements.productQty.value = this.state.product.quantity;
+                this.elements.productPrice.textContent = `SAR ${subtotal.toFixed(2)}`;
+                this.elements.productTax.textContent = `SAR ${tax.toFixed(2)}`;
+                this.elements.productTotal.textContent = `SAR ${total.toFixed(2)}`;
+                this.state.product.tax = tax;
+                this.state.product.total = total;
+
+                // Update Amwal button amounts
+                this.elements.cardCheckout.setAttribute('amount', total.toString());
+                this.elements.cardCheckout.setAttribute('tax', tax.toString());
+                this.elements.installmentCheckout.setAttribute('amount', total.toString());
+                this.elements.appleCheckout.setAttribute('amount', total.toString());
+
+                logger.info('Product price updated', { subtotal, tax, total, quantity: this.state.product.quantity });
+            },
+
+            // Initialize payment method selection
+            initPaymentMethods: function() {
+                // Product payment methods
+                const productPaymentMethods = document.querySelectorAll('input[name="payment-method"]');
+                const productPaymentOptions = document.querySelectorAll('#product-content .payment-option');
+
+                productPaymentMethods.forEach(method => {
+                    method.addEventListener('change', (event) => {
+                        const value = event.target.value;
+
+                        // Update styling
+                        productPaymentOptions.forEach(option => {
+                            option.classList.remove('selected');
+                        });
+                        document.getElementById(`${value}-payment-option`).classList.add('selected');
+
+                        // Show correct payment button
+                        this.elements.cardPayment.classList.add('hidden');
+                        this.elements.installmentPayment.classList.add('hidden');
+                        this.elements.applePayment.classList.add('hidden');
+                        document.getElementById(`${value}-payment`).classList.remove('hidden');
+
+                        logger.info('Product payment method changed', { method: value });
+                    });
+                });
+
+                // Service payment methods
+                const servicePaymentMethods = document.querySelectorAll('input[name="service-payment-method"]');
+                const servicePaymentOptions = document.querySelectorAll('#service-content .payment-option');
+
+                servicePaymentMethods.forEach(method => {
+                    method.addEventListener('change', (event) => {
+                        const value = event.target.value;
+
+                        // Update styling
+                        servicePaymentOptions.forEach(option => {
+                            option.classList.remove('selected');
+                        });
+                        document.getElementById(`service-${value}-option`).classList.add('selected');
+
+                        // Show correct payment button
+                        this.elements.serviceCardPayment.classList.add('hidden');
+                        this.elements.serviceInstallmentPayment.classList.add('hidden');
+                        this.elements.serviceApplePayment.classList.add('hidden');
+                        document.getElementById(`service-${value}-payment`).classList.remove('hidden');
+
+                        logger.info('Service payment method changed', { method: value });
+                    });
+                });
+            },
+
+            // Initialize service package selection
+            initServicePackages: function() {
+                const servicePackages = document.querySelectorAll('input[name="service-package"]');
+                const packageOptions = document.querySelectorAll('#service-content label[id$="-package-option"]');
+
+                servicePackages.forEach(pkg => {
+                    pkg.addEventListener('change', (event) => {
+                        const value = event.target.value;
+
+                        // Update styling
+                        packageOptions.forEach(option => {
+                            option.classList.remove('selected');
+                        });
+                        document.getElementById(`${value}-package-option`).classList.add('selected');
+
+                        // Update price
+                        this.updateServicePackage(value);
+
+                        logger.info('Service package changed', { package: value });
+                    });
+                });
+            },
+
+            // Update service package selection
+            updateServicePackage: function(packageName) {
+                if (this.state.service.packages[packageName]) {
+                    this.state.service.selectedPackage = packageName;
+                    this.state.service.total = this.state.service.packages[packageName].price;
+
+                    // Update UI
+                    this.elements.serviceTotal.textContent = `SAR ${this.state.service.total.toFixed(2)}`;
+
+                    // Update Amwal button amounts
+                    document.getElementById('service-card-checkout').setAttribute('amount', this.state.service.total.toString());
+                    document.getElementById('service-installment-checkout').setAttribute('amount', this.state.service.total.toString());
+                    document.getElementById('service-apple-checkout').setAttribute('amount', this.state.service.total.toString());
+
+                    logger.info('Service package updated', {
+                        package: packageName,
+                        price: this.state.service.packages[packageName].price
+                    });
+                }
+            },
+
+            // Initialize Amwal checkout events
+            initCheckoutEvents: function() {
+                // Common function to add all event listeners to a button
+                const addEventListenersToButton = (button, buttonType, isProduct = true) => {
+                    const productOrService = isProduct ? 'Product' : 'Service';
+
+                    button.addEventListener('amwalPreCheckoutTrigger', (event) => {
+                        logger.info(`${productOrService} pre-checkout triggered`, event.detail);
+
+                        // Only add demo data for product checkout
+                        if (isProduct) {
+                            // Get transaction details from the event
+                            const transactionDetails = event.detail || {};
+
+                            // Get your demo data
+                            const demoAddress = this.state.product.demoAddress;
+                            const shippingMethod = this.state.product.shippingMethods.find(
+                                method => method.id === this.state.product.selectedShippingMethod
+                            );
+
+                            // Create modified transaction details with demo data
+                            const modifiedDetails = {
+                                ...transactionDetails,
+                                customerDetails: {
+                                    firstName: demoAddress.firstName,
+                                    lastName: demoAddress.lastName,
+                                    email: demoAddress.email,
+                                    phoneNumber: demoAddress.phoneNumber
+                                },
+                                shippingAddress: {
+                                    addressLine1: demoAddress.addressLine1,
+                                    addressLine2: demoAddress.addressLine2,
+                                    city: demoAddress.city,
+                                    state: demoAddress.state,
+                                    postalCode: demoAddress.postalCode,
+                                    country: demoAddress.country
+                                },
+                                shippingMethod: {
+                                    id: shippingMethod.id,
+                                    name: shippingMethod.name,
+                                    price: shippingMethod.price,
+                                    description: `${shippingMethod.name} (${shippingMethod.deliveryDays})`
+                                }
+                            };
+
+                            logger.debug('Sending demo data to Amwal', modifiedDetails);
+
+                            // Send modified transaction details back to Amwal
+                            // Use a CustomEvent with the modified details
+                            const ackEvent = new CustomEvent('amwalPreCheckoutTriggerAck', {
+                                detail: modifiedDetails
+                            });
+
+                            // Dispatch acknowledgment with demo data
+                            button.dispatchEvent(ackEvent);
+                        } else {
+                            // For services, just acknowledge without modification
+                            button.dispatchEvent(new CustomEvent('amwalPreCheckoutTriggerAck'));
+                        }
+                    });
+
+                    // Original checkout events
+                    button.addEventListener('amwalCheckoutStart', (event) => {
+                        logger.info(`${productOrService} ${buttonType} checkout started`, event.detail);
+                        this.showLoading(true);
+                    });
+
+                    button.addEventListener('amwalCheckoutSuccess', (event) => {
+                        logger.info(`${productOrService} ${buttonType} checkout success`, event.detail);
+                        this.showLoading(false);
+                        this.showToast(`Checkout successful! Order ID: ${event.detail.orderId}`, 'success');
+
+                        // You can perform additional operations with the order ID here
+                        // For example, store the order in your database or redirect to a thank you page
+                        logger.debug('Order details', { orderId: event.detail.orderId });
+                    });
+
+                    button.addEventListener('amwalCheckoutFail', (event) => {
+                        logger.error(`${productOrService} ${buttonType} checkout failed`, event.detail);
+                        this.showLoading(false);
+                        this.showToast('Checkout failed. Please try again.', 'error');
+                    });
+
+                    // Additional events from documentation
+                    button.addEventListener('amwalAddressCountryUpdate', (event) => {
+                        logger.info(`${productOrService} address country updated`, event.detail);
+                        // You can update shipping/tax based on country here
+                        const country = event.detail;
+                        logger.debug('Country details', country);
+                    });
+
+                    button.addEventListener('amwalAddressStateUpdate', (event) => {
+                        logger.info(`${productOrService} address state updated`, event.detail);
+                        // You can update shipping/tax based on state here
+                        const state = event.detail;
+                        logger.debug('State details', state);
+                    });
+
+                    // Address update event - for handling shipping methods
+                    button.addEventListener('amwalAddressUpdate', (event) => {
+                        logger.info(`${productOrService} address updated`, event.detail);
+
+                        // Only handle shipping methods for products
+                        if (isProduct) {
+                            const address = event.detail;
+                            logger.debug('Address update received', address);
+
+                            // Get available shipping methods based on the country and city
+                            const country = address.country;
+                            const city = address.city;
+
+                            // You could customize shipping methods based on location
+                            let availableShippingMethods = this.state.product.shippingMethods;
+
+                            // Example: If shipping to Riyadh, offer same-day delivery
+                            if (country === 'SA' && city === 'Riyadh') {
+                                // All shipping methods available
+                            }
+                            // If shipping to other SA cities, no same-day but express is available
+                            else if (country === 'SA') {
+                                availableShippingMethods = availableShippingMethods.filter(
+                                    method => method.id !== 'same-day'
+                                );
+                            }
+                            // International shipping - only standard shipping
+                            else {
+                                availableShippingMethods = availableShippingMethods.filter(
+                                    method => method.id === 'standard'
+                                );
+                            }
+
+                            const shippingOptions = availableShippingMethods.map(method => ({
+                                id: method.id,
+                                label: method.name,
+                                price: method.price,
+                            }));
+
+                            logger.debug('Sending shipping options to Amwal', shippingOptions);
+
+                            // Create and dispatch the acknowledgment event with shipping options
+                            const ackEvent = new CustomEvent('amwalAddressAck', {
+                                detail: shippingOptions
+                            });
+
+                            button.dispatchEvent(ackEvent);
+                        }
+                    });
+
+                    button.addEventListener('amwalDismissed', (event) => {
+                        logger.info(`${productOrService} checkout dismissed`, event.detail);
+                        this.showLoading(false);
+                        // Handle modal dismissal
+                        const isSuccessful = event.detail;
+                        if (!isSuccessful) {
+                            this.showToast('Checkout was cancelled.', 'error');
+                        }
+                    });
+
+                    button.addEventListener('updateOrderOnPaymentsuccess', (event) => {
+                        logger.info(`${productOrService} order updated after payment`, event.detail);
+                        // Update order status in your system
+                        const orderDetails = event.detail;
+                        logger.debug('Updated order details', orderDetails);
+                    });
+                };
+
+                // Product checkout buttons
+                const productButtons = [
+                    { el: this.elements.cardCheckout, type: 'card' },
+                    { el: this.elements.installmentCheckout, type: 'installment' },
+                    { el: this.elements.appleCheckout, type: 'apple' }
+                ];
+
+                productButtons.forEach(button => {
+                    if (button.el) {
+                        addEventListenersToButton(button.el, button.type, true);
+                    }
+                });
+
+                // Service checkout buttons
+                const serviceButtons = [
+                    { el: document.getElementById('service-card-checkout'), type: 'card' },
+                    { el: document.getElementById('service-installment-checkout'), type: 'installment' },
+                    { el: document.getElementById('service-apple-checkout'), type: 'apple' }
+                ];
+
+                serviceButtons.forEach(button => {
+                    if (button.el) {
+                        addEventListenersToButton(button.el, button.type, false);
+                    }
+                });
+            },
+            applyDemoDataToCheckout: function() {
+                // Product checkout buttons
+                const productCheckoutButtons = [
+                    this.elements.cardCheckout,
+                    this.elements.installmentCheckout,
+                    this.elements.appleCheckout
+                ];
+                const serviceCheckoutButtons = [
+                    this.elements.serviceCardCheckout,
+                    this.elements.serviceInstallmentCheckout,
+                    this.elements.serviceAppleCheckout
+                ];
+
+                // Define shipping methods
+                const shippingMethodsData = [
+                    {
+                        id: 'standard',
+                        label: 'Standard Shipping',
+                        price: 20,
+                    },
+                    {
+                        id: 'express',
+                        label: 'Express Shipping',
+                        price: 50,
+                    },
+                    {
+                        id: 'same-day',
+                        label: 'Same Day Delivery',
+                        price: 100,
+                    }
+                ];
+
+                // Define all our allowed addresses data
+                const addressData = {
+                    // Initial customer data
+                    initialFirstName: "Mohammed",
+                    initialLastName: "Al-Saud",
+                    initialPhoneNumber: "+966501234567",
+                    initialEmail: "customer@example.com",
+
+                    // Initial address as JSON string
+                    initialAddress: JSON.stringify({
+                        street1: "123 King Fahd Road",
+                        street2: "Apartment 4B",
+                        city: "Riyadh",
+                        state: "Riyadh",
+                        country: "SA",
+                        postcode: "12345"
+                    }),
+
+                    // Allowed countries
+                    allowedAddressCountries: JSON.stringify(["SA", "AE", "KW", "US"]),
+
+                    // Allowed states by country
+                    allowedAddressStates: JSON.stringify({
+                        "SA": {
+                            "1115": "Riyadh",
+                            "1119": "Dammam",
+                            "1121": "Jeddah",
+                            "1122": "Mecca"
+                        },
+                        "AE": {
+                            "1108": "Abu Dhabi",
+                            "1111": "Dubai",
+                            "1114": "Sharjah"
+                        }
+                    }),
+
+                    // Allowed cities by country and state
+                    allowedAddressCities: JSON.stringify({
+                        "SA": {
+                            "1115": ["Riyadh"],
+                            "1119": ["Dammam"]
+                        }
+                    }),
+
+                    // Countries where postcode is optional
+                    postcodeOptionalCountries: JSON.stringify(["SA"]),
+
+                    // Shipping methods - will be handled with events
+
+                    // Feature flags
+                    addressHandshake: "",
+                    sendExtraAddressFields: "",
+                    enablePrePayTrigger: "",
+                    enablePreCheckoutTrigger: ""
+                };
+
+                // Apply all attributes to each button
+                productCheckoutButtons.forEach(button => {
+                    if (!button) return;
+
+                    // Set customer information
+                    button.setAttribute('initial-first-name', addressData.initialFirstName);
+                    button.setAttribute('initial-last-name', addressData.initialLastName);
+                    button.setAttribute('initial-phone-number', addressData.initialPhoneNumber);
+                    button.setAttribute('initial-email', addressData.initialEmail);
+
+                    // Set address information
+                    button.setAttribute('initial-address', addressData.initialAddress);
+
+                    // Set address restrictions
+                    button.setAttribute('allowed-address-countries', addressData.allowedAddressCountries);
+                    button.setAttribute('allowed-address-states', addressData.allowedAddressStates);
+                    button.setAttribute('allowed-address-cities', addressData.allowedAddressCities);
+                    button.setAttribute('postcode-optional-countries', addressData.postcodeOptionalCountries);
+
+                    // Set feature flags
+                    button.setAttribute('address-handshake', addressData.addressHandshake);
+                    button.setAttribute('send-extra-address-fields', addressData.sendExtraAddressFields);
+                    button.setAttribute('enable-pre-pay-trigger', addressData.enablePrePayTrigger);
+                    button.setAttribute('enable-pre-checkout-trigger', addressData.enablePreCheckoutTrigger);
+
+                    // Dynamic shipping details is not needed if we're providing allowed addresses
+                    button.setAttribute('enable-dynamic-shipping-details', 'false');
+                    button.setAttribute('shipping-methods', JSON.stringify(shippingMethodsData));
+                });
+
+                serviceCheckoutButtons.forEach(button => {
+                    if (!button) return;
+
+                    // Set customer information
+                    button.setAttribute('initial-first-name', addressData.initialFirstName);
+                    button.setAttribute('initial-last-name', addressData.initialLastName);
+                    button.setAttribute('initial-phone-number', addressData.initialPhoneNumber);
+                    button.setAttribute('initial-email', addressData.initialEmail);
+
+                    // Set address information
+                    button.setAttribute('initial-address', addressData.initialAddress);
+
+                    // Set address restrictions
+                    button.setAttribute('allowed-address-countries', addressData.allowedAddressCountries);
+                    button.setAttribute('allowed-address-states', addressData.allowedAddressStates);
+                    button.setAttribute('allowed-address-cities', addressData.allowedAddressCities);
+                    button.setAttribute('postcode-optional-countries', addressData.postcodeOptionalCountries);
+
+                    // Set feature flags
+                    button.setAttribute('address-handshake', addressData.addressHandshake);
+                    button.setAttribute('send-extra-address-fields', addressData.sendExtraAddressFields);
+                    button.setAttribute('enable-pre-pay-trigger', addressData.enablePrePayTrigger);
+                    button.setAttribute('enable-pre-checkout-trigger', addressData.enablePreCheckoutTrigger);
+
+                    // Dynamic shipping details is not needed if we're providing allowed addresses
+                    button.setAttribute('enable-dynamic-shipping-details', 'false');
+                });
+
+                logger.info('Demo customer and address data applied to checkout buttons', {
+                    customerData: {
+                        firstName: addressData.initialFirstName,
+                        lastName: addressData.initialLastName,
+                        phoneNumber: addressData.initialPhoneNumber,
+                        email: addressData.initialEmail
+                    },
+                    addressData: JSON.parse(addressData.initialAddress),
+                    allowedCountries: JSON.parse(addressData.allowedAddressCountries),
+                    allowedStates: JSON.parse(addressData.allowedAddressStates)
+                });
+            },
+
+            // Show toast notification
+            showToast: function(message, type = 'success', duration = 3000) {
+                const toast = this.elements.toast;
+                toast.textContent = message;
+                toast.className = `toast ${type}`;
+
+                setTimeout(() => {
+                    toast.classList.add('visible');
+                }, 10);
+
+                setTimeout(() => {
+                    toast.classList.remove('visible');
+                }, duration);
+
+                console.log(`Toast displayed: ${message}`, { type, duration });
+            },
+
+            // Show/hide loading overlay
+            showLoading: function(show = true) {
+                if (show) {
+                    this.elements.loadingOverlay.style.display = 'flex';
+                    logger.debug('Loading overlay shown');
+                } else {
+                    this.elements.loadingOverlay.style.display = 'none';
+                    logger.debug('Loading overlay hidden');
+                }
+            },
+            setupDebugConsole: function() {
+                // Toggle debug console visibility
+                this.elements.debugHandle.addEventListener('click', () => {
+                    const debugConsole = this.elements.debugConsole;
+                    if (debugConsole.style.display === 'block') {
+                        debugConsole.style.display = 'none';
+                    } else {
+                        debugConsole.style.display = 'block';
+                    }
+                    logger.debug('Debug console toggled');
+                });
+
+                // Clear debug console
+                this.elements.debugClear.addEventListener('click', () => {
+                    logger.clear();
+                    logger.info('Debug console cleared');
+                });
+
+                // Export debug logs
+                this.elements.debugExport.addEventListener('click', () => {
+                    logger.export();
+                    logger.info('Debug logs exported');
+                });
+
+                // Change debug level
+                this.elements.debugLevel.addEventListener('change', (event) => {
+                    const level = event.target.value;
+                    logger.setLevel(level);
+                    logger.info('Debug level changed', { level });
+                });
+            },
+        };
+
+        // Initialize the app
+        app.init();
+    });
+</script>
+</body>
+</html>
