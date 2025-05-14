@@ -139,30 +139,42 @@
             <div>
                 <h3 class="font-medium text-lg mb-2">Official Documentation</h3>
                 <ul class="space-y-2 text-gray-700">
-                    <li><a href="https://docs.amwal.tech" class="text-blue-600 hover:underline flex items-center">
+                    <li><a href="https://docs.amwal.tech/reference/getting-started-1#/" class="text-blue-600 hover:underline flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Amwal Developer Documentation
+                        Api Reference
                     </a></li>
 
                     <li><a href="https://docs.amwal.tech/docs/woocommerce-installation-guide#/" class="text-blue-600 hover:underline flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        WooCommerce Plugin Documentation
+                        WooCommerce Plugin
                     </a></li>
                     <li><a href="https://docs.amwal.tech/docs/magento-installation#/" class="text-blue-600 hover:underline flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Magento Plugin Documentation
+                        Magento Plugin
                     </a></li>
                     <li><a href="https://docs.amwal.tech/docs/shopify-installation-guide#/" class="text-blue-600 hover:underline flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Shopify Plugin Documentation
+                        Shopify Plugin
+                    </a></li>
+                    <li><a href="https://docs.amwal.tech" class="text-blue-600 hover:underline flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Amwal Documentation
+                    </a></li>
+                    <li><a href="https://qa-checkout.sa.amwal.tech/?path=/story/components-amwalcheckoutbutton--example&args=merchantId:sandbox-amwal-e09ee380-d8c7-4710-a6ab-c9b39c7ffd47;enableInstallmentsTimeline:!false"  target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Playground
                     </a></li>
                 </ul>
 
@@ -174,12 +186,13 @@
                         Implementation Notes
                     </h3>
                     <ul class="list-disc list-inside space-y-1 text-blue-900">
-                        <li>Amounts should be in the smallest currency unit (e.g., 100 = 1.00 SAR)</li>
+                        <li>Ensure you have a valid merchant ID</li>
+                        <li>Test in the sandbox environment before going live</li>
                         <li>Always implement proper error handling for failed transactions</li>
                         <li>Use the debug console in this example to track events and troubleshoot issues</li>
                     </ul>
                 </div>
-              </div>
+            </div>
 
             <div>
                 <h3 class="font-medium text-lg mb-2">Getting Started</h3>
@@ -609,6 +622,70 @@
         </div>
     </div>
 
+    <!-- Integration Security Overview -->
+    <div class="card">
+        <div class="pb-2 flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-blue-700">Integration Security Overview</h2>
+        </div>
+        <p class="text-gray-700 mb-4">
+            Ensuring secure and reliable transactions is central to Amwal Checkout. Below is a comprehensive overview of the security measures implemented throughout the integration lifecycle.
+        </p>
+        <div class="mt-4">
+            <input type="checkbox" id="toggle-security" class="peer hidden">
+            <label for="toggle-security" class="flex justify-between items-center cursor-pointer text-blue-600 font-medium mb-2">
+                <span>View Details</span>
+                <svg class="h-5 w-5 transform transition-transform duration-300 peer-checked:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </label>
+            <div class="max-h-0 overflow-hidden transition-all duration-500 peer-checked:max-h-[1000px]">
+                <ul class="list-disc pl-5 space-y-3 text-gray-600">
+                    <li>
+                        <strong>End-to-End Encryption:</strong>
+                        All communication between the client (browser/mobile) and Amwal servers is protected using <span class="font-medium">TLS 1.2+</span> with enforced HTTPS. No sensitive data is transmitted over plain channels.
+                    </li>
+                    <li>
+                        <strong>PCI DSS Compliance:</strong>
+                        Amwal’s checkout button is a hosted solution, meaning <span class="font-medium">payment details never touch the merchant’s servers</span>. This reduces your PCI scope and ensures compliance with industry standards.
+                    </li>
+                    <li>
+                        <strong>Webhook Signing & Verification:</strong>
+                        Amwal uses <code>HMAC-SHA256</code> to sign all webhook payloads. Merchants can verify authenticity using their secret key to ensure data integrity and source trust.
+                    </li>
+                    <li>
+                        <strong>Pre-Checkout Triggers:</strong>
+                        Use the <code>amwalPreCheckoutTrigger</code> event to inject customer data, enforce business rules, or perform fraud checks <em>before</em> the payment sheet is shown. This helps stop attacks early in the flow.
+                    </li>
+                    <li>
+                        <strong>Real-Time Address Validation:</strong>
+                        During checkout, Amwal provides dynamic address updates, and the merchant can return allowed shipping options. This reduces spoofed address attempts and ensures validated logistics.
+                    </li>
+                    <li>
+                        <strong>Secure Sandbox Environment:</strong>
+                        Developers can test integrations in a fully isolated sandbox mode that mirrors production behavior—safe for experimentation, QA, and load testing.
+                    </li>
+                    <li>
+                        <strong>JavaScript Module Isolation:</strong>
+                        The Amwal checkout is loaded via ES Modules and sandboxed into an iframe where applicable. This prevents DOM-level tampering and protects your site against script injection attacks.
+                    </li>
+                    <li>
+                        <strong>Debug Console for Auditing:</strong>
+                        The built-in debug console captures all transaction events, API calls, and error messages for developers to review and export. This helps in security audits and monitoring integration integrity.
+                    </li>
+                    <li>
+                        <strong>Token-Based Authentication:</strong>
+                        Backend endpoints communicating with Amwal must use API keys or OAuth tokens (if applicable). These should be securely stored and rotated periodically.
+                    </li>
+                </ul>
+
+                <p class="mt-4 text-sm text-gray-500">
+                    For full details, integration tips, and compliance support, visit the
+                    <a href="https://docs.amwal.tech/security" class="text-blue-600 hover:underline">Amwal Security Documentation</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
@@ -643,11 +720,10 @@
     </div>
     <div id="debug-handle" class="debug-handle">Debug</div>
 </div>
+
 <!-- JavaScript -->
-<script>
-    /**
-     * Logger - Handles logging and debugging
-     */
+<script type="module">
+    // Logger Module - Handles debugging and logging
     class Logger {
         constructor() {
             this.levels = {
@@ -664,23 +740,28 @@
 
         debug(message, data) {
             this._log(this.levels.DEBUG, message, data);
+            return this;
         }
 
         info(message, data) {
             this._log(this.levels.INFO, message, data);
+            return this;
         }
 
         warn(message, data) {
             this._log(this.levels.WARN, message, data);
+            return this;
         }
 
         error(message, data) {
             this._log(this.levels.ERROR, message, data);
+            return this;
         }
 
         _log(level, message, data) {
             this._logToConsole(level, message, data);
             this._logToDebugConsole(level, message, data);
+            return this;
         }
 
         _logToConsole(level, message, data) {
@@ -730,14 +811,14 @@
             let content = `<span class="text-gray-400">[${timestamp}]</span> <span class="font-bold">[${entry.level}]</span> ${entry.message}`;
 
             if (data) {
-                if (typeof data === 'object') {
-                    try {
+                try {
+                    if (typeof data === 'object') {
                         content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">${JSON.stringify(data, null, 2)}</pre>`;
-                    } catch (e) {
-                        content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">[Object cannot be stringified]</pre>`;
+                    } else {
+                        content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">${data}</pre>`;
                     }
-                } else {
-                    content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">${data}</pre>`;
+                } catch (e) {
+                    content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">[Object cannot be stringified]</pre>`;
                 }
             }
 
@@ -756,10 +837,12 @@
             } else if (typeof level === 'number' && level >= 0 && level <= 3) {
                 this.currentLevel = level;
             }
+            return this;
         }
 
-        enableConsole(enable) {
+        enableConsole(enable = true) {
             this.consoleOutput = Boolean(enable);
+            return this;
         }
 
         getEntries() {
@@ -772,6 +855,7 @@
             if (debugContent) {
                 debugContent.innerHTML = '';
             }
+            return this;
         }
 
         export() {
@@ -788,23 +872,112 @@
             document.body.appendChild(exportLink);
             exportLink.click();
             document.body.removeChild(exportLink);
+            return this;
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize the Logger
-        const logger = new Logger();
-        logger.info('Initializing Amwal Checkout application', { timestamp: new Date().toISOString() });
+    // UI Service - Handles UI related functionality
+    class UIService {
+        constructor(logger) {
+            this.logger = logger;
+            this.elements = {
+                toast: document.getElementById('toast'),
+                loadingOverlay: document.getElementById('loading-overlay')
+            };
+        }
 
-        // Initialize the app
-        const app = {
-            // UI elements
-            elements: {
-                productTab: document.getElementById('product-tab'),
-                serviceTab: document.getElementById('service-tab'),
-                productContent: document.getElementById('product-content'),
-                serviceContent: document.getElementById('service-content'),
-                // Product elements
+        showToast(message, type = 'success', duration = 3000) {
+            const toast = this.elements.toast;
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+
+            // Use setTimeout with 10ms to allow the DOM to update before adding the visible class
+            setTimeout(() => {
+                toast.classList.add('visible');
+            }, 10);
+
+            // Hide toast after duration
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, duration);
+
+            this.logger.debug(`Toast displayed: ${message}`, { type, duration });
+            return this;
+        }
+
+        showLoading(show = true) {
+            if (show) {
+                this.elements.loadingOverlay.style.display = 'flex';
+                this.logger.debug('Loading overlay shown');
+            } else {
+                this.elements.loadingOverlay.style.display = 'none';
+                this.logger.debug('Loading overlay hidden');
+            }
+            return this;
+        }
+    }
+
+    // TabManager - Handles tab switching functionality
+    class TabManager {
+        constructor(logger) {
+            this.logger = logger;
+            this.tabs = {
+                product: {
+                    tab: document.getElementById('product-tab'),
+                    content: document.getElementById('product-content')
+                },
+                service: {
+                    tab: document.getElementById('service-tab'),
+                    content: document.getElementById('service-content')
+                }
+            };
+            this.activeTab = 'product';
+        }
+
+        init() {
+            // Switch to product tab
+            this.tabs.product.tab.addEventListener('click', () => this.switchTab('product'));
+
+            // Switch to service tab
+            this.tabs.service.tab.addEventListener('click', () => this.switchTab('service'));
+
+            this.logger.info('Tab manager initialized');
+            return this;
+        }
+
+        switchTab(tabName) {
+            if (tabName === this.activeTab) return;
+
+            const tabs = Object.keys(this.tabs);
+
+            // Update active tab
+            this.activeTab = tabName;
+
+            // Update UI
+            tabs.forEach(tab => {
+                if (tab === tabName) {
+                    this.tabs[tab].tab.classList.add('tab-active');
+                    this.tabs[tab].tab.classList.remove('tab-inactive');
+                    this.tabs[tab].tab.setAttribute('aria-selected', 'true');
+                    this.tabs[tab].content.classList.remove('hidden');
+                } else {
+                    this.tabs[tab].tab.classList.remove('tab-active');
+                    this.tabs[tab].tab.classList.add('tab-inactive');
+                    this.tabs[tab].tab.setAttribute('aria-selected', 'false');
+                    this.tabs[tab].content.classList.add('hidden');
+                }
+            });
+
+            this.logger.info(`Switched to ${tabName} tab`);
+            return this;
+        }
+    }
+
+    // ProductModule - Handles product-related functionality
+    class ProductModule {
+        constructor(logger) {
+            this.logger = logger;
+            this.elements = {
                 decreaseQty: document.getElementById('decrease-qty'),
                 increaseQty: document.getElementById('increase-qty'),
                 productQty: document.getElementById('product-qty'),
@@ -812,27 +985,574 @@
                 productShipping: document.getElementById('product-shipping'),
                 productTax: document.getElementById('product-tax'),
                 productTotal: document.getElementById('product-total'),
-                // Payment buttons
                 cardPayment: document.getElementById('card-payment'),
                 installmentPayment: document.getElementById('installment-payment'),
                 applePayment: document.getElementById('apple-payment'),
-                // Checkout buttons
                 cardCheckout: document.getElementById('card-checkout'),
                 installmentCheckout: document.getElementById('installment-checkout'),
-                appleCheckout: document.getElementById('apple-checkout'),
-                serviceCardCheckout: document.getElementById('service-card-checkout'),
-                serviceInstallmentCheckout: document.getElementById('service-installment-checkout'),
-                serviceAppleCheckout: document.getElementById('service-apple-checkout'),
+                appleCheckout: document.getElementById('apple-checkout')
+            };
 
-                // Service elements
+            this.state = {
+                basePrice: 399,
+                shipping: 20,
+                taxRate: 0.15,
+                quantity: 1,
+                tax: 21,
+                total: 440,
+                shippingMethods: [
+                    { id: 'standard', name: 'Standard Shipping', price: 20, deliveryDays: '3-5' },
+                    { id: 'express', name: 'Express Shipping', price: 50, deliveryDays: '1-2' },
+                    { id: 'same-day', name: 'Same Day Delivery', price: 100, deliveryDays: 'Today' }
+                ],
+                selectedShippingMethod: 'standard',
+                demoAddress: {
+                    firstName: 'Mohammed',
+                    lastName: 'Al-Saud',
+                    addressLine1: '123 King Fahd Road',
+                    addressLine2: 'Apartment 4B',
+                    city: 'Riyadh',
+                    state: 'Riyadh Province',
+                    postalCode: '12345',
+                    country: 'SA',
+                    phoneNumber: '+966501234567',
+                    email: 'customer@example.com'
+                }
+            };
+        }
+
+        init() {
+            this.initQuantity();
+            this.initPaymentMethods();
+            this.logger.info('Product module initialized');
+            return this;
+        }
+
+        initQuantity() {
+            // Decrease quantity
+            this.elements.decreaseQty.addEventListener('click', () => {
+                if (this.state.quantity > 1) {
+                    this.state.quantity--;
+                    this.updatePrice();
+                    this.logger.debug('Quantity decreased', { newQuantity: this.state.quantity });
+                } else {
+                    this.logger.debug('Cannot decrease quantity below 1');
+                }
+            });
+
+            // Increase quantity
+            this.elements.increaseQty.addEventListener('click', () => {
+                this.state.quantity++;
+                this.updatePrice();
+                this.logger.debug('Quantity increased', { newQuantity: this.state.quantity });
+            });
+
+            return this;
+        }
+
+        updatePrice() {
+            const subtotal = this.state.basePrice * this.state.quantity;
+            const tax = Math.round(subtotal * this.state.taxRate);
+            const total = subtotal + this.state.shipping + tax;
+
+            this.elements.productQty.value = this.state.quantity;
+            this.elements.productPrice.textContent = `SAR ${subtotal.toFixed(2)}`;
+            this.elements.productTax.textContent = `SAR ${tax.toFixed(2)}`;
+            this.elements.productTotal.textContent = `SAR ${total.toFixed(2)}`;
+            this.state.tax = tax;
+            this.state.total = total;
+
+            // Update Amwal button amounts
+            this.elements.cardCheckout.setAttribute('amount', total.toString());
+            this.elements.cardCheckout.setAttribute('tax', tax.toString());
+            this.elements.installmentCheckout.setAttribute('amount', total.toString());
+            this.elements.appleCheckout.setAttribute('amount', total.toString());
+
+            this.logger.info('Product price updated', { subtotal, tax, total, quantity: this.state.quantity });
+            return this;
+        }
+
+        initPaymentMethods() {
+            const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
+            const paymentOptions = document.querySelectorAll('#product-content .payment-option');
+
+            paymentMethods.forEach(method => {
+                method.addEventListener('change', (event) => {
+                    const value = event.target.value;
+
+                    // Update styling
+                    paymentOptions.forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    document.getElementById(`${value}-payment-option`).classList.add('selected');
+
+                    // Show correct payment button
+                    this.elements.cardPayment.classList.add('hidden');
+                    this.elements.installmentPayment.classList.add('hidden');
+                    this.elements.applePayment.classList.add('hidden');
+                    document.getElementById(`${value}-payment`).classList.remove('hidden');
+
+                    this.logger.info('Product payment method changed', { method: value });
+                });
+            });
+
+            return this;
+        }
+    }
+
+    // ServiceModule - Handles service-related functionality
+    class ServiceModule {
+        constructor(logger) {
+            this.logger = logger;
+            this.elements = {
                 serviceTotal: document.getElementById('service-total'),
                 serviceCardPayment: document.getElementById('service-card-payment'),
                 serviceInstallmentPayment: document.getElementById('service-installment-payment'),
                 serviceApplePayment: document.getElementById('service-apple-payment'),
-                // Toast and loading
-                toast: document.getElementById('toast'),
-                loadingOverlay: document.getElementById('loading-overlay'),
-                // Debug console
+                serviceCardCheckout: document.getElementById('service-card-checkout'),
+                serviceInstallmentCheckout: document.getElementById('service-installment-checkout'),
+                serviceAppleCheckout: document.getElementById('service-apple-checkout')
+            };
+
+            this.state = {
+                packages: {
+                    basic: { price: 2499, name: 'Basic Package' },
+                    standard: { price: 3999, name: 'Standard Package' },
+                    premium: { price: 5999, name: 'Premium Package' }
+                },
+                selectedPackage: 'basic',
+                total: 2499
+            };
+        }
+
+        init() {
+            this.initPackages();
+            this.initPaymentMethods();
+            this.logger.info('Service module initialized');
+            return this;
+        }
+
+        initPackages() {
+            const servicePackages = document.querySelectorAll('input[name="service-package"]');
+            const packageOptions = document.querySelectorAll('#service-content label[id$="-package-option"]');
+
+            servicePackages.forEach(pkg => {
+                pkg.addEventListener('change', (event) => {
+                    const value = event.target.value;
+
+                    // Update styling
+                    packageOptions.forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    document.getElementById(`${value}-package-option`).classList.add('selected');
+
+                    // Update price
+                    this.updatePackage(value);
+
+                    this.logger.info('Service package changed', { package: value });
+                });
+            });
+
+            return this;
+        }
+
+        updatePackage(packageName) {
+            if (this.state.packages[packageName]) {
+                this.state.selectedPackage = packageName;
+                this.state.total = this.state.packages[packageName].price;
+
+                // Update UI
+                this.elements.serviceTotal.textContent = `SAR ${this.state.total.toFixed(2)}`;
+
+                // Update Amwal button amounts
+                this.elements.serviceCardCheckout.setAttribute('amount', this.state.total.toString());
+                this.elements.serviceInstallmentCheckout.setAttribute('amount', this.state.total.toString());
+                this.elements.serviceAppleCheckout.setAttribute('amount', this.state.total.toString());
+
+                this.logger.info('Service package updated', {
+                    package: packageName,
+                    price: this.state.packages[packageName].price
+                });
+            }
+            return this;
+        }
+
+        initPaymentMethods() {
+            const paymentMethods = document.querySelectorAll('input[name="service-payment-method"]');
+            const paymentOptions = document.querySelectorAll('#service-content .payment-option');
+
+            paymentMethods.forEach(method => {
+                method.addEventListener('change', (event) => {
+                    const value = event.target.value;
+
+                    // Update styling
+                    paymentOptions.forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    document.getElementById(`service-${value}-option`).classList.add('selected');
+
+                    // Show correct payment button
+                    this.elements.serviceCardPayment.classList.add('hidden');
+                    this.elements.serviceInstallmentPayment.classList.add('hidden');
+                    this.elements.serviceApplePayment.classList.add('hidden');
+                    document.getElementById(`service-${value}-payment`).classList.remove('hidden');
+
+                    this.logger.info('Service payment method changed', { method: value });
+                });
+            });
+
+            return this;
+        }
+    }
+
+    // CheckoutModule - Handles Amwal checkout functionality
+    class CheckoutModule {
+        constructor(logger, uiService, productModule, serviceModule) {
+            this.logger = logger;
+            this.uiService = uiService;
+            this.productModule = productModule;
+            this.serviceModule = serviceModule;
+        }
+
+        init() {
+            this.initProductCheckoutEvents();
+            this.initServiceCheckoutEvents();
+            this.applyDemoDataToCheckout();
+            this.logger.info('Checkout module initialized');
+            return this;
+        }
+
+        initProductCheckoutEvents() {
+            // Add event listeners to product checkout buttons
+            const buttons = [
+                { el: this.productModule.elements.cardCheckout, type: 'card' },
+                { el: this.productModule.elements.installmentCheckout, type: 'installment' },
+                { el: this.productModule.elements.appleCheckout, type: 'apple' }
+            ];
+
+            buttons.forEach(button => {
+                if (button.el) {
+                    this._addCheckoutEventListeners(button.el, button.type, true);
+                }
+            });
+
+            return this;
+        }
+
+        initServiceCheckoutEvents() {
+            // Add event listeners to service checkout buttons
+            const buttons = [
+                { el: this.serviceModule.elements.serviceCardCheckout, type: 'card' },
+                { el: this.serviceModule.elements.serviceInstallmentCheckout, type: 'installment' },
+                { el: this.serviceModule.elements.serviceAppleCheckout, type: 'apple' }
+            ];
+
+            buttons.forEach(button => {
+                if (button.el) {
+                    this._addCheckoutEventListeners(button.el, button.type, false);
+                }
+            });
+
+            return this;
+        }
+
+        _addCheckoutEventListeners(button, buttonType, isProduct = true) {
+            const productOrService = isProduct ? 'Product' : 'Service';
+
+            button.addEventListener('amwalPreCheckoutTrigger', (event) => {
+                this.logger.info(`${productOrService} pre-checkout triggered`, event.detail);
+
+                // Only add demo data for product checkout
+                if (isProduct) {
+                    // Get transaction details from the event
+                    const transactionDetails = event.detail || {};
+
+                    // Get your demo data
+                    const demoAddress = this.productModule.state.demoAddress;
+                    const shippingMethod = this.productModule.state.shippingMethods.find(
+                        method => method.id === this.productModule.state.selectedShippingMethod
+                    );
+
+                    // Create modified transaction details with demo data
+                    const modifiedDetails = {
+                        ...transactionDetails,
+                        customerDetails: {
+                            firstName: demoAddress.firstName,
+                            lastName: demoAddress.lastName,
+                            email: demoAddress.email,
+                            phoneNumber: demoAddress.phoneNumber
+                        },
+                        shippingAddress: {
+                            addressLine1: demoAddress.addressLine1,
+                            addressLine2: demoAddress.addressLine2,
+                            city: demoAddress.city,
+                            state: demoAddress.state,
+                            postalCode: demoAddress.postalCode,
+                            country: demoAddress.country
+                        },
+                        shippingMethod: {
+                            id: shippingMethod.id,
+                            name: shippingMethod.name,
+                            price: shippingMethod.price,
+                            description: `${shippingMethod.name} (${shippingMethod.deliveryDays})`
+                        }
+                    };
+
+                    this.logger.debug('Sending demo data to Amwal', modifiedDetails);
+
+                    // Send modified transaction details back to Amwal
+                    button.dispatchEvent(new CustomEvent('amwalPreCheckoutTriggerAck', {
+                        detail: modifiedDetails
+                    }));
+                } else {
+                    // For services, just acknowledge without modification
+                    button.dispatchEvent(new CustomEvent('amwalPreCheckoutTriggerAck'));
+                }
+            });
+
+            // Original checkout events
+            button.addEventListener('amwalCheckoutStart', (event) => {
+                this.logger.info(`${productOrService} ${buttonType} checkout started`, event.detail);
+                this.uiService.showLoading(true);
+            });
+
+            button.addEventListener('amwalCheckoutSuccess', (event) => {
+                this.logger.info(`${productOrService} ${buttonType} checkout success`, event.detail);
+                this.uiService.showLoading(false);
+                this.uiService.showToast(`Checkout successful! Order ID: ${event.detail.orderId}`, 'success');
+                this.logger.debug('Order details', { orderId: event.detail.orderId });
+            });
+
+            button.addEventListener('amwalCheckoutFail', (event) => {
+                this.logger.error(`${productOrService} ${buttonType} checkout failed`, event.detail);
+                this.uiService.showLoading(false);
+                this.uiService.showToast('Checkout failed. Please try again.', 'error');
+            });
+
+            // Address events
+            button.addEventListener('amwalAddressCountryUpdate', (event) => {
+                this.logger.info(`${productOrService} address country updated`, event.detail);
+                const country = event.detail;
+                this.logger.debug('Country details', country);
+            });
+
+            button.addEventListener('amwalAddressStateUpdate', (event) => {
+                this.logger.info(`${productOrService} address state updated`, event.detail);
+                const state = event.detail;
+                this.logger.debug('State details', state);
+            });
+
+            button.addEventListener('amwalAddressUpdate', (event) => {
+                this.logger.info(`${productOrService} address updated`, event.detail);
+
+                // Only handle shipping methods for products
+                if (isProduct) {
+                    const address = event.detail;
+                    this.logger.debug('Address update received', address);
+
+                    // Get available shipping methods based on the country and city
+                    const country = address.country;
+                    const city = address.city;
+
+                    // You could customize shipping methods based on location
+                    let availableShippingMethods = this.productModule.state.shippingMethods;
+
+                    // Example: If shipping to Riyadh, offer same-day delivery
+                    if (country === 'SA' && city === 'Riyadh') {
+                        // All shipping methods available
+                    }
+                    // If shipping to other SA cities, no same-day but express is available
+                    else if (country === 'SA') {
+                        availableShippingMethods = availableShippingMethods.filter(
+                            method => method.id !== 'same-day'
+                        );
+                    }
+                    // International shipping - only standard shipping
+                    else {
+                        availableShippingMethods = availableShippingMethods.filter(
+                            method => method.id === 'standard'
+                        );
+                    }
+
+                    const shippingOptions = availableShippingMethods.map(method => ({
+                        id: method.id,
+                        label: method.name,
+                        price: method.price,
+                    }));
+
+                    this.logger.debug('Sending shipping options to Amwal', shippingOptions);
+
+                    // Create and dispatch the acknowledgment event with shipping options
+                    button.dispatchEvent(new CustomEvent('amwalAddressAck', {
+                        detail: shippingOptions
+                    }));
+                }
+            });
+
+            button.addEventListener('amwalDismissed', (event) => {
+                this.logger.info(`${productOrService} checkout dismissed`, event.detail);
+                this.uiService.showLoading(false);
+                // Handle modal dismissal
+                const isSuccessful = event.detail;
+                if (!isSuccessful) {
+                    this.uiService.showToast('Checkout was cancelled.', 'error');
+                }
+            });
+
+            button.addEventListener('updateOrderOnPaymentsuccess', (event) => {
+                this.logger.info(`${productOrService} order updated after payment`, event.detail);
+                // Update order status in your system
+                const orderDetails = event.detail;
+                this.logger.debug('Updated order details', orderDetails);
+            });
+        }
+
+        applyDemoDataToCheckout() {
+            // Product checkout buttons
+            const productCheckoutButtons = [
+                this.productModule.elements.cardCheckout,
+                this.productModule.elements.installmentCheckout,
+                this.productModule.elements.appleCheckout
+            ];
+
+            const serviceCheckoutButtons = [
+                this.serviceModule.elements.serviceCardCheckout,
+                this.serviceModule.elements.serviceInstallmentCheckout,
+                this.serviceModule.elements.serviceAppleCheckout
+            ];
+
+            // Define shipping methods
+            const shippingMethodsData = [
+                {
+                    id: 'standard',
+                    label: 'Standard Shipping',
+                    price: 20,
+                },
+                {
+                    id: 'express',
+                    label: 'Express Shipping',
+                    price: 50,
+                },
+                {
+                    id: 'same-day',
+                    label: 'Same Day Delivery',
+                    price: 100,
+                }
+            ];
+
+            // Define all our allowed addresses data
+            const addressData = {
+                // Initial customer data
+                initialFirstName: "Mohammed",
+                initialLastName: "Al-Saud",
+                initialPhoneNumber: "+966501234567",
+                initialEmail: "customer@example.com",
+
+                // Initial address as JSON string
+                initialAddress: JSON.stringify({
+                    street1: "123 King Fahd Road",
+                    street2: "Apartment 4B",
+                    city: "Riyadh",
+                    state: "Riyadh",
+                    country: "SA",
+                    postcode: "12345"
+                }),
+
+                // Allowed countries
+                allowedAddressCountries: JSON.stringify(["SA", "AE", "KW", "US"]),
+
+                // Allowed states by country
+                allowedAddressStates: JSON.stringify({
+                    "SA": {
+                        "1115": "Riyadh",
+                        "1119": "Dammam",
+                        "1121": "Jeddah",
+                        "1122": "Mecca"
+                    },
+                    "AE": {
+                        "1108": "Abu Dhabi",
+                        "1111": "Dubai",
+                        "1114": "Sharjah"
+                    }
+                }),
+
+                // Allowed cities by country and state
+                allowedAddressCities: JSON.stringify({
+                    "SA": {
+                        "1115": ["Riyadh"],
+                        "1119": ["Dammam"]
+                    }
+                }),
+
+                // Countries where postcode is optional
+                postcodeOptionalCountries: JSON.stringify(["SA"]),
+
+                // Feature flags
+                addressHandshake: "",
+                sendExtraAddressFields: "",
+                enablePrePayTrigger: "",
+                enablePreCheckoutTrigger: ""
+            };
+
+            // Apply all attributes to each button
+            this._applyAttributesToButtons(productCheckoutButtons, addressData, shippingMethodsData, true);
+            this._applyAttributesToButtons(serviceCheckoutButtons, addressData, null, false);
+
+            this.logger.info('Demo customer and address data applied to checkout buttons', {
+                customerData: {
+                    firstName: addressData.initialFirstName,
+                    lastName: addressData.initialLastName,
+                    phoneNumber: addressData.initialPhoneNumber,
+                    email: addressData.initialEmail
+                },
+                addressData: JSON.parse(addressData.initialAddress),
+                allowedCountries: JSON.parse(addressData.allowedAddressCountries)
+            });
+
+            return this;
+        }
+
+        _applyAttributesToButtons(buttons, addressData, shippingMethodsData, isProduct) {
+            buttons.forEach(button => {
+                if (!button) return;
+
+                // Set customer information
+                button.setAttribute('initial-first-name', addressData.initialFirstName);
+                button.setAttribute('initial-last-name', addressData.initialLastName);
+                button.setAttribute('initial-phone-number', addressData.initialPhoneNumber);
+                button.setAttribute('initial-email', addressData.initialEmail);
+
+                // Set address information
+                button.setAttribute('initial-address', addressData.initialAddress);
+
+                // Set address restrictions
+                button.setAttribute('allowed-address-countries', addressData.allowedAddressCountries);
+                button.setAttribute('allowed-address-states', addressData.allowedAddressStates);
+                button.setAttribute('allowed-address-cities', addressData.allowedAddressCities);
+                button.setAttribute('postcode-optional-countries', addressData.postcodeOptionalCountries);
+
+                // Set feature flags
+                button.setAttribute('address-handshake', addressData.addressHandshake);
+                button.setAttribute('send-extra-address-fields', addressData.sendExtraAddressFields);
+                button.setAttribute('enable-pre-pay-trigger', addressData.enablePrePayTrigger);
+                button.setAttribute('enable-pre-checkout-trigger', addressData.enablePreCheckoutTrigger);
+
+                // Dynamic shipping details is not needed if we're providing allowed addresses
+                button.setAttribute('enable-dynamic-shipping-details', 'false');
+
+                // Only add shipping methods to product buttons
+                if (isProduct && shippingMethodsData) {
+                    button.setAttribute('shipping-methods', JSON.stringify(shippingMethodsData));
+                }
+            });
+        }
+    }
+
+    // DebugModule - Handles debug console functionality
+    class DebugModule {
+        constructor(logger) {
+            this.logger = logger;
+            this.elements = {
                 debugConsole: document.getElementById('debug-console'),
                 debugHandle: document.getElementById('debug-handle'),
                 debugContent: document.getElementById('debug-content'),
@@ -840,633 +1560,77 @@
                 debugExport: document.getElementById('debug-export'),
                 debugLevel: document.getElementById('debug-level'),
                 debugAutoScroll: document.getElementById('debug-auto-scroll')
-            },
-            // State
-            state: {
-                product: {
-                    basePrice: 399,
-                    shipping: 20,
-                    taxRate: 0.15,
-                    quantity: 1,
-                    tax: 21,
-                    total: 440,
-                    shippingMethods: [
-                        { id: 'standard', name: 'Standard Shipping', price: 20, deliveryDays: '3-5' },
-                        { id: 'express', name: 'Express Shipping', price: 50, deliveryDays: '1-2' },
-                        { id: 'same-day', name: 'Same Day Delivery', price: 100, deliveryDays: 'Today' }
-                    ],
-                    selectedShippingMethod: 'standard',
-                    demoAddress: {
-                        firstName: 'Mohammed',
-                        lastName: 'Al-Saud',
-                        addressLine1: '123 King Fahd Road',
-                        addressLine2: 'Apartment 4B',
-                        city: 'Riyadh',
-                        state: 'Riyadh Province',
-                        postalCode: '12345',
-                        country: 'SA',
-                        phoneNumber: '+966501234567',
-                        email: 'customer@example.com'
-                    }
-                },
-                service: {
-                    packages: {
-                        basic: { price: 2499, name: 'Basic Package' },
-                        standard: { price: 3999, name: 'Standard Package' },
-                        premium: { price: 5999, name: 'Premium Package' }
-                    },
-                    selectedPackage: 'basic',
-                    total: 2499
-                },
-            },
-
-            // Initialize the app
-            init: function() {
-                this.initTabs();
-                this.initProductQuantity();
-                this.initPaymentMethods();
-                this.initServicePackages();
-                this.initCheckoutEvents();
-                this.applyDemoDataToCheckout();
-                this.setupDebugConsole();
-                logger.info('Amwal Checkout initialized', { timestamp: new Date().toISOString() });
-            },
-
-            // Initialize tab navigation
-            initTabs: function() {
-                // Switch to product tab
-                this.elements.productTab.addEventListener('click', () => {
-                    this.elements.productTab.classList.add('tab-active');
-                    this.elements.productTab.classList.remove('tab-inactive');
-                    this.elements.serviceTab.classList.remove('tab-active');
-                    this.elements.serviceTab.classList.add('tab-inactive');
-                    this.elements.productContent.classList.remove('hidden');
-                    this.elements.serviceContent.classList.add('hidden');
-                    logger.info('Switched to Product tab');
-                });
-
-                // Switch to service tab
-                this.elements.serviceTab.addEventListener('click', () => {
-                    this.elements.serviceTab.classList.add('tab-active');
-                    this.elements.serviceTab.classList.remove('tab-inactive');
-                    this.elements.productTab.classList.remove('tab-active');
-                    this.elements.productTab.classList.add('tab-inactive');
-                    this.elements.serviceContent.classList.remove('hidden');
-                    this.elements.productContent.classList.add('hidden');
-                    logger.info('Switched to Service tab');
-                });
-            },
-
-            // Initialize product quantity controls
-            initProductQuantity: function() {
-                // Decrease quantity
-                this.elements.decreaseQty.addEventListener('click', () => {
-                    if (this.state.product.quantity > 1) {
-                        this.state.product.quantity--;
-                        this.updateProductPrice();
-                        logger.debug('Quantity decreased', { newQuantity: this.state.product.quantity });
-                    } else {
-                        logger.debug('Cannot decrease quantity below 1');
-                    }
-                });
-
-                // Increase quantity
-                this.elements.increaseQty.addEventListener('click', () => {
-                    this.state.product.quantity++;
-                    this.updateProductPrice();
-                    logger.debug('Quantity increased', { newQuantity: this.state.product.quantity });
-                });
-            },
-
-            // Update product price based on quantity
-            updateProductPrice: function() {
-                const subtotal = this.state.product.basePrice * this.state.product.quantity;
-                const tax = Math.round(subtotal * this.state.product.taxRate);
-                const total = subtotal + this.state.product.shipping + tax;
-
-                this.elements.productQty.value = this.state.product.quantity;
-                this.elements.productPrice.textContent = `SAR ${subtotal.toFixed(2)}`;
-                this.elements.productTax.textContent = `SAR ${tax.toFixed(2)}`;
-                this.elements.productTotal.textContent = `SAR ${total.toFixed(2)}`;
-                this.state.product.tax = tax;
-                this.state.product.total = total;
-
-                // Update Amwal button amounts
-                this.elements.cardCheckout.setAttribute('amount', total.toString());
-                this.elements.cardCheckout.setAttribute('tax', tax.toString());
-                this.elements.installmentCheckout.setAttribute('amount', total.toString());
-                this.elements.appleCheckout.setAttribute('amount', total.toString());
-
-                logger.info('Product price updated', { subtotal, tax, total, quantity: this.state.product.quantity });
-            },
-
-            // Initialize payment method selection
-            initPaymentMethods: function() {
-                // Product payment methods
-                const productPaymentMethods = document.querySelectorAll('input[name="payment-method"]');
-                const productPaymentOptions = document.querySelectorAll('#product-content .payment-option');
-
-                productPaymentMethods.forEach(method => {
-                    method.addEventListener('change', (event) => {
-                        const value = event.target.value;
-
-                        // Update styling
-                        productPaymentOptions.forEach(option => {
-                            option.classList.remove('selected');
-                        });
-                        document.getElementById(`${value}-payment-option`).classList.add('selected');
-
-                        // Show correct payment button
-                        this.elements.cardPayment.classList.add('hidden');
-                        this.elements.installmentPayment.classList.add('hidden');
-                        this.elements.applePayment.classList.add('hidden');
-                        document.getElementById(`${value}-payment`).classList.remove('hidden');
-
-                        logger.info('Product payment method changed', { method: value });
-                    });
-                });
-
-                // Service payment methods
-                const servicePaymentMethods = document.querySelectorAll('input[name="service-payment-method"]');
-                const servicePaymentOptions = document.querySelectorAll('#service-content .payment-option');
-
-                servicePaymentMethods.forEach(method => {
-                    method.addEventListener('change', (event) => {
-                        const value = event.target.value;
-
-                        // Update styling
-                        servicePaymentOptions.forEach(option => {
-                            option.classList.remove('selected');
-                        });
-                        document.getElementById(`service-${value}-option`).classList.add('selected');
-
-                        // Show correct payment button
-                        this.elements.serviceCardPayment.classList.add('hidden');
-                        this.elements.serviceInstallmentPayment.classList.add('hidden');
-                        this.elements.serviceApplePayment.classList.add('hidden');
-                        document.getElementById(`service-${value}-payment`).classList.remove('hidden');
-
-                        logger.info('Service payment method changed', { method: value });
-                    });
-                });
-            },
-
-            // Initialize service package selection
-            initServicePackages: function() {
-                const servicePackages = document.querySelectorAll('input[name="service-package"]');
-                const packageOptions = document.querySelectorAll('#service-content label[id$="-package-option"]');
-
-                servicePackages.forEach(pkg => {
-                    pkg.addEventListener('change', (event) => {
-                        const value = event.target.value;
-
-                        // Update styling
-                        packageOptions.forEach(option => {
-                            option.classList.remove('selected');
-                        });
-                        document.getElementById(`${value}-package-option`).classList.add('selected');
-
-                        // Update price
-                        this.updateServicePackage(value);
-
-                        logger.info('Service package changed', { package: value });
-                    });
-                });
-            },
-
-            // Update service package selection
-            updateServicePackage: function(packageName) {
-                if (this.state.service.packages[packageName]) {
-                    this.state.service.selectedPackage = packageName;
-                    this.state.service.total = this.state.service.packages[packageName].price;
-
-                    // Update UI
-                    this.elements.serviceTotal.textContent = `SAR ${this.state.service.total.toFixed(2)}`;
-
-                    // Update Amwal button amounts
-                    document.getElementById('service-card-checkout').setAttribute('amount', this.state.service.total.toString());
-                    document.getElementById('service-installment-checkout').setAttribute('amount', this.state.service.total.toString());
-                    document.getElementById('service-apple-checkout').setAttribute('amount', this.state.service.total.toString());
-
-                    logger.info('Service package updated', {
-                        package: packageName,
-                        price: this.state.service.packages[packageName].price
-                    });
-                }
-            },
-
-            // Initialize Amwal checkout events
-            initCheckoutEvents: function() {
-                // Common function to add all event listeners to a button
-                const addEventListenersToButton = (button, buttonType, isProduct = true) => {
-                    const productOrService = isProduct ? 'Product' : 'Service';
-
-                    button.addEventListener('amwalPreCheckoutTrigger', (event) => {
-                        logger.info(`${productOrService} pre-checkout triggered`, event.detail);
-
-                        // Only add demo data for product checkout
-                        if (isProduct) {
-                            // Get transaction details from the event
-                            const transactionDetails = event.detail || {};
-
-                            // Get your demo data
-                            const demoAddress = this.state.product.demoAddress;
-                            const shippingMethod = this.state.product.shippingMethods.find(
-                                method => method.id === this.state.product.selectedShippingMethod
-                            );
-
-                            // Create modified transaction details with demo data
-                            const modifiedDetails = {
-                                ...transactionDetails,
-                                customerDetails: {
-                                    firstName: demoAddress.firstName,
-                                    lastName: demoAddress.lastName,
-                                    email: demoAddress.email,
-                                    phoneNumber: demoAddress.phoneNumber
-                                },
-                                shippingAddress: {
-                                    addressLine1: demoAddress.addressLine1,
-                                    addressLine2: demoAddress.addressLine2,
-                                    city: demoAddress.city,
-                                    state: demoAddress.state,
-                                    postalCode: demoAddress.postalCode,
-                                    country: demoAddress.country
-                                },
-                                shippingMethod: {
-                                    id: shippingMethod.id,
-                                    name: shippingMethod.name,
-                                    price: shippingMethod.price,
-                                    description: `${shippingMethod.name} (${shippingMethod.deliveryDays})`
-                                }
-                            };
-
-                            logger.debug('Sending demo data to Amwal', modifiedDetails);
-
-                            // Send modified transaction details back to Amwal
-                            // Use a CustomEvent with the modified details
-                            const ackEvent = new CustomEvent('amwalPreCheckoutTriggerAck', {
-                                detail: modifiedDetails
-                            });
-
-                            // Dispatch acknowledgment with demo data
-                            button.dispatchEvent(ackEvent);
-                        } else {
-                            // For services, just acknowledge without modification
-                            button.dispatchEvent(new CustomEvent('amwalPreCheckoutTriggerAck'));
-                        }
-                    });
-
-                    // Original checkout events
-                    button.addEventListener('amwalCheckoutStart', (event) => {
-                        logger.info(`${productOrService} ${buttonType} checkout started`, event.detail);
-                        this.showLoading(true);
-                    });
-
-                    button.addEventListener('amwalCheckoutSuccess', (event) => {
-                        logger.info(`${productOrService} ${buttonType} checkout success`, event.detail);
-                        this.showLoading(false);
-                        this.showToast(`Checkout successful! Order ID: ${event.detail.orderId}`, 'success');
-
-                        // You can perform additional operations with the order ID here
-                        // For example, store the order in your database or redirect to a thank you page
-                        logger.debug('Order details', { orderId: event.detail.orderId });
-                    });
-
-                    button.addEventListener('amwalCheckoutFail', (event) => {
-                        logger.error(`${productOrService} ${buttonType} checkout failed`, event.detail);
-                        this.showLoading(false);
-                        this.showToast('Checkout failed. Please try again.', 'error');
-                    });
-
-                    // Additional events from documentation
-                    button.addEventListener('amwalAddressCountryUpdate', (event) => {
-                        logger.info(`${productOrService} address country updated`, event.detail);
-                        // You can update shipping/tax based on country here
-                        const country = event.detail;
-                        logger.debug('Country details', country);
-                    });
-
-                    button.addEventListener('amwalAddressStateUpdate', (event) => {
-                        logger.info(`${productOrService} address state updated`, event.detail);
-                        // You can update shipping/tax based on state here
-                        const state = event.detail;
-                        logger.debug('State details', state);
-                    });
-
-                    // Address update event - for handling shipping methods
-                    button.addEventListener('amwalAddressUpdate', (event) => {
-                        logger.info(`${productOrService} address updated`, event.detail);
-
-                        // Only handle shipping methods for products
-                        if (isProduct) {
-                            const address = event.detail;
-                            logger.debug('Address update received', address);
-
-                            // Get available shipping methods based on the country and city
-                            const country = address.country;
-                            const city = address.city;
-
-                            // You could customize shipping methods based on location
-                            let availableShippingMethods = this.state.product.shippingMethods;
-
-                            // Example: If shipping to Riyadh, offer same-day delivery
-                            if (country === 'SA' && city === 'Riyadh') {
-                                // All shipping methods available
-                            }
-                            // If shipping to other SA cities, no same-day but express is available
-                            else if (country === 'SA') {
-                                availableShippingMethods = availableShippingMethods.filter(
-                                    method => method.id !== 'same-day'
-                                );
-                            }
-                            // International shipping - only standard shipping
-                            else {
-                                availableShippingMethods = availableShippingMethods.filter(
-                                    method => method.id === 'standard'
-                                );
-                            }
-
-                            const shippingOptions = availableShippingMethods.map(method => ({
-                                id: method.id,
-                                label: method.name,
-                                price: method.price,
-                            }));
-
-                            logger.debug('Sending shipping options to Amwal', shippingOptions);
-
-                            // Create and dispatch the acknowledgment event with shipping options
-                            const ackEvent = new CustomEvent('amwalAddressAck', {
-                                detail: shippingOptions
-                            });
-
-                            button.dispatchEvent(ackEvent);
-                        }
-                    });
-
-                    button.addEventListener('amwalDismissed', (event) => {
-                        logger.info(`${productOrService} checkout dismissed`, event.detail);
-                        this.showLoading(false);
-                        // Handle modal dismissal
-                        const isSuccessful = event.detail;
-                        if (!isSuccessful) {
-                            this.showToast('Checkout was cancelled.', 'error');
-                        }
-                    });
-
-                    button.addEventListener('updateOrderOnPaymentsuccess', (event) => {
-                        logger.info(`${productOrService} order updated after payment`, event.detail);
-                        // Update order status in your system
-                        const orderDetails = event.detail;
-                        logger.debug('Updated order details', orderDetails);
-                    });
-                };
-
-                // Product checkout buttons
-                const productButtons = [
-                    { el: this.elements.cardCheckout, type: 'card' },
-                    { el: this.elements.installmentCheckout, type: 'installment' },
-                    { el: this.elements.appleCheckout, type: 'apple' }
-                ];
-
-                productButtons.forEach(button => {
-                    if (button.el) {
-                        addEventListenersToButton(button.el, button.type, true);
-                    }
-                });
-
-                // Service checkout buttons
-                const serviceButtons = [
-                    { el: document.getElementById('service-card-checkout'), type: 'card' },
-                    { el: document.getElementById('service-installment-checkout'), type: 'installment' },
-                    { el: document.getElementById('service-apple-checkout'), type: 'apple' }
-                ];
-
-                serviceButtons.forEach(button => {
-                    if (button.el) {
-                        addEventListenersToButton(button.el, button.type, false);
-                    }
-                });
-            },
-            applyDemoDataToCheckout: function() {
-                // Product checkout buttons
-                const productCheckoutButtons = [
-                    this.elements.cardCheckout,
-                    this.elements.installmentCheckout,
-                    this.elements.appleCheckout
-                ];
-                const serviceCheckoutButtons = [
-                    this.elements.serviceCardCheckout,
-                    this.elements.serviceInstallmentCheckout,
-                    this.elements.serviceAppleCheckout
-                ];
-
-                // Define shipping methods
-                const shippingMethodsData = [
-                    {
-                        id: 'standard',
-                        label: 'Standard Shipping',
-                        price: 20,
-                    },
-                    {
-                        id: 'express',
-                        label: 'Express Shipping',
-                        price: 50,
-                    },
-                    {
-                        id: 'same-day',
-                        label: 'Same Day Delivery',
-                        price: 100,
-                    }
-                ];
-
-                // Define all our allowed addresses data
-                const addressData = {
-                    // Initial customer data
-                    initialFirstName: "Mohammed",
-                    initialLastName: "Al-Saud",
-                    initialPhoneNumber: "+966501234567",
-                    initialEmail: "customer@example.com",
-
-                    // Initial address as JSON string
-                    initialAddress: JSON.stringify({
-                        street1: "123 King Fahd Road",
-                        street2: "Apartment 4B",
-                        city: "Riyadh",
-                        state: "Riyadh",
-                        country: "SA",
-                        postcode: "12345"
-                    }),
-
-                    // Allowed countries
-                    allowedAddressCountries: JSON.stringify(["SA", "AE", "KW", "US"]),
-
-                    // Allowed states by country
-                    allowedAddressStates: JSON.stringify({
-                        "SA": {
-                            "1115": "Riyadh",
-                            "1119": "Dammam",
-                            "1121": "Jeddah",
-                            "1122": "Mecca"
-                        },
-                        "AE": {
-                            "1108": "Abu Dhabi",
-                            "1111": "Dubai",
-                            "1114": "Sharjah"
-                        }
-                    }),
-
-                    // Allowed cities by country and state
-                    allowedAddressCities: JSON.stringify({
-                        "SA": {
-                            "1115": ["Riyadh"],
-                            "1119": ["Dammam"]
-                        }
-                    }),
-
-                    // Countries where postcode is optional
-                    postcodeOptionalCountries: JSON.stringify(["SA"]),
-
-                    // Shipping methods - will be handled with events
-
-                    // Feature flags
-                    addressHandshake: "",
-                    sendExtraAddressFields: "",
-                    enablePrePayTrigger: "",
-                    enablePreCheckoutTrigger: ""
-                };
-
-                // Apply all attributes to each button
-                productCheckoutButtons.forEach(button => {
-                    if (!button) return;
-
-                    // Set customer information
-                    button.setAttribute('initial-first-name', addressData.initialFirstName);
-                    button.setAttribute('initial-last-name', addressData.initialLastName);
-                    button.setAttribute('initial-phone-number', addressData.initialPhoneNumber);
-                    button.setAttribute('initial-email', addressData.initialEmail);
-
-                    // Set address information
-                    button.setAttribute('initial-address', addressData.initialAddress);
-
-                    // Set address restrictions
-                    button.setAttribute('allowed-address-countries', addressData.allowedAddressCountries);
-                    button.setAttribute('allowed-address-states', addressData.allowedAddressStates);
-                    button.setAttribute('allowed-address-cities', addressData.allowedAddressCities);
-                    button.setAttribute('postcode-optional-countries', addressData.postcodeOptionalCountries);
-
-                    // Set feature flags
-                    button.setAttribute('address-handshake', addressData.addressHandshake);
-                    button.setAttribute('send-extra-address-fields', addressData.sendExtraAddressFields);
-                    button.setAttribute('enable-pre-pay-trigger', addressData.enablePrePayTrigger);
-                    button.setAttribute('enable-pre-checkout-trigger', addressData.enablePreCheckoutTrigger);
-
-                    // Dynamic shipping details is not needed if we're providing allowed addresses
-                    button.setAttribute('enable-dynamic-shipping-details', 'false');
-                    button.setAttribute('shipping-methods', JSON.stringify(shippingMethodsData));
-                });
-
-                serviceCheckoutButtons.forEach(button => {
-                    if (!button) return;
-
-                    // Set customer information
-                    button.setAttribute('initial-first-name', addressData.initialFirstName);
-                    button.setAttribute('initial-last-name', addressData.initialLastName);
-                    button.setAttribute('initial-phone-number', addressData.initialPhoneNumber);
-                    button.setAttribute('initial-email', addressData.initialEmail);
-
-                    // Set address information
-                    button.setAttribute('initial-address', addressData.initialAddress);
-
-                    // Set address restrictions
-                    button.setAttribute('allowed-address-countries', addressData.allowedAddressCountries);
-                    button.setAttribute('allowed-address-states', addressData.allowedAddressStates);
-                    button.setAttribute('allowed-address-cities', addressData.allowedAddressCities);
-                    button.setAttribute('postcode-optional-countries', addressData.postcodeOptionalCountries);
-
-                    // Set feature flags
-                    button.setAttribute('address-handshake', addressData.addressHandshake);
-                    button.setAttribute('send-extra-address-fields', addressData.sendExtraAddressFields);
-                    button.setAttribute('enable-pre-pay-trigger', addressData.enablePrePayTrigger);
-                    button.setAttribute('enable-pre-checkout-trigger', addressData.enablePreCheckoutTrigger);
-
-                    // Dynamic shipping details is not needed if we're providing allowed addresses
-                    button.setAttribute('enable-dynamic-shipping-details', 'false');
-                });
-
-                logger.info('Demo customer and address data applied to checkout buttons', {
-                    customerData: {
-                        firstName: addressData.initialFirstName,
-                        lastName: addressData.initialLastName,
-                        phoneNumber: addressData.initialPhoneNumber,
-                        email: addressData.initialEmail
-                    },
-                    addressData: JSON.parse(addressData.initialAddress),
-                    allowedCountries: JSON.parse(addressData.allowedAddressCountries),
-                    allowedStates: JSON.parse(addressData.allowedAddressStates)
-                });
-            },
-
-            // Show toast notification
-            showToast: function(message, type = 'success', duration = 3000) {
-                const toast = this.elements.toast;
-                toast.textContent = message;
-                toast.className = `toast ${type}`;
-
-                setTimeout(() => {
-                    toast.classList.add('visible');
-                }, 10);
-
-                setTimeout(() => {
-                    toast.classList.remove('visible');
-                }, duration);
-
-                console.log(`Toast displayed: ${message}`, { type, duration });
-            },
-
-            // Show/hide loading overlay
-            showLoading: function(show = true) {
-                if (show) {
-                    this.elements.loadingOverlay.style.display = 'flex';
-                    logger.debug('Loading overlay shown');
+            };
+        }
+
+        init() {
+            // Toggle debug console visibility
+            this.elements.debugHandle.addEventListener('click', () => {
+                const debugConsole = this.elements.debugConsole;
+                if (debugConsole.style.display === 'block') {
+                    debugConsole.style.display = 'none';
                 } else {
-                    this.elements.loadingOverlay.style.display = 'none';
-                    logger.debug('Loading overlay hidden');
+                    debugConsole.style.display = 'block';
                 }
-            },
-            setupDebugConsole: function() {
-                // Toggle debug console visibility
-                this.elements.debugHandle.addEventListener('click', () => {
-                    const debugConsole = this.elements.debugConsole;
-                    if (debugConsole.style.display === 'block') {
-                        debugConsole.style.display = 'none';
-                    } else {
-                        debugConsole.style.display = 'block';
-                    }
-                    logger.debug('Debug console toggled');
-                });
+                this.logger.debug('Debug console toggled');
+            });
 
-                // Clear debug console
-                this.elements.debugClear.addEventListener('click', () => {
-                    logger.clear();
-                    logger.info('Debug console cleared');
-                });
+            // Clear debug console
+            this.elements.debugClear.addEventListener('click', () => {
+                this.logger.clear();
+                this.logger.info('Debug console cleared');
+            });
 
-                // Export debug logs
-                this.elements.debugExport.addEventListener('click', () => {
-                    logger.export();
-                    logger.info('Debug logs exported');
-                });
+            // Export debug logs
+            this.elements.debugExport.addEventListener('click', () => {
+                this.logger.export();
+                this.logger.info('Debug logs exported');
+            });
 
-                // Change debug level
-                this.elements.debugLevel.addEventListener('change', (event) => {
-                    const level = event.target.value;
-                    logger.setLevel(level);
-                    logger.info('Debug level changed', { level });
-                });
-            },
-        };
+            // Change debug level
+            this.elements.debugLevel.addEventListener('change', (event) => {
+                const level = event.target.value;
+                this.logger.setLevel(level);
+                this.logger.info('Debug level changed', { level });
+            });
 
-        // Initialize the app
+            this.logger.info('Debug module initialized');
+            return this;
+        }
+    }
+
+    // AmwalCheckoutApp - Main application class
+    class AmwalCheckoutApp {
+        constructor() {
+            // Initialize logger first
+            this.logger = new Logger();
+            this.logger.info('Initializing Amwal Checkout application', { timestamp: new Date().toISOString() });
+
+            // Initialize services and modules
+            this.uiService = new UIService(this.logger);
+            this.tabManager = new TabManager(this.logger);
+            this.productModule = new ProductModule(this.logger);
+            this.serviceModule = new ServiceModule(this.logger);
+            this.checkoutModule = new CheckoutModule(this.logger, this.uiService, this.productModule, this.serviceModule);
+            this.debugModule = new DebugModule(this.logger);
+        }
+
+        init() {
+            // Initialize all modules
+            this.tabManager.init();
+            this.productModule.init();
+            this.serviceModule.init();
+            this.checkoutModule.init();
+            this.debugModule.init();
+
+            this.logger.info('AmwalCheckoutApp initialized successfully');
+            return this;
+        }
+    }
+
+    // Initialize the application when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        const app = new AmwalCheckoutApp();
         app.init();
     });
 </script>
