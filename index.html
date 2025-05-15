@@ -1436,6 +1436,13 @@
                 // Update order status in your system
                 const orderDetails = event.detail;
                 this.logger.debug('Updated order details', orderDetails);
+
+                // Close the modal and then redirect
+                if (button && typeof button.dismissModal === 'function') {
+                    button.dismissModal().finally(() => {
+                        this.logger.info('Modal dismissed, now redirecting');
+                    });
+                }
             });
         }
 
