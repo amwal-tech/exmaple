@@ -365,7 +365,6 @@
                                 <amwal-checkout-button
                                         id="card-checkout"
                                         merchant-id="sandbox-amwal-ac0c78e2-8fe4-4ddb-b728-1cb5ab4f47d0"
-                                        
                                         amount="440"
                                         tax="21"
                                         country-code="SA"
@@ -376,6 +375,7 @@
                                         discount="200"
                                         show-discount-ribbon="true"
                                         enable-pre-checkout-trigger="true"
+                                        enable-pre-pay-trigger="true"
                                         debug="true"
                                         class="w-full">
                                 </amwal-checkout-button>
@@ -386,7 +386,6 @@
                                 <amwal-checkout-button
                                         id="installment-checkout"
                                         merchant-id="sandbox-amwal-ac0c78e2-8fe4-4ddb-b728-1cb5ab4f47d0"
-                                        
                                         amount="440"
                                         country-code="SA"
                                         locale="en"
@@ -395,6 +394,7 @@
                                         only-show-bank-installment="true"
                                         address-required="true"
                                         enable-pre-checkout-trigger="true"
+                                        enable-pre-pay-trigger="true"
                                         class="w-full">
                                 </amwal-checkout-button>
                             </div>
@@ -404,7 +404,6 @@
                                 <amwal-checkout-button
                                         id="apple-checkout"
                                         merchant-id="sandbox-amwal-ac0c78e2-8fe4-4ddb-b728-1cb5ab4f47d0"
-                                        
                                         amount="440"
                                         country-code="SA"
                                         locale="en"
@@ -413,6 +412,7 @@
                                         address-required="true"
                                         enable-apple-checkout="true"
                                         enable-pre-checkout-trigger="true"
+                                        enable-pre-pay-trigger="true"
                                         class="w-full">
                                 </amwal-checkout-button>
                             </div>
@@ -569,7 +569,6 @@
                                 <amwal-checkout-button
                                         id="service-card-checkout"
                                         merchant-id="sandbox-amwal-ac0c78e2-8fe4-4ddb-b728-1cb5ab4f47d0"
-                                        
                                         amount="2499"
                                         country-code="SA"
                                         locale="en"
@@ -580,6 +579,7 @@
                                         discount="200"
                                         show-discount-ribbon="true"
                                         enable-pre-checkout-trigger="true"
+                                        enable-pre-pay-trigger="true"
                                         class="w-full">
                                 </amwal-checkout-button>
                             </div>
@@ -589,7 +589,6 @@
                                 <amwal-checkout-button
                                         id="service-installment-checkout"
                                         merchant-id="sandbox-amwal-ac0c78e2-8fe4-4ddb-b728-1cb5ab4f47d0"
-                                        
                                         amount="2499"
                                         country-code="SA"
                                         locale="en"
@@ -599,6 +598,7 @@
                                         address-required="false"
                                         email-required="true"
                                         enable-pre-checkout-trigger="true"
+                                        enable-pre-pay-trigger="true"
                                         class="w-full">
                                 </amwal-checkout-button>
                             </div>
@@ -608,7 +608,6 @@
                                 <amwal-checkout-button
                                         id="service-apple-checkout"
                                         merchant-id="sandbox-amwal-ac0c78e2-8fe4-4ddb-b728-1cb5ab4f47d0"
-                                        
                                         amount="2499"
                                         country-code="SA"
                                         locale="en"
@@ -618,6 +617,7 @@
                                         enable-apple-checkout="true"
                                         email-required="true"
                                         enable-pre-checkout-trigger="true"
+                                        enable-pre-pay-trigger="true"
                                         class="w-full">
                                 </amwal-checkout-button>
                             </div>
@@ -1265,6 +1265,38 @@
         _addCheckoutEventListeners(button, buttonType, isProduct = true) {
             const productOrService = isProduct ? 'Product' : 'Service';
 
+            button.addEventListener('amwalPrePayTrigger', (event) => {
+                this.logger.info(`${productOrService} pre-pay triggered`, event.detail);
+
+                // The payment details from the event
+                const paymentDetails = event.detail || {};
+                this.logger.debug('Payment details', paymentDetails);
+
+                // Perform validation here before allowing payment to proceed
+                // For example: inventory check, fraud detection, etc.
+                const isValid = this._validatePayment(paymentDetails, isProduct);
+
+                if (isValid) {
+                    // Allow payment to proceed
+                    this.logger.info('Payment validation successful, proceeding with payment');
+                    button.dispatchEvent(new CustomEvent('amwalPrePayTriggerAck', {
+                        detail: {
+                            order_total_amount: paymentDetails.total_amount
+                        }
+                    }));
+                } else {
+                    // Abort payment
+                    this.logger.error('Payment validation failed, aborting payment');
+                    button.dispatchEvent(new CustomEvent('amwalPrePayTriggerError', {
+                        detail: {
+                            message: 'Payment validation failed. Please try again.'
+                        }
+                    }));
+
+                    // Optionally show error to user
+                    this.uiService.showToast('Payment validation failed. Please try again.', 'error');
+                }
+            });
             button.addEventListener('amwalPreCheckoutTrigger', (event) => {
                 this.logger.info(`${productOrService} pre-checkout triggered`, event.detail);
 
@@ -1321,14 +1353,12 @@
                 this.logger.info(`${productOrService} ${buttonType} checkout started`, event.detail);
                 this.uiService.showLoading(true);
             });
-
             button.addEventListener('amwalCheckoutSuccess', (event) => {
                 this.logger.info(`${productOrService} ${buttonType} checkout success`, event.detail);
                 this.uiService.showLoading(false);
                 this.uiService.showToast(`Checkout successful! Order ID: ${event.detail.orderId}`, 'success');
                 this.logger.debug('Order details', { orderId: event.detail.orderId });
             });
-
             button.addEventListener('amwalCheckoutFail', (event) => {
                 this.logger.error(`${productOrService} ${buttonType} checkout failed`, event.detail);
                 this.uiService.showLoading(false);
@@ -1341,13 +1371,11 @@
                 const country = event.detail;
                 this.logger.debug('Country details', country);
             });
-
             button.addEventListener('amwalAddressStateUpdate', (event) => {
                 this.logger.info(`${productOrService} address state updated`, event.detail);
                 const state = event.detail;
                 this.logger.debug('State details', state);
             });
-
             button.addEventListener('amwalAddressUpdate', (event) => {
                 this.logger.info(`${productOrService} address updated`, event.detail);
 
@@ -1394,7 +1422,6 @@
                     }));
                 }
             });
-
             button.addEventListener('amwalDismissed', (event) => {
                 this.logger.info(`${productOrService} checkout dismissed`, event.detail);
                 this.uiService.showLoading(false);
@@ -1404,13 +1431,50 @@
                     this.uiService.showToast('Checkout was cancelled.', 'error');
                 }
             });
-
             button.addEventListener('updateOrderOnPaymentsuccess', (event) => {
                 this.logger.info(`${productOrService} order updated after payment`, event.detail);
                 // Update order status in your system
                 const orderDetails = event.detail;
                 this.logger.debug('Updated order details', orderDetails);
             });
+        }
+
+        // Validate payment details
+        _validatePayment(paymentDetails, isProduct) {
+            // Implement your payment validation logic here
+            // This is just a simple example
+
+            if (isProduct) {
+                // Product-specific validation
+                const quantity = this.productModule.state.quantity;
+                const isInStock = this._checkInventory(quantity);
+
+                return isInStock;
+            } else {
+                // Service-specific validation
+                const packageType = this.serviceModule.state.selectedPackage;
+                const isAvailable = this._checkServiceAvailability(packageType);
+
+                return isAvailable;
+            }
+        }
+
+        // Sample inventory check method
+        _checkInventory(quantity) {
+            // In a real application, this would check actual inventory
+            // For demo purposes, let's assume we have 10 items in stock
+            const inventoryCount = 10;
+
+            this.logger.debug('Checking inventory', { requested: quantity, available: inventoryCount });
+            return quantity <= inventoryCount;
+        }
+
+        // Sample service availability check
+        _checkServiceAvailability(packageType) {
+            // In a real application, this would check service availability
+            // For demo purposes, let's assume all packages are available
+            this.logger.debug('Checking service availability', { package: packageType });
+            return true;
         }
 
         applyDemoDataToCheckout() {
