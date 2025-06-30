@@ -582,6 +582,7 @@
         // Add helpful instructions after successful payment creation
         function addInstructions(elementId, paymentLinkId) {
             const resultDiv = document.getElementById(elementId);
+            const paymentUrl = `https://pay.sa.amwal.tech/payment-link/${paymentLinkId}`;
             
             const instructionsDiv = document.createElement('div');
             instructionsDiv.className = 'mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg';
@@ -593,17 +594,28 @@
                     <ul class="list-disc list-inside space-y-1 ml-2">
                         <li>Use the <strong>Payment Details</strong> tab to view complete payment information</li>
                         <li>Use the <strong>Check Status</strong> tab to monitor payment status</li>
-                        <li>Share the payment link ID with customers for payment processing</li>
+                        <li>
+                            <a href="${paymentUrl}" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-medium">
+                                🔗 Open payment link
+                            </a> 
+                            to process payment directly
+                        </li>
                     </ul>
                     <div class="mt-3 pt-2 border-t border-blue-200">
                         <div class="flex items-center justify-between">
                             <p class="text-xs text-blue-600">
                                 💡 Payment ID auto-filled in other tabs
                             </p>
-                            <button onclick="copyToClipboard('${paymentLinkId}')" 
-                                    class="text-xs text-blue-600 hover:text-blue-800 underline">
-                                Copy Payment ID
-                            </button>
+                            <div class="flex gap-2">
+                                <button onclick="copyToClipboard('${paymentUrl}')" 
+                                        class="text-xs text-blue-600 hover:text-blue-800 underline">
+                                    Copy Payment URL
+                                </button>
+                                <button onclick="copyToClipboard('${paymentLinkId}')" 
+                                        class="text-xs text-blue-600 hover:text-blue-800 underline">
+                                    Copy Payment ID
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
