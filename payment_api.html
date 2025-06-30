@@ -411,8 +411,8 @@
                 };
 
                 // Validate phone number format
-                if (!paymentData.phoneNumber.match(/^\+966\d{10}$/)) {
-                    throw new Error('Please enter a valid Saudi phone number (+966XXXXXXXXXX)');
+                if (!paymentData.phoneNumber.match(/^\+966\d{9}$/)) {
+                    throw new Error('Please enter a valid Saudi phone number (+966XXXXXXXXX)');
                 }
 
                 const result = await makeAPICall(`/payment_links/${merchantId}/create`, 'POST', paymentData);
@@ -632,7 +632,7 @@
             document.getElementById('amount').value = '299.99';
             document.getElementById('title').value = 'Demo Product Purchase';
             document.getElementById('description').value = 'Testing Amwal Payment API integration';
-            document.getElementById('phoneNumber').value = '+9660512345678';
+            document.getElementById('phoneNumber').value = '+966512345678';
         });
 
         // Add Enter key support for input fields
