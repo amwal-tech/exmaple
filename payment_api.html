@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amwal Payment API Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans antialiased">
+    <div class="max-w-4xl mx-auto p-6">
+        <!-- Header -->
+        <div class="text-center py-12 mb-8">
+            <h1 class="text-3xl font-light text-gray-900 mb-2">Amwal Payment API</h1>
+            <p class="text-gray-500 text-lg mb-4">Integration Demo</p>
+            <div class="flex justify-center gap-6 text-sm">
+                <a href="https://docs.amwal.tech" 
+                   target="_blank" 
+                   class="text-gray-600 hover:text-gray-900 underline transition-colors">
+                    📖 Documentation
+                </a>
+                <a href="https://docs.amwal.tech/reference/getting-started-1#/" 
+                   target="_blank" 
+                   class="text-gray-600 hover:text-gray-900 underline transition-colors">
+                    🔗 API Reference
+                </a>
+            </div>
+        </div>
+
+        <!-- API Configuration -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Configuration</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="apiKey" class="block text-sm font-medium text-gray-700 mb-2">API Key</label>
+                    <input type="text" id="apiKey" value="d9ccf8bc-ed63-44ad-a54c-9d8fee63df6b" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                </div>
+                <div>
+                    <label for="merchantId" class="block text-sm font-medium text-gray-700 mb-2">Merchant ID</label>
+                    <input type="text" id="merchantId" value="f24267bd-79f4-433f-a9f2-485c171301e4" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex flex-wrap gap-1 mb-8 border-b border-gray-200">
+            <button class="tab px-4 py-3 text-sm font-medium border-b-2 border-gray-900 text-gray-900" 
+                    onclick="showTab('create')">Create Payment</button>
+            <button class="tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent" 
+                    onclick="showTab('details')">Payment Details</button>
+            <button class="tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent" 
+                    onclick="showTab('list')">List Payments</button>
+            <button class="tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent" 
+                    onclick="showTab('status')">Check Status</button>
+        </div>
+
+        <!-- Create Payment Tab -->
+        <div id="create" class="tab-content animate-fadeIn">
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 class="text-xl font-medium text-gray-900 mb-6">Create New Payment</h2>
+                <form id="createPaymentForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Amount (SAR)</label>
+                            <input type="number" id="amount" required step="0.01" min="1" placeholder="100.00"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                        <div>
+                            <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="phoneNumber" required placeholder="+9660512345678"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Payment Title</label>
+                        <input type="text" id="title" required placeholder="Product Purchase"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                    </div>
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="description" rows="3" placeholder="Optional payment description"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500"></textarea>
+                    </div>
+                    <div class="pt-4">
+                        <button type="submit" id="createBtn"
+                                class="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                            <span id="createLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                            Create Payment
+                        </button>
+                    </div>
+                </form>
+                <div id="createResult"></div>
+            </div>
+        </div>
+
+        <!-- Payment Details Tab -->
+        <div id="details" class="tab-content hidden">
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 class="text-xl font-medium text-gray-900 mb-6">Payment Details</h2>
+                <div class="mb-4">
+                    <label for="paymentIdDetails" class="block text-sm font-medium text-gray-700 mb-1">Payment Link ID</label>
+                    <input type="text" id="paymentIdDetails" placeholder="Enter payment link ID"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                </div>
+                <button onclick="getPaymentDetails()" id="detailsBtn"
+                        class="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    <span id="detailsLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                    Get Details
+                </button>
+                <div id="detailsResult"></div>
+            </div>
+        </div>
+
+        <!-- List Payments Tab -->
+        <div id="list" class="tab-content hidden">
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 class="text-xl font-medium text-gray-900 mb-6">Payment List</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div>
+                        <label for="page" class="block text-sm font-medium text-gray-700 mb-1">Page</label>
+                        <input type="number" id="page" value="1" min="1"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                    </div>
+                    <div>
+                        <label for="pageSize" class="block text-sm font-medium text-gray-700 mb-1">Size</label>
+                        <select id="pageSize" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sortBy" class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                        <select id="sortBy" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                            <option value="created_at" selected>Date</option>
+                            <option value="amount">Amount</option>
+                            <option value="status">Status</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sortOrder" class="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                        <select id="sortOrder" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                            <option value="desc" selected>Desc</option>
+                            <option value="asc">Asc</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="listPayments()" id="listBtn"
+                        class="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    <span id="listLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                    Load Payments
+                </button>
+                <div id="listResult"></div>
+            </div>
+        </div>
+
+        <!-- Check Status Tab -->
+        <div id="status" class="tab-content hidden">
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 class="text-xl font-medium text-gray-900 mb-6">Payment Status</h2>
+                <div class="mb-4">
+                    <label for="paymentIdStatus" class="block text-sm font-medium text-gray-700 mb-1">Payment Link ID</label>
+                    <input type="text" id="paymentIdStatus" placeholder="Enter payment link ID"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                </div>
+                <button onclick="checkPaymentStatus()" id="statusBtn"
+                        class="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    <span id="statusLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                    Check Status
+                </button>
+                <div id="statusResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://backend.sa.amwal.tech';
+
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('animate-fadeIn');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('border-gray-900', 'text-gray-900');
+                tab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700');
+            });
+            
+            // Show selected tab content
+            const selectedTab = document.getElementById(tabName);
+            selectedTab.classList.remove('hidden');
+            selectedTab.classList.add('animate-fadeIn');
+            
+            // Add active class to clicked tab
+            event.target.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700');
+            event.target.classList.add('border-gray-900', 'text-gray-900');
+        }
+
+        // API Helper function
+        async function makeAPICall(endpoint, method = 'POST', data = null) {
+            const apiKey = document.getElementById('apiKey').value;
+            const merchantId = document.getElementById('merchantId').value;
+
+            if (!apiKey || !merchantId) {
+                throw new Error('Please configure API Key and Merchant ID');
+            }
+
+            const url = `${API_BASE}${endpoint}`;
+            const options = {
+                method,
+                headers: {
+                    'Authorization': apiKey,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            const response = await fetch(url, options);
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || `HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            return result;
+        }
+
+        // Show result function with curl command and better JSON formatting
+        function showResult(elementId, message, data, type = 'info', curlCommand = null) {
+            const resultDiv = document.getElementById(elementId);
+            
+            // Clear previous content
+            resultDiv.innerHTML = '';
+            
+            // Set classes based on type
+            let borderColor, textColor;
+            switch(type) {
+                case 'success':
+                    borderColor = 'border-green-200';
+                    textColor = 'text-green-700';
+                    break;
+                case 'error':
+                    borderColor = 'border-red-200';
+                    textColor = 'text-red-700';
+                    break;
+                default:
+                    borderColor = 'border-gray-200';
+                    textColor = 'text-gray-700';
+            }
+            
+            resultDiv.className = `mt-6 border rounded-lg ${borderColor} bg-white overflow-hidden`;
+            
+            // Create message header
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `p-4 ${textColor} font-medium border-b ${borderColor}`;
+            messageDiv.textContent = message;
+            resultDiv.appendChild(messageDiv);
+            
+            // Create curl command section if provided
+            if (curlCommand) {
+                const curlDiv = document.createElement('div');
+                curlDiv.className = 'border-b border-gray-200 bg-gray-900 text-gray-100 p-4';
+                
+                const curlHeader = document.createElement('div');
+                curlHeader.className = 'flex items-center justify-between mb-2';
+                curlHeader.innerHTML = `
+                    <span class="text-sm font-medium text-gray-300">📡 cURL Request</span>
+                    <button onclick="copyToClipboard(\`${curlCommand.replace(/`/g, '\\`')}\`)" 
+                            class="text-xs text-gray-400 hover:text-white underline">
+                        copy
+                    </button>
+                `;
+                
+                const curlCode = document.createElement('pre');
+                curlCode.className = 'text-sm font-mono whitespace-pre-wrap text-gray-100';
+                curlCode.textContent = curlCommand;
+                
+                curlDiv.appendChild(curlHeader);
+                curlDiv.appendChild(curlCode);
+                resultDiv.appendChild(curlDiv);
+            }
+            
+            // Create JSON data section if data exists
+            if (data) {
+                const jsonDiv = document.createElement('div');
+                jsonDiv.className = 'p-4 font-mono text-sm text-gray-800 max-h-80 overflow-y-auto bg-gray-50';
+                
+                const jsonHeader = document.createElement('div');
+                jsonHeader.className = 'flex items-center justify-between mb-2 font-sans';
+                jsonHeader.innerHTML = `
+                    <span class="text-sm font-medium text-gray-600">📄 Response</span>
+                    <button onclick="copyToClipboard(\`${JSON.stringify(data, null, 2).replace(/`/g, '\\`')}\`)" 
+                            class="text-xs text-gray-500 hover:text-gray-700 underline">
+                        copy json
+                    </button>
+                `;
+                
+                const preElement = document.createElement('pre');
+                preElement.className = 'whitespace-pre-wrap';
+                preElement.textContent = JSON.stringify(data, null, 2);
+                
+                jsonDiv.appendChild(jsonHeader);
+                jsonDiv.appendChild(preElement);
+                resultDiv.appendChild(jsonDiv);
+            }
+
+            // Auto-fill payment ID in other tabs if this was a create operation
+            if (type === 'success' && data && data.payment_link_id) {
+                document.getElementById('paymentIdDetails').value = data.payment_link_id;
+                document.getElementById('paymentIdStatus').value = data.payment_link_id;
+            }
+        }
+
+        // Generate curl command
+        function generateCurlCommand(endpoint, method = 'POST', data = null) {
+            const apiKey = document.getElementById('apiKey').value;
+            const url = `${API_BASE}${endpoint}`;
+            
+            let curl = `curl --request ${method} \\\n`;
+            curl += `     --url '${url}' \\\n`;
+            curl += `     --header 'Authorization: ${apiKey}' \\\n`;
+            curl += `     --header 'Accept: application/json' \\\n`;
+            curl += `     --header 'Content-Type: application/json'`;
+            
+            if (data) {
+                curl += ` \\\n     --data '${JSON.stringify(data, null, 2)}'`;
+            }
+            
+            return curl;
+        }
+
+        // Loading state management
+        function setLoading(btnId, loaderId, isLoading) {
+            const btn = document.getElementById(btnId);
+            const loader = document.getElementById(loaderId);
+            
+            btn.disabled = isLoading;
+            loader.style.display = isLoading ? 'inline-block' : 'none';
+        }
+
+        // Create Payment
+        document.getElementById('createPaymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            setLoading('createBtn', 'createLoader', true);
+            
+            try {
+                const merchantId = document.getElementById('merchantId').value;
+                const paymentData = {
+                    singleUse: true,
+                    amount: parseFloat(document.getElementById('amount').value),
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value || '',
+                    phoneNumber: document.getElementById('phoneNumber').value
+                };
+
+                // Validate phone number format
+                if (!paymentData.phoneNumber.match(/^\+966\d{10}$/)) {
+                    throw new Error('Please enter a valid Saudi phone number (+966XXXXXXXXXX)');
+                }
+
+                const result = await makeAPICall(`/payment_links/${merchantId}/create`, 'POST', paymentData);
+                
+                // Generate curl command for display
+                const curlCommand = generateCurlCommand(`/payment_links/${merchantId}/create`, 'POST', paymentData);
+                showResult('createResult', 'Payment created successfully', result, 'success', curlCommand);
+                
+                // Add helpful instructions
+                addInstructions('createResult', result.payment_link_id);
+                
+                // Reset form
+                document.getElementById('createPaymentForm').reset();
+                
+            } catch (error) {
+                const curlCommand = generateCurlCommand(`/payment_links/${document.getElementById('merchantId').value}/create`, 'POST', {
+                    singleUse: true,
+                    amount: parseFloat(document.getElementById('amount').value),
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value || '',
+                    phoneNumber: document.getElementById('phoneNumber').value
+                });
+                showResult('createResult', 'Error creating payment', { error: error.message }, 'error', curlCommand);
+            } finally {
+                setLoading('createBtn', 'createLoader', false);
+            }
+        });
+
+        // Get Payment Details
+        async function getPaymentDetails() {
+            const paymentId = document.getElementById('paymentIdDetails').value.trim();
+            
+            if (!paymentId) {
+                showResult('detailsResult', 'Error', { error: 'Please enter a payment link ID' }, 'error');
+                return;
+            }
+
+            setLoading('detailsBtn', 'detailsLoader', true);
+            
+            try {
+                const result = await makeAPICall(`/payment_link/${paymentId}/details`);
+                const curlCommand = generateCurlCommand(`/payment_link/${paymentId}/details`, 'POST');
+                showResult('detailsResult', 'Payment details retrieved', result, 'success', curlCommand);
+            } catch (error) {
+                const curlCommand = generateCurlCommand(`/payment_link/${paymentId}/details`, 'POST');
+                showResult('detailsResult', 'Error getting payment details', { error: error.message }, 'error', curlCommand);
+            } finally {
+                setLoading('detailsBtn', 'detailsLoader', false);
+            }
+        }
+
+        // List Payments
+        async function listPayments() {
+            setLoading('listBtn', 'listLoader', true);
+            
+            try {
+                const merchantId = document.getElementById('merchantId').value;
+                const listData = {
+                    page: parseInt(document.getElementById('page').value),
+                    page_size: parseInt(document.getElementById('pageSize').value),
+                    sort_by: document.getElementById('sortBy').value,
+                    sort_order: document.getElementById('sortOrder').value
+                };
+
+                const result = await makeAPICall(`/payment_links/${merchantId}/`, 'POST', listData);
+                
+                // Generate curl command for display
+                const curlCommand = generateCurlCommand(`/payment_links/${merchantId}/`, 'POST', listData);
+                
+                // Show summary
+                showResult('listResult', `Found ${result.count} total payments (Page ${listData.page})`, null, 'info', curlCommand);
+                
+                // Create payment cards
+                if (result.results && result.results.length > 0) {
+                    const paymentGrid = document.createElement('div');
+                    paymentGrid.className = 'mt-6 space-y-3';
+                    
+                    result.results.forEach(payment => {
+                        const card = createPaymentCard(payment);
+                        paymentGrid.appendChild(card);
+                    });
+                    
+                    document.getElementById('listResult').appendChild(paymentGrid);
+                } else {
+                    showResult('listResult', 'No payments found for this page', null, 'info');
+                }
+                
+            } catch (error) {
+                const listData = {
+                    page: parseInt(document.getElementById('page').value),
+                    page_size: parseInt(document.getElementById('pageSize').value),
+                    sort_by: document.getElementById('sortBy').value,
+                    sort_order: document.getElementById('sortOrder').value
+                };
+                const curlCommand = generateCurlCommand(`/payment_links/${document.getElementById('merchantId').value}/`, 'POST', listData);
+                showResult('listResult', 'Error listing payments', { error: error.message }, 'error', curlCommand);
+            } finally {
+                setLoading('listBtn', 'listLoader', false);
+            }
+        }
+
+        // Create Payment Card
+        function createPaymentCard(payment) {
+            const card = document.createElement('div');
+            card.className = 'border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors bg-white';
+            
+            const statusColor = payment.status.toLowerCase() === 'unpaid' ? 'text-amber-600' : 'text-green-600';
+            const date = new Date(payment.created_at).toLocaleString();
+            
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <h4 class="font-medium text-gray-900">${payment.title || 'Untitled Payment'}</h4>
+                    <span class="text-sm ${statusColor} font-medium">${payment.status}</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 text-sm text-gray-600">
+                    <div><span class="font-medium">Amount:</span> ${payment.amount} SAR</div>
+                    <div><span class="font-medium">Created:</span> ${date}</div>
+                    <div class="md:col-span-2">
+                        <span class="font-medium">ID:</span> 
+                        <code class="text-xs bg-gray-100 px-1 py-0.5 rounded">${payment.id}</code>
+                        <button onclick="copyToClipboard('${payment.id}')" class="ml-2 text-xs text-gray-500 hover:text-gray-700 underline">copy</button>
+                    </div>
+                    <div class="md:col-span-2"><span class="font-medium">Creator:</span> ${payment.created_by_email}</div>
+                    ${payment.description ? `<div class="md:col-span-2"><span class="font-medium">Description:</span> ${payment.description}</div>` : ''}
+                    ${payment.branch_name ? `<div><span class="font-medium">Branch:</span> ${payment.branch_name}</div>` : ''}
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Check Payment Status
+        async function checkPaymentStatus() {
+            const paymentId = document.getElementById('paymentIdStatus').value.trim();
+            
+            if (!paymentId) {
+                showResult('statusResult', 'Error', { error: 'Please enter a payment link ID' }, 'error');
+                return;
+            }
+
+            setLoading('statusBtn', 'statusLoader', true);
+            
+            try {
+                const result = await makeAPICall(`/payment_link/${paymentId}/details`);
+                const status = result.payment_link.status;
+                const curlCommand = generateCurlCommand(`/payment_link/${paymentId}/details`, 'POST');
+                
+                showResult('statusResult', `Payment Status: ${status}`, {
+                    payment_id: paymentId,
+                    status: status,
+                    amount: result.payment_link.amount + ' SAR',
+                    title: result.payment_link.title,
+                    created_at: result.payment_link.created_at,
+                    transactions: result.transactions
+                }, 'success', curlCommand);
+            } catch (error) {
+                const curlCommand = generateCurlCommand(`/payment_link/${paymentId}/details`, 'POST');
+                showResult('statusResult', 'Error checking status', { error: error.message }, 'error', curlCommand);
+            } finally {
+                setLoading('statusBtn', 'statusLoader', false);
+            }
+        }
+
+        // Add helpful instructions after successful payment creation
+        function addInstructions(elementId, paymentLinkId) {
+            const resultDiv = document.getElementById(elementId);
+            
+            const instructionsDiv = document.createElement('div');
+            instructionsDiv.className = 'mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg';
+            
+            instructionsDiv.innerHTML = `
+                <h4 class="font-medium text-blue-900 mb-2">✨ Next Steps</h4>
+                <div class="text-sm text-blue-800 space-y-2">
+                    <p>Your payment link has been created! Here's what you can do next:</p>
+                    <ul class="list-disc list-inside space-y-1 ml-2">
+                        <li>Use the <strong>Payment Details</strong> tab to view complete payment information</li>
+                        <li>Use the <strong>Check Status</strong> tab to monitor payment status</li>
+                        <li>Share the payment link ID with customers for payment processing</li>
+                    </ul>
+                    <div class="mt-3 pt-2 border-t border-blue-200">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-blue-600">
+                                💡 Payment ID auto-filled in other tabs
+                            </p>
+                            <button onclick="copyToClipboard('${paymentLinkId}')" 
+                                    class="text-xs text-blue-600 hover:text-blue-800 underline">
+                                Copy Payment ID
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            resultDiv.appendChild(instructionsDiv);
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'copied';
+                button.classList.add('text-green-600');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('text-green-600');
+                }, 1500);
+            });
+        }
+
+        // Auto-populate some example data
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('amount').value = '299.99';
+            document.getElementById('title').value = 'Demo Product Purchase';
+            document.getElementById('description').value = 'Testing Amwal Payment API integration';
+            document.getElementById('phoneNumber').value = '+9660512345678';
+        });
+
+        // Add Enter key support for input fields
+        document.getElementById('paymentIdDetails').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') getPaymentDetails();
+        });
+
+        document.getElementById('paymentIdStatus').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPaymentStatus();
+        });
+    </script>
+</body>
+</html>
