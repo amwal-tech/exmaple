@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amwal Payment API Demo - v1.1.0</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .field-group {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: #fafafa;
+        }
+
+        .field-group h4 {
+            margin: 0 0 12px 0;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 5px;
+        }
+
+        .tooltip:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1f2937;
+            margin-bottom: -5px;
+        }
+    </style>
+    <script>
+        window.fwSettings={
+            'widget_id':501000001543,
+            'custom_fields': {
+                'source': 'custom',
+                'page_url': window.location.href,
+                'referrer': document.referrer
+            }
+        };
+        !function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}()
+    </script>
+    <script type='text/javascript' src='https://mec-widget.freshworks.com/widgets/501000001543.js' async defer></script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans antialiased">
+<div class="max-w-6xl mx-auto p-6">
+    <!-- Header -->
+    <div class="text-center py-12 mb-8">
+        <h1 class="text-4xl font-light text-gray-900 mb-2">Amwal Payment API</h1>
+        <p class="text-gray-500 text-lg mb-2">Integration Demo v1.1.0</p>
+        <p class="text-sm text-gray-400 mb-6">Comprehensive API for creating and managing payment links</p>
+        <div class="flex justify-center gap-6 text-sm">
+            <a href="https://docs.amwal.tech"
+               target="_blank"
+               class="text-gray-600 hover:text-gray-900 underline transition-colors">
+                📖 Documentation
+            </a>
+            <a href="https://docs.amwal.tech/reference/getting-started-1#/"
+               target="_blank"
+               class="text-gray-600 hover:text-gray-900 underline transition-colors">
+                🔗 API Reference
+            </a>
+            <a href="https://merchant.sa.amwal.tech"
+               target="_blank"
+               class="text-gray-600 hover:text-gray-900 underline transition-colors">
+                🏪 Merchant Portal
+            </a>
+        </div>
+    </div>
+
+    <!-- API Configuration -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">🔐 API Configuration</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label for="apiKey" class="block text-sm font-medium text-gray-700 mb-2">
+                    API Key
+                    <span class="tooltip text-gray-400" data-tooltip="Get your API key from Merchant Portal > Integrations">ⓘ</span>
+                </label>
+                <input type="text" id="apiKey" value="d9ccf8bc-ed63-44ad-a54c-9d8fee63df6b"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+            </div>
+            <div>
+                <label for="storeId" class="block text-sm font-medium text-gray-700 mb-2">
+                    Store ID
+                    <span class="tooltip text-gray-400" data-tooltip="Your unique store identifier from the Merchant Portal">ⓘ</span>
+                </label>
+                <input type="text" id="storeId" value="f24267bd-79f4-433f-a9f2-485c171301e4"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+            </div>
+            <div>
+                <label for="originHeader" class="block text-sm font-medium text-gray-700 mb-2">
+                    Origin Header
+                    <span class="tooltip text-gray-400" data-tooltip="Origin header for API security validation">ⓘ</span>
+                </label>
+                <input type="text" id="originHeader" value="amwal-tech.github.io"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex flex-wrap gap-1 mb-8 border-b border-gray-200">
+        <button class="tab px-4 py-3 text-sm font-medium border-b-2 border-gray-900 text-gray-900"
+                onclick="showTab('create')">💳 Create Payment</button>
+        <button class="tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent"
+                onclick="showTab('details')">🔍 Payment Details</button>
+        <button class="tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent"
+                onclick="showTab('list')">📋 List Payments</button>
+        <button class="tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent"
+                onclick="showTab('status')">⚡ Check Status</button>
+        <button class="tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent"
+                onclick="showTab('resolve')">🔧 Resolve Link</button>
+    </div>
+
+    <!-- Create Payment Tab -->
+    <div id="create" class="tab-content animate-fadeIn">
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 class="text-xl font-medium text-gray-900 mb-6">💳 Create New Payment Link</h2>
+            <form id="createPaymentForm" class="space-y-6">
+
+                <!-- Basic Payment Information -->
+                <div class="field-group">
+                    <h4>💰 Payment Information</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">
+                                Amount (SAR) *
+                                <span class="tooltip text-gray-400" data-tooltip="Payment amount in Saudi Riyals. Must be greater than 0.01">ⓘ</span>
+                            </label>
+                            <input type="number" id="amount" required step="0.01" min="0.01" placeholder="299.99"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                        <div>
+                            <label for="singleUse" class="block text-sm font-medium text-gray-700 mb-1">
+                                Usage Type
+                                <span class="tooltip text-gray-400" data-tooltip="Single-use: Link expires after one payment. Multi-use: Can be used multiple times">ⓘ</span>
+                            </label>
+                            <select id="singleUse" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                                <option value="true">Single Use (recommended for invoices)</option>
+                                <option value="false">Multi Use (for donations, subscriptions)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
+                            Payment Title *
+                            <span class="tooltip text-gray-400" data-tooltip="Descriptive title that customers will see">ⓘ</span>
+                        </label>
+                        <input type="text" id="title" required maxlength="200" placeholder="Invoice #INV-2024-001"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                    </div>
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                            Description
+                            <span class="tooltip text-gray-400" data-tooltip="Detailed description of what the payment is for">ⓘ</span>
+                        </label>
+                        <textarea id="description" rows="3" maxlength="500" placeholder="Annual premium subscription with advanced features"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500"></textarea>
+                    </div>
+                    <div>
+                        <label for="selectedDate" class="block text-sm font-medium text-gray-700 mb-1">
+                            Expiry Date
+                            <span class="tooltip text-gray-400" data-tooltip="Optional: After this date, the payment link becomes invalid">ⓘ</span>
+                        </label>
+                        <input type="datetime-local" id="selectedDate"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                    </div>
+                </div>
+
+                <!-- Customer Information -->
+                <div class="field-group">
+                    <h4>👤 Customer Information</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="client_first_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                First Name
+                                <span class="tooltip text-gray-400" data-tooltip="Customer's first name - personalizes the payment experience">ⓘ</span>
+                            </label>
+                            <input type="text" id="client_first_name" maxlength="50" placeholder="Ahmed"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                        <div>
+                            <label for="client_last_name" class="block text-sm font-medium text-gray-700 mb-1">
+                                Last Name
+                                <span class="tooltip text-gray-400" data-tooltip="Customer's last name">ⓘ</span>
+                            </label>
+                            <input type="text" id="client_last_name" maxlength="50" placeholder="Al-Rashid"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="client_email" class="block text-sm font-medium text-gray-700 mb-1">
+                                Email Address
+                                <span class="tooltip text-gray-400" data-tooltip="Customer's email for receipts and notifications">ⓘ</span>
+                            </label>
+                            <input type="email" id="client_email" placeholder="customer@example.com"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                        <div>
+                            <label for="client_phone_number" class="block text-sm font-medium text-gray-700 mb-1">
+                                Phone Number
+                                <span class="tooltip text-gray-400" data-tooltip="International format with country code (e.g., +966501234567)">ⓘ</span>
+                            </label>
+                            <input type="tel" id="client_phone_number" placeholder="+966501234567" pattern="^\+[1-9]\d{1,14}$"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="field-group">
+                    <h4>📍 Address Information</h4>
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="address_required"
+                                   class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500 focus:ring-2">
+                            <span class="ml-2 text-sm text-gray-700">
+                                    Require address during payment
+                                    <span class="tooltip text-gray-400" data-tooltip="Customer must provide address information during payment">ⓘ</span>
+                                </span>
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="client_street1" class="block text-sm font-medium text-gray-700 mb-1">
+                                Street Address 1
+                                <span class="tooltip text-gray-400" data-tooltip="Primary street address">ⓘ</span>
+                            </label>
+                            <input type="text" id="client_street1" maxlength="100" placeholder="123 King Fahd Road"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                        <div>
+                            <label for="client_street2" class="block text-sm font-medium text-gray-700 mb-1">
+                                Street Address 2
+                                <span class="tooltip text-gray-400" data-tooltip="Apartment, suite, etc. (optional)">ⓘ</span>
+                            </label>
+                            <input type="text" id="client_street2" maxlength="100" placeholder="Apartment 4B"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label for="client_city" class="block text-sm font-medium text-gray-700 mb-1">
+                                City
+                                <span class="tooltip text-gray-400" data-tooltip="Customer's city">ⓘ</span>
+                            </label>
+                            <input type="text" id="client_city" maxlength="50" placeholder="Riyadh"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                        <div>
+                            <label for="client_state" class="block text-sm font-medium text-gray-700 mb-1">
+                                State/Province
+                                <span class="tooltip text-gray-400" data-tooltip="State or province">ⓘ</span>
+                            </label>
+                            <input type="text" id="client_state" maxlength="50" placeholder="Riyadh Province"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                        <div>
+                            <label for="client_country" class="block text-sm font-medium text-gray-700 mb-1">
+                                Country
+                                <span class="tooltip text-gray-400" data-tooltip="2-letter country code (ISO 3166-1)">ⓘ</span>
+                            </label>
+                            <select id="client_country" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                                <option value="">Select Country</option>
+                                <option value="SA" selected>SA - Saudi Arabia</option>
+                                <option value="AE">AE - UAE</option>
+                                <option value="EG">EG - Egypt</option>
+                                <option value="US">US - United States</option>
+                                <option value="GB">GB - United Kingdom</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="client_postcode" class="block text-sm font-medium text-gray-700 mb-1">
+                                Postal Code
+                                <span class="tooltip text-gray-400" data-tooltip="ZIP or postal code">ⓘ</span>
+                            </label>
+                            <input type="text" id="client_postcode" maxlength="20" placeholder="12345"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Options -->
+                <div class="field-group">
+                    <h4>⚙️ Payment Options</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="language" class="block text-sm font-medium text-gray-700 mb-1">
+                                Payment Page Language
+                                <span class="tooltip text-gray-400" data-tooltip="Language for the payment page interface">ⓘ</span>
+                            </label>
+                            <select id="language" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                                <option value="ar">العربية (Arabic)</option>
+                                <option value="en" selected>English</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="sms_language" class="block text-sm font-medium text-gray-700 mb-1">
+                                SMS Language
+                                <span class="tooltip text-gray-400" data-tooltip="Language for SMS notifications (independent of page language)">ⓘ</span>
+                            </label>
+                            <select id="sms_language" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                                <option value="ar" selected>العربية (Arabic)</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="send_sms"
+                                       class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500 focus:ring-2">
+                                <span class="ml-2 text-sm text-gray-700">
+                                        Send SMS notifications
+                                        <span class="tooltip text-gray-400" data-tooltip="Send SMS to customer about payment status">ⓘ</span>
+                                    </span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="passkey_enabled"
+                                       class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500 focus:ring-2">
+                                <span class="ml-2 text-sm text-gray-700">
+                                        Enable passkey authentication
+                                        <span class="tooltip text-gray-400" data-tooltip="Allow biometric/security key authentication">ⓘ</span>
+                                    </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="only_show_bank_installments"
+                                       class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500 focus:ring-2">
+                                <span class="ml-2 text-sm text-gray-700">
+                                        Only show bank installments
+                                        <span class="tooltip text-gray-400" data-tooltip="Show only installment payment options">ⓘ</span>
+                                    </span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="only_show_pay_in_full"
+                                       class="w-4 h-4 text-gray-600 border-gray-300 focus:ring-gray-500 focus:ring-2">
+                                <span class="ml-2 text-sm text-gray-700">
+                                        Only show full payment
+                                        <span class="tooltip text-gray-400" data-tooltip="Show only full payment options (no installments)">ⓘ</span>
+                                    </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integration Settings -->
+                <div class="field-group">
+                    <h4>🔧 Integration Settings</h4>
+                    <div>
+                        <label for="callback_url" class="block text-sm font-medium text-gray-700 mb-1">
+                            Webhook URL
+                            <span class="tooltip text-gray-400" data-tooltip="Your HTTPS endpoint to receive payment status updates">ⓘ</span>
+                        </label>
+                        <input type="url" id="callback_url" placeholder="https://yourstore.com/webhook/payment-complete"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                    </div>
+                    <div>
+                        <label for="branch" class="block text-sm font-medium text-gray-700 mb-1">
+                            Branch Identifier
+                            <span class="tooltip text-gray-400" data-tooltip="Optional branch ID for multi-location businesses">ⓘ</span>
+                        </label>
+                        <input type="text" id="branch" maxlength="50" placeholder="RIYADH-001"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                    </div>
+                    <div>
+                        <label for="metadata" class="block text-sm font-medium text-gray-700 mb-1">
+                            Metadata (JSON)
+                            <span class="tooltip text-gray-400" data-tooltip="Custom data associated with this payment (returned in webhooks)">ⓘ</span>
+                        </label>
+                        <textarea id="metadata" rows="3"
+                                  placeholder='{"order_id": "ORD-2024-001", "customer_id": "CUST-12345"}'
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 font-mono text-sm"></textarea>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-200">
+                    <button type="submit" id="createBtn"
+                            class="bg-gray-900 text-white px-8 py-3 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <span id="createLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                        Create Payment Link
+                    </button>
+                    <button type="button" onclick="fillExampleData()"
+                            class="ml-3 bg-gray-100 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-200 transition-colors">
+                        Fill Example Data
+                    </button>
+                </div>
+            </form>
+            <div id="createResult"></div>
+        </div>
+    </div>
+
+    <!-- Payment Details Tab -->
+    <div id="details" class="tab-content hidden">
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 class="text-xl font-medium text-gray-900 mb-6">🔍 Payment Link Details</h2>
+            <div class="mb-4">
+                <label for="paymentIdDetails" class="block text-sm font-medium text-gray-700 mb-1">Payment Link ID</label>
+                <input type="text" id="paymentIdDetails" placeholder="Enter payment link ID (UUID)"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div>
+                    <label for="detailsPage" class="block text-sm font-medium text-gray-700 mb-1">
+                        Page
+                        <span class="tooltip text-gray-400" data-tooltip="Page number for transaction pagination">ⓘ</span>
+                    </label>
+                    <input type="number" id="detailsPage" value="1" min="1"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                </div>
+                <div>
+                    <label for="detailsPageSize" class="block text-sm font-medium text-gray-700 mb-1">
+                        Page Size
+                        <span class="tooltip text-gray-400" data-tooltip="Number of transactions per page">ⓘ</span>
+                    </label>
+                    <select id="detailsPageSize" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="getPaymentDetails()" id="detailsBtn"
+                    class="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                <span id="detailsLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                Get Details
+            </button>
+            <div id="detailsResult"></div>
+        </div>
+    </div>
+
+    <!-- List Payments Tab -->
+    <div id="list" class="tab-content hidden">
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 class="text-xl font-medium text-gray-900 mb-6">📋 Payment Links List</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-1">
+                        Search
+                        <span class="tooltip text-gray-400" data-tooltip="Search in title, description, customer name, and email">ⓘ</span>
+                    </label>
+                    <input type="text" id="search" maxlength="100" placeholder="Search payments..."
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                </div>
+                <div>
+                    <label for="page" class="block text-sm font-medium text-gray-700 mb-1">Page</label>
+                    <input type="number" id="page" value="1" min="1"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                </div>
+                <div>
+                    <label for="pageSize" class="block text-sm font-medium text-gray-700 mb-1">Page Size</label>
+                    <select id="pageSize" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="sortBy" class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                    <select id="sortBy" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        <option value="created_at" selected>Created Date</option>
+                        <option value="amount">Amount</option>
+                        <option value="title">Title</option>
+                        <option value="status">Status</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="sortOrder" class="block text-sm font-medium text-gray-700 mb-1">Sort Order</label>
+                    <select id="sortOrder" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                        <option value="desc" selected>Newest First</option>
+                        <option value="asc">Oldest First</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="listPayments()" id="listBtn"
+                    class="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                <span id="listLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                Load Payments
+            </button>
+            <div id="listResult"></div>
+        </div>
+    </div>
+
+    <!-- Check Status Tab -->
+    <div id="status" class="tab-content hidden">
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 class="text-xl font-medium text-gray-900 mb-6">⚡ Payment Status Check</h2>
+            <div class="mb-4">
+                <label for="paymentIdStatus" class="block text-sm font-medium text-gray-700 mb-1">Payment Link ID</label>
+                <input type="text" id="paymentIdStatus" placeholder="Enter payment link ID"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+            </div>
+            <button onclick="checkPaymentStatus()" id="statusBtn"
+                    class="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                <span id="statusLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                Check Status
+            </button>
+            <div id="statusResult"></div>
+        </div>
+    </div>
+
+    <!-- Resolve Payment Link Tab -->
+    <div id="resolve" class="tab-content hidden">
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 class="text-xl font-medium text-gray-900 mb-6">🔧 Resolve Payment Link</h2>
+            <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <h4 class="font-medium text-yellow-800 mb-2">⚠️ About the Resolve Endpoint</h4>
+                <p class="text-sm text-yellow-700">
+                    This endpoint is primarily for internal use by the Amwal payment system when a customer clicks on a payment link.
+                    It requires proper Origin/Referer headers for security validation. Use this for testing payment link validity or building custom payment interfaces.
+                </p>
+            </div>
+            <div class="mb-4">
+                <label for="paymentIdResolve" class="block text-sm font-medium text-gray-700 mb-1">
+                    Payment Link ID
+                    <span class="tooltip text-gray-400" data-tooltip="The payment link ID to resolve">ⓘ</span>
+                </label>
+                <input type="text" id="paymentIdResolve" placeholder="Enter payment link ID"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+            </div>
+            <button onclick="resolvePaymentLink()" id="resolveBtn"
+                    class="bg-gray-900 text-white px-6 py-2 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                <span id="resolveLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                Resolve Payment Link
+            </button>
+            <div id="resolveResult"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'https://backend.sa.amwal.tech';
+
+    // Tab management
+    function showTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.add('hidden');
+            content.classList.remove('animate-fadeIn');
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('border-gray-900', 'text-gray-900');
+            tab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700');
+        });
+
+        // Show selected tab content
+        const selectedTab = document.getElementById(tabName);
+        selectedTab.classList.remove('hidden');
+        selectedTab.classList.add('animate-fadeIn');
+
+        // Add active class to clicked tab
+        event.target.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700');
+        event.target.classList.add('border-gray-900', 'text-gray-900');
+    }
+
+    // API Helper function
+    async function makeAPICall(endpoint, method = 'POST', data = null) {
+        const apiKey = document.getElementById('apiKey').value;
+        const storeId = document.getElementById('storeId').value;
+        const originHeader = document.getElementById('originHeader').value;
+
+        if (!apiKey || !storeId) {
+            throw new Error('Please configure API Key and Store ID');
+        }
+
+        const url = `${API_BASE}${endpoint}`;
+        const options = {
+            method,
+            headers: {
+                'Authorization': apiKey,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        };
+        // Add Origin header if provided
+        if (originHeader) {
+            options.headers['Origin'] = `https://${originHeader}`;
+        }
+
+        if (data) {
+            options.body = JSON.stringify(data);
+        }
+        const response = await fetch(url, options);
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || result.error || `HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        return result;
+    }
+
+    // Show result function with curl command and better JSON formatting
+    function showResult(elementId, message, data, type = 'info', curlCommand = null) {
+        const resultDiv = document.getElementById(elementId);
+
+        // Clear previous content
+        resultDiv.innerHTML = '';
+
+        // Set classes based on type
+        let borderColor, textColor, bgColor;
+        switch(type) {
+            case 'success':
+                borderColor = 'border-green-200';
+                textColor = 'text-green-700';
+                bgColor = 'bg-green-50';
+                break;
+            case 'error':
+                borderColor = 'border-red-200';
+                textColor = 'text-red-700';
+                bgColor = 'bg-red-50';
+                break;
+            default:
+                borderColor = 'border-blue-200';
+                textColor = 'text-blue-700';
+                bgColor = 'bg-blue-50';
+        }
+
+        resultDiv.className = `mt-6 border rounded-lg ${borderColor} ${bgColor} overflow-hidden`;
+
+        // Create message header
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `p-4 ${textColor} font-medium border-b ${borderColor}`;
+        messageDiv.textContent = message;
+        resultDiv.appendChild(messageDiv);
+
+        // Create curl command section if provided
+        if (curlCommand) {
+            const curlDiv = document.createElement('div');
+            curlDiv.className = 'border-b border-gray-200 bg-gray-900 text-gray-100 p-4';
+
+            const curlHeader = document.createElement('div');
+            curlHeader.className = 'flex items-center justify-between mb-2';
+            curlHeader.innerHTML = `
+                    <span class="text-sm font-medium text-gray-300">📡 cURL Request</span>
+                    <button onclick="copyToClipboard(\`${curlCommand.replace(/`/g, '\\`')}\`)"
+                            class="text-xs text-gray-400 hover:text-white underline">
+                        copy
+                    </button>
+                `;
+
+            const curlCode = document.createElement('pre');
+            curlCode.className = 'text-sm font-mono whitespace-pre-wrap text-gray-100 overflow-x-auto';
+            curlCode.textContent = curlCommand;
+
+            curlDiv.appendChild(curlHeader);
+            curlDiv.appendChild(curlCode);
+            resultDiv.appendChild(curlDiv);
+        }
+
+        // Create JSON data section if data exists
+        if (data) {
+            const jsonDiv = document.createElement('div');
+            jsonDiv.className = 'p-4 font-mono text-sm text-gray-800 max-h-96 overflow-y-auto bg-white';
+
+            const jsonHeader = document.createElement('div');
+            jsonHeader.className = 'flex items-center justify-between mb-2 font-sans';
+            jsonHeader.innerHTML = `
+                    <span class="text-sm font-medium text-gray-600">📄 Response</span>
+                    <button onclick="copyToClipboard(\`${JSON.stringify(data, null, 2).replace(/`/g, '\\`')}\`)"
+                            class="text-xs text-gray-500 hover:text-gray-700 underline">
+                        copy json
+                    </button>
+                `;
+
+            const preElement = document.createElement('pre');
+            preElement.className = 'whitespace-pre-wrap';
+            preElement.textContent = JSON.stringify(data, null, 2);
+
+            jsonDiv.appendChild(jsonHeader);
+            jsonDiv.appendChild(preElement);
+            resultDiv.appendChild(jsonDiv);
+        }
+
+        // Auto-fill payment ID in other tabs if this was a create operation
+        if (type === 'success' && data && data.payment_link_id) {
+            document.getElementById('paymentIdDetails').value = data.payment_link_id;
+            document.getElementById('paymentIdStatus').value = data.payment_link_id;
+            document.getElementById('paymentIdResolve').value = data.payment_link_id;
+        }
+    }
+
+    // Generate curl command
+    function generateCurlCommand(endpoint, method = 'POST', data = null) {
+        const apiKey = document.getElementById('apiKey').value;
+        const originHeader = document.getElementById('originHeader').value;
+        const url = `${API_BASE}${endpoint}`;
+
+        let curl = `curl --request ${method} \\\n`;
+        curl += `     --url '${url}' \\\n`;
+        curl += `     --header 'Authorization: ${apiKey}' \\\n`;
+        curl += `     --header 'Accept: application/json' \\\n`;
+        curl += `     --header 'Content-Type: application/json'`;
+
+        // Add Origin header if provided
+        if (originHeader) {
+            curl += ` \\\n     --header 'Origin: https://${originHeader}'`;
+        }
+
+        if (data) {
+            curl += ` \\\n     --data '${JSON.stringify(data, null, 2)}'`;
+        }
+
+        return curl;
+    }
+
+    // Loading state management
+    function setLoading(btnId, loaderId, isLoading) {
+        const btn = document.getElementById(btnId);
+        const loader = document.getElementById(loaderId);
+
+        btn.disabled = isLoading;
+        loader.style.display = isLoading ? 'inline-block' : 'none';
+    }
+
+    // Fill example data
+    function fillExampleData() {
+        // Basic payment info
+        document.getElementById('amount').value = '299.99';
+        document.getElementById('title').value = 'Premium Service Invoice #INV-2024-001';
+        document.getElementById('description').value = 'Annual premium subscription with advanced features and priority support';
+        document.getElementById('singleUse').value = 'true';
+
+        // Set expiry date to 30 days from now
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 30);
+        document.getElementById('selectedDate').value = expiryDate.toISOString().slice(0, 16);
+
+        // Customer info
+        document.getElementById('client_first_name').value = 'Ahmed';
+        document.getElementById('client_last_name').value = 'Al-Rashid';
+        document.getElementById('client_email').value = 'ahmed@example.com';
+        document.getElementById('client_phone_number').value = '+966501234567';
+
+        // Address info
+        document.getElementById('client_street1').value = '123 King Fahd Road';
+        document.getElementById('client_street2').value = 'Suite 100';
+        document.getElementById('client_city').value = 'Riyadh';
+        document.getElementById('client_state').value = 'Riyadh Province';
+        document.getElementById('client_country').value = 'SA';
+        document.getElementById('client_postcode').value = '12345';
+
+        // Settings
+        document.getElementById('language').value = 'en';
+        document.getElementById('sms_language').value = 'ar';
+        document.getElementById('send_sms').checked = true;
+        document.getElementById('callback_url').value = 'https://shop.amwal.tech/webhook/payment-complete';
+        document.getElementById('branch').value = '';
+        document.getElementById('metadata').value = JSON.stringify({
+            "order_id": "ORD-2024-001",
+            "customer_id": "CUST-12345",
+            "product_category": "subscription",
+            "sales_rep": "john.doe"
+        }, null, 2);
+    }
+
+    // Validate installment options
+    function validateInstallmentOptions() {
+        const bankInstallments = document.getElementById('only_show_bank_installments');
+        const payInFull = document.getElementById('only_show_pay_in_full');
+
+        if (bankInstallments.checked && payInFull.checked) {
+            payInFull.checked = false;
+            alert('Cannot enable both "only bank installments" and "only full payment" options');
+        }
+    }
+
+    // Add event listeners for installment validation
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('only_show_bank_installments').addEventListener('change', validateInstallmentOptions);
+        document.getElementById('only_show_pay_in_full').addEventListener('change', validateInstallmentOptions);
+    });
+
+    // Create Payment
+    document.getElementById('createPaymentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        setLoading('createBtn', 'createLoader', true);
+
+        try {
+            const storeId = document.getElementById('storeId').value;
+
+            // Build payment data object
+            const paymentData = {
+                amount: parseFloat(document.getElementById('amount').value),
+                title: document.getElementById('title').value,
+                singleUse: document.getElementById('singleUse').value === 'true'
+            };
+
+            // Add optional fields only if they have values
+            const description = document.getElementById('description').value.trim();
+            if (description) paymentData.description = description;
+
+            const selectedDate = document.getElementById('selectedDate').value;
+            if (selectedDate) paymentData.selectedDate = new Date(selectedDate).toISOString();
+
+            const firstName = document.getElementById('client_first_name').value.trim();
+            if (firstName) paymentData.client_first_name = firstName;
+
+            const lastName = document.getElementById('client_last_name').value.trim();
+            if (lastName) paymentData.client_last_name = lastName;
+
+            const email = document.getElementById('client_email').value.trim();
+            if (email) paymentData.client_email = email;
+
+            const phone = document.getElementById('client_phone_number').value.trim();
+            if (phone) {
+                // Validate phone number format
+                if (!phone.match(/^\+[1-9]\d{1,14}$/)) {
+                    throw new Error('Please enter a valid phone number in international format (e.g., +966501234567)');
+                }
+                paymentData.client_phone_number = phone;
+            }
+
+            // Address fields
+            const street1 = document.getElementById('client_street1').value.trim();
+            if (street1) paymentData.client_street1 = street1;
+
+            const street2 = document.getElementById('client_street2').value.trim();
+            if (street2) paymentData.client_street2 = street2;
+
+            const city = document.getElementById('client_city').value.trim();
+            if (city) paymentData.client_city = city;
+
+            const state = document.getElementById('client_state').value.trim();
+            if (state) paymentData.client_state = state;
+
+            const country = document.getElementById('client_country').value;
+            if (country) paymentData.client_country = country;
+
+            const postcode = document.getElementById('client_postcode').value.trim();
+            if (postcode) paymentData.client_postcode = postcode;
+
+            // Settings
+            paymentData.address_required = document.getElementById('address_required').checked;
+            paymentData.language = document.getElementById('language').value;
+            paymentData.sms_language = document.getElementById('sms_language').value;
+            paymentData.send_sms = document.getElementById('send_sms').checked;
+            paymentData.passkey_enabled = document.getElementById('passkey_enabled').checked;
+            paymentData.only_show_bank_installments = document.getElementById('only_show_bank_installments').checked;
+            paymentData.only_show_pay_in_full = document.getElementById('only_show_pay_in_full').checked;
+
+            const callbackUrl = document.getElementById('callback_url').value.trim();
+            if (callbackUrl) paymentData.callback_url = callbackUrl;
+
+            const branch = document.getElementById('branch').value.trim();
+            if (branch) paymentData.branch = branch;
+
+            const metadataText = document.getElementById('metadata').value.trim();
+            if (metadataText) {
+                try {
+                    paymentData.metadata = JSON.parse(metadataText);
+                } catch (error) {
+                    throw new Error('Invalid JSON in metadata field');
+                }
+            }
+
+            const result = await makeAPICall(`/payment_links/${storeId}/create`, 'POST', paymentData);
+
+            // Generate curl command for display
+            const curlCommand = generateCurlCommand(`/payment_links/${storeId}/create`, 'POST', paymentData);
+            showResult('createResult', '✅ Payment link created successfully', result, 'success', curlCommand);
+
+            // Add helpful instructions
+            addInstructions('createResult', result.payment_link_id);
+
+        } catch (error) {
+            const storeId = document.getElementById('storeId').value;
+            const curlCommand = generateCurlCommand(`/payment_links/${storeId}/create`, 'POST', {});
+            showResult('createResult', '❌ Error creating payment', { error: error.message }, 'error', curlCommand);
+        } finally {
+            setLoading('createBtn', 'createLoader', false);
+        }
+    });
+
+    // Get Payment Details
+    async function getPaymentDetails() {
+        const paymentId = document.getElementById('paymentIdDetails').value.trim();
+
+        if (!paymentId) {
+            showResult('detailsResult', '❌ Error', { error: 'Please enter a payment link ID' }, 'error');
+            return;
+        }
+
+        setLoading('detailsBtn', 'detailsLoader', true);
+
+        try {
+            const requestData = {
+                page: parseInt(document.getElementById('detailsPage').value) || 1,
+                page_size: parseInt(document.getElementById('detailsPageSize').value) || 10
+            };
+
+            const result = await makeAPICall(`/payment_links/${paymentId}/details`, 'POST', requestData);
+            const curlCommand = generateCurlCommand(`/payment_links/${paymentId}/details`, 'POST', requestData);
+            showResult('detailsResult', '✅ Payment details retrieved successfully', result, 'success', curlCommand);
+        } catch (error) {
+            const curlCommand = generateCurlCommand(`/payment_links/${paymentId}/details`, 'POST', {});
+            showResult('detailsResult', '❌ Error getting payment details', { error: error.message }, 'error', curlCommand);
+        } finally {
+            setLoading('detailsBtn', 'detailsLoader', false);
+        }
+    }
+
+    // List Payments
+    async function listPayments() {
+        setLoading('listBtn', 'listLoader', true);
+
+        try {
+            const storeId = document.getElementById('storeId').value;
+            const listData = {
+                page: parseInt(document.getElementById('page').value) || 1,
+                page_size: parseInt(document.getElementById('pageSize').value) || 10,
+                sort_by: document.getElementById('sortBy').value,
+                sort_order: document.getElementById('sortOrder').value
+            };
+
+            const search = document.getElementById('search').value.trim();
+            if (search) listData.search = search;
+
+            const result = await makeAPICall(`/payment_links/${storeId}/`, 'POST', listData);
+
+            // Generate curl command for display
+            const curlCommand = generateCurlCommand(`/payment_links/${storeId}/`, 'POST', listData);
+
+            // Show summary
+            showResult('listResult', `📊 Found ${result.count} total payments (Page ${listData.page})`, null, 'info', curlCommand);
+
+            // Create payment cards
+            if (result.results && result.results.length > 0) {
+                const paymentGrid = document.createElement('div');
+                paymentGrid.className = 'mt-6 space-y-3';
+
+                result.results.forEach(payment => {
+                    const card = createPaymentCard(payment);
+                    paymentGrid.appendChild(card);
+                });
+
+                document.getElementById('listResult').appendChild(paymentGrid);
+
+                // Add pagination info
+                if (result.next || result.previous) {
+                    const paginationDiv = document.createElement('div');
+                    paginationDiv.className = 'mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600';
+                    paginationDiv.innerHTML = `
+                            <div class="flex justify-between items-center">
+                                <span>Showing ${result.results.length} payments on page ${listData.page}</span>
+                                <div class="space-x-2">
+                                    ${result.previous ? '<span class="text-blue-600">← Previous page available</span>' : ''}
+                                    ${result.next ? '<span class="text-blue-600">Next page available →</span>' : ''}
+                                </div>
+                            </div>
+                        `;
+                    document.getElementById('listResult').appendChild(paginationDiv);
+                }
+            } else {
+                const noResults = document.createElement('div');
+                noResults.className = 'mt-6 p-8 text-center text-gray-500';
+                noResults.innerHTML = '📭 No payments found for the current search criteria';
+                document.getElementById('listResult').appendChild(noResults);
+            }
+
+        } catch (error) {
+            const storeId = document.getElementById('storeId').value;
+            const listData = {
+                page: parseInt(document.getElementById('page').value) || 1,
+                page_size: parseInt(document.getElementById('pageSize').value) || 10,
+                sort_by: document.getElementById('sortBy').value,
+                sort_order: document.getElementById('sortOrder').value
+            };
+            const curlCommand = generateCurlCommand(`/payment_links/${storeId}/`, 'POST', listData);
+            showResult('listResult', '❌ Error listing payments', { error: error.message }, 'error', curlCommand);
+        } finally {
+            setLoading('listBtn', 'listLoader', false);
+        }
+    }
+
+    // Create Payment Card
+    function createPaymentCard(payment) {
+        const card = document.createElement('div');
+        card.className = 'border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors bg-white';
+
+        const getStatusColor = (status) => {
+            switch(status.toLowerCase()) {
+                case 'unpaid': return 'text-amber-600 bg-amber-50';
+                case 'paid': return 'text-green-600 bg-green-50';
+                case 'expired': return 'text-gray-600 bg-gray-50';
+                default: return 'text-blue-600 bg-blue-50';
+            }
+        };
+
+        const statusColor = getStatusColor(payment.status);
+        const date = new Date(payment.created_at).toLocaleString();
+        const amount = payment.amount ? parseFloat(payment.amount).toFixed(2) : 'N/A';
+
+        card.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <h4 class="font-medium text-gray-900 flex-1 mr-3">${payment.title || 'Untitled Payment'}</h4>
+                    <span class="text-sm px-2 py-1 rounded-full font-medium ${statusColor}">${payment.status}</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 text-sm text-gray-600">
+                    <div><span class="font-medium">💰 Amount:</span> ${amount} SAR</div>
+                    <div><span class="font-medium">📅 Created:</span> ${date}</div>
+                    ${payment.single_use !== undefined ? `<div><span class="font-medium">🔄 Usage:</span> ${payment.single_use ? 'Single Use' : 'Multi Use'}</div>` : ''}
+                    ${payment.expiry_date ? `<div><span class="font-medium">⏰ Expires:</span> ${new Date(payment.expiry_date).toLocaleDateString()}</div>` : ''}
+                    <div class="md:col-span-2">
+                        <span class="font-medium">🆔 ID:</span>
+                        <code class="text-xs bg-gray-100 px-1 py-0.5 rounded font-mono">${payment.id}</code>
+                        <button onclick="copyToClipboard('${payment.id}')" class="ml-2 text-xs text-gray-500 hover:text-gray-700 underline">copy</button>
+                    </div>
+                    <div class="md:col-span-2"><span class="font-medium">👤 Creator:</span> ${payment.created_by_email || 'N/A'}</div>
+                    ${payment.description ? `<div class="md:col-span-2"><span class="font-medium">📝 Description:</span> ${payment.description}</div>` : ''}
+                    ${payment.branch_name ? `<div><span class="font-medium">🏪 Branch:</span> ${payment.branch_name}</div>` : ''}
+                    ${payment.client_first_name || payment.client_last_name ? `<div><span class="font-medium">👤 Customer:</span> ${[payment.client_first_name, payment.client_last_name].filter(Boolean).join(' ')}</div>` : ''}
+                    ${payment.client_email ? `<div><span class="font-medium">📧 Email:</span> ${payment.client_email}</div>` : ''}
+                    ${payment.client_phone_number ? `<div><span class="font-medium">📱 Phone:</span> ${payment.client_phone_number}</div>` : ''}
+                </div>
+                <div class="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+                    <button onclick="viewPaymentLink('${payment.id}')" class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 transition-colors">
+                        🔗 View Payment Link
+                    </button>
+                    <button onclick="document.getElementById('paymentIdDetails').value='${payment.id}'; showTab('details')" class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200 transition-colors">
+                        📋 View Details
+                    </button>
+                    <button onclick="document.getElementById('paymentIdResolve').value='${payment.id}'; showTab('resolve')" class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded hover:bg-orange-200 transition-colors">
+                        🔧 Test Resolve
+                    </button>
+                </div>
+            `;
+
+        return card;
+    }
+
+    // View payment link
+    function viewPaymentLink(paymentId) {
+        const url = `https://pay.sa.amwal.tech/payment-link/${paymentId}`;
+        window.open(url, '_blank');
+    }
+
+    // Resolve Payment Link
+    async function resolvePaymentLink() {
+        const paymentId = document.getElementById('paymentIdResolve').value.trim();
+
+        if (!paymentId) {
+            showResult('resolveResult', '❌ Error', { error: 'Please enter a payment link ID' }, 'error');
+            return;
+        }
+
+        setLoading('resolveBtn', 'resolveLoader', true);
+
+        try {
+            const result = await makeAPICall(`/payment_links/${paymentId}/resolve`, 'POST', {});
+            const curlCommand = generateCurlCommand(`/payment_links/${paymentId}/resolve`, 'POST', {});
+            showResult('resolveResult', '✅ Payment link resolved successfully', result, 'success', curlCommand);
+
+            // Add interpretation
+            const interpretation = document.createElement('div');
+            interpretation.className = 'mt-4 p-3 bg-green-50 rounded-lg text-sm';
+            interpretation.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg">✅</span>
+                        <span class="text-green-700">Payment link is valid and ready for payment processing. A transaction has been created.</span>
+                    </div>
+                `;
+            document.getElementById('resolveResult').appendChild(interpretation);
+
+        } catch (error) {
+            const curlCommand = generateCurlCommand(`/payment_links/${paymentId}/resolve`, 'POST', {});
+            let errorMessage = '❌ Error resolving payment link';
+            let interpretation = '';
+
+            if (error.message.includes('Unauthorized Origin')) {
+                errorMessage = '❌ Unauthorized Origin Error';
+                interpretation = `
+                        <div class="mt-4 p-3 bg-red-50 rounded-lg text-sm">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">🚫</span>
+                                <span class="text-red-700 font-medium">Origin header validation failed</span>
+                            </div>
+                            <p class="text-red-600 text-xs">
+                                The Origin header "${document.getElementById('originHeader').value}" is not authorized.
+                                Try changing it to "amwal-tech.github.io" or contact support to whitelist your domain.
+                            </p>
+                        </div>
+                    `;
+            } else if (error.message.includes('expired')) {
+                interpretation = `
+                        <div class="mt-4 p-3 bg-orange-50 rounded-lg text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg">⏰</span>
+                                <span class="text-orange-700">Payment link has expired and can no longer be used</span>
+                            </div>
+                        </div>
+                    `;
+            } else if (error.message.includes('already used')) {
+                interpretation = `
+                        <div class="mt-4 p-3 bg-orange-50 rounded-lg text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg">🔒</span>
+                                <span class="text-orange-700">This single-use payment link has already been used</span>
+                            </div>
+                        </div>
+                    `;
+            }
+
+            showResult('resolveResult', errorMessage, { error: error.message }, 'error', curlCommand);
+
+            if (interpretation) {
+                document.getElementById('resolveResult').insertAdjacentHTML('beforeend', interpretation);
+            }
+        } finally {
+            setLoading('resolveBtn', 'resolveLoader', false);
+        }
+    }
+
+    // Check Payment Status
+    async function checkPaymentStatus() {
+        const paymentId = document.getElementById('paymentIdStatus').value.trim();
+
+        if (!paymentId) {
+            showResult('statusResult', '❌ Error', { error: 'Please enter a payment link ID' }, 'error');
+            return;
+        }
+
+        setLoading('statusBtn', 'statusLoader', true);
+
+        try {
+            const result = await makeAPICall(`/payment_links/${paymentId}/details`, 'POST', {});
+            const status = result.payment_link.status;
+            const curlCommand = generateCurlCommand(`/payment_links/${paymentId}/details`, 'POST', {});
+
+            const statusSummary = {
+                payment_id: paymentId,
+                status: status,
+                amount: result.payment_link.amount + ' SAR',
+                title: result.payment_link.title,
+                created_at: result.payment_link.created_at,
+                is_expired: result.payment_link.is_expired,
+                enabled: result.payment_link.enabled,
+                single_use: result.payment_link.single_use,
+                transaction_count: result.transactions ? result.transactions.length : 0
+            };
+
+            showResult('statusResult', `⚡ Payment Status: ${status}`, statusSummary, 'success', curlCommand);
+
+            // Add quick status interpretation
+            const interpretation = document.createElement('div');
+            interpretation.className = 'mt-4 p-3 bg-gray-50 rounded-lg text-sm';
+
+            let statusMessage = '';
+            let statusIcon = '';
+
+            switch(status.toLowerCase()) {
+                case 'unpaid':
+                    statusMessage = 'Payment is awaiting completion. The link is active and ready for use.';
+                    statusIcon = '⏳';
+                    break;
+                case 'paid':
+                    statusMessage = 'Payment has been completed successfully.';
+                    statusIcon = '✅';
+                    break;
+                case 'expired':
+                    statusMessage = 'Payment link has expired and can no longer accept payments.';
+                    statusIcon = '⛔';
+                    break;
+                default:
+                    statusMessage = 'Check the detailed response for more information.';
+                    statusIcon = 'ℹ️';
+            }
+
+            interpretation.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg">${statusIcon}</span>
+                        <span class="text-gray-700">${statusMessage}</span>
+                    </div>
+                `;
+
+            document.getElementById('statusResult').appendChild(interpretation);
+
+        } catch (error) {
+            const curlCommand = generateCurlCommand(`/payment_links/${paymentId}/details`, 'POST', {});
+            showResult('statusResult', '❌ Error checking status', { error: error.message }, 'error', curlCommand);
+        } finally {
+            setLoading('statusBtn', 'statusLoader', false);
+        }
+    }
+
+    // Add helpful instructions after successful payment creation
+    function addInstructions(elementId, paymentLinkId) {
+        const resultDiv = document.getElementById(elementId);
+        const paymentUrl = `https://pay.sa.amwal.tech/payment-link/${paymentLinkId}`;
+
+        const instructionsDiv = document.createElement('div');
+        instructionsDiv.className = 'mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg';
+
+        instructionsDiv.innerHTML = `
+                <h4 class="font-medium text-blue-900 mb-2">🎉 Next Steps</h4>
+                <div class="text-sm text-blue-800 space-y-2">
+                    <p>Your payment link has been created successfully! Here's what you can do next:</p>
+                    <ul class="list-disc list-inside space-y-1 ml-2">
+                        <li>Use the <strong>Payment Details</strong> tab to view complete payment information and transactions</li>
+                        <li>Use the <strong>Check Status</strong> tab to monitor payment status changes</li>
+                        <li>
+                            <a href="${paymentUrl}" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-medium">
+                                🔗 Open payment link
+                            </a>
+                            to test the payment flow directly
+                        </li>
+                        <li>Share the payment URL with your customer via email, SMS, or QR code</li>
+                        ${document.getElementById('callback_url').value ? '<li>Monitor your webhook endpoint for payment status updates</li>' : ''}
+                    </ul>
+                    <div class="mt-3 pt-2 border-t border-blue-200">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-blue-600">
+                                💡 Payment ID has been auto-filled in other tabs
+                            </p>
+                            <div class="flex gap-2">
+                                <button onclick="copyToClipboard('${paymentUrl}')"
+                                        class="text-xs text-blue-600 hover:text-blue-800 underline">
+                                    Copy Payment URL
+                                </button>
+                                <button onclick="copyToClipboard('${paymentLinkId}')"
+                                        class="text-xs text-blue-600 hover:text-blue-800 underline">
+                                    Copy Payment ID
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        resultDiv.appendChild(instructionsDiv);
+    }
+
+    // Copy to clipboard function
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '✓ copied';
+            button.classList.add('text-green-600');
+
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('text-green-600');
+            }, 1500);
+        }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '✓ copied';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 1500);
+        });
+    }
+
+    // Auto-populate some example data on load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set default expiry to 30 days from now
+        const defaultExpiry = new Date();
+        defaultExpiry.setDate(defaultExpiry.getDate() + 30);
+        document.getElementById('selectedDate').value = defaultExpiry.toISOString().slice(0, 16);
+    });
+
+    // Add Enter key support for input fields
+    document.getElementById('paymentIdDetails').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') getPaymentDetails();
+    });
+
+    document.getElementById('paymentIdStatus').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkPaymentStatus();
+    });
+
+    document.getElementById('paymentIdResolve').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') resolvePaymentLink();
+    });
+
+    document.getElementById('search').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') listPayments();
+    });
+</script>
+</body>
+</html>
