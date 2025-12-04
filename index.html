@@ -1,1728 +1,2123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
-    <title>Amwal Checkout Implementation</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Amwal Checkout Button -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/amwal-checkout-button@latest/dist/checkout/checkout.esm.js"></script>
-    <style type="text/tailwindcss">
-        /* Base styles */
-        body {
-            @apply bg-gray-100 min-h-screen;
-        }
-        .container {
-            @apply mx-auto px-4 py-8 max-w-6xl;
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"/>
+
+  <!-- Primary Meta Tags -->
+  <title>Checkout - Amwal Store | Secure and Flexible Bank Installments Payments</title>
+  <meta name="title" content="Checkout - Amwal Store | Secure and Flexible Bank Installments Payments"/>
+  <meta name="description" content="Complete your purchase securely with Amwal's advanced checkout system. Bank installments available with 0 fees. Fast, secure, throw 0% Sharia compliant 12 months installments."/>
+  <meta name="keywords" content="amwal, checkout, payment gateway, bank installments, secure payment, saudi arabia, fintech, e-commerce"/>
+  <meta name="author" content="Amwal"/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="https://cdn.prod.website-files.com/62294ce746440b7bc08b4fc5/63233e5f7a6ac8f35140a0f0_Vector.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.prod.website-files.com/62294ce746440b7bc08b4fc5/63233e5f7a6ac8f35140a0f0_Vector.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.prod.website-files.com/62294ce746440b7bc08b4fc5/63233e5f7a6ac8f35140a0f0_Vector.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.prod.website-files.com/62294ce746440b7bc08b4fc5/63233e5f7a6ac8f35140a0f0_Vector.png"/>
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Checkout - Amwal Store | Secure and Flexible Bank Installments Payments"/>
+  <meta property="og:description" content="Complete your purchase securely with Amwal's advanced checkout system. Bank installments available with 0 fees, throw 0% Sharia compliant 12 months installments."/>
+  <meta property="og:image" content="https://cdn.prod.website-files.com/62294ce746440b7bc08b4fc5/63233e5f7a6ac8f35140a0f0_Vector.png"/>
+  <meta property="og:url" content="https://example.amwal.tech"/>
+  <meta property="og:site_name" content="Amwal Store"/>
+  <meta property="og:locale" content="en_US"/>
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Checkout - Amwal Store | Secure and Flexible Bank Installments Payments"/>
+  <meta name="twitter:description" content="Complete your purchase securely with Amwal's advanced checkout system. Bank installments available with 0 fees, throw 0% Sharia compliant 12 months installments."/>
+  <meta name="twitter:image" content="https://media.licdn.com/dms/image/v2/D4D3DAQEmJdGRqNTsiQ/image-scale_191_1128/B4DZU3QO_xG8Ao-/0/1740388758185/amwal_tech_cover?e=1762182000&v=beta&t=v-LcAzFmkfNwzY_ngv4xaxP5G0DtGZhIXsIW9Mx9nsg"/>
+  <meta name="twitter:site" content="@amwal_tech"/>
+  <meta name="twitter:creator" content="@amwal_tech"/>
+
+  <!-- Additional Meta Tags -->
+  <meta name="theme-color" content="#2563eb"/>
+  <meta name="msapplication-TileColor" content="#2563eb"/>
+  <meta name="msapplication-TileImage" content="https://media.licdn.com/dms/image/v2/D4D3DAQEmJdGRqNTsiQ/image-scale_191_1128/B4DZU3QO_xG8Ao-/0/1740388758185/amwal_tech_cover?e=1762182000&v=beta&t=v-LcAzFmkfNwzY_ngv4xaxP5G0DtGZhIXsIW9Mx9nsg"/>
+
+  <!-- Preconnect to external domains for performance -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
+  <link rel="preconnect" href="https://cdn.prod.website-files.com" crossorigin/>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/amwal-checkout-button@latest/dist/checkout/checkout.esm.js"></script>
+
+  <!-- Structured Data for E-commerce -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Checkout - Amwal Store",
+      "description": "Complete your purchase securely with Amwal's advanced checkout system. Bank installments available with 0 fees, throw 0% Sharia compliant 12 months installments",
+      "url": "https://example.amwal.tech",
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "Amwal",
+        "url": "https://www.amwal.tech",
+        "logo": "https://cdn.prod.website-files.com/62294ce746440b7bc08b4fc5/63233e5f7a6ac8f35140a0f0_Vector.png",
+        "sameAs": [
+          "https://github.com/amwal-tech"
+        ]
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer base {
+      body {
+        @apply bg-white;
+      }
+    }
+
+    @layer components {
+      .input-field {
+        @apply w-full px-3 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-base;
+      }
+
+      .input-field:focus {
+        @apply outline-none;
+      }
+
+      .btn-primary {
+        @apply bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-4 rounded-md transition-all w-full text-base;
+      }
+
+      .section-header {
+        @apply flex items-center justify-between mb-4 pb-3 border-b border-gray-200;
+      }
+
+      .breadcrumb {
+        @apply flex items-center gap-2 text-sm flex-wrap;
+      }
+
+      .breadcrumb-item {
+        @apply text-blue-600 hover:text-blue-700;
+      }
+
+      .breadcrumb-separator {
+        @apply text-gray-400;
+      }
+
+      .payment-method {
+        @apply border border-gray-300 rounded-md p-4 cursor-pointer transition-all hover:border-gray-400;
+      }
+
+      .payment-method.selected {
+        @apply border-blue-600 bg-blue-50;
+      }
+
+      .order-summary-item {
+        @apply flex gap-4 pb-4 border-b border-gray-200;
+      }
+
+      .header-nav {
+        @apply bg-white border-b border-gray-200 sticky top-0 z-40;
+      }
+
+      .nav-link {
+        @apply text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors;
+      }
+
+      .nav-link.active {
+        @apply text-blue-600 bg-blue-50;
+      }
+
+      .nav-button {
+        @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors;
+      }
+
+      .nav-button-outline {
+        @apply border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 px-4 py-2 rounded-md text-sm font-medium transition-colors;
+      }
+
+      .env-badge {
+        @apply inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium;
+      }
+
+      .env-badge.sandbox {
+        @apply bg-yellow-100 text-yellow-800;
+      }
+
+      .env-badge.production {
+        @apply bg-green-100 text-green-800;
+      }
+
+      .env-badge.custom {
+        @apply bg-purple-100 text-purple-800;
+      }
+
+      .env-toolbar {
+        @apply fixed bottom-6 right-6 z-50 bg-white rounded-lg shadow-2xl border border-gray-300;
+        max-width: 400px;
+        transition: all 0.3s ease;
+      }
+
+      .env-toolbar.collapsed {
+        width: auto;
+      }
+
+      .env-toolbar.expanded {
+        width: 400px;
+      }
+
+      .env-toolbar-header {
+        @apply px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 rounded-t-lg flex items-center justify-between cursor-pointer;
+      }
+
+      .env-toolbar-content {
+        @apply p-4 max-h-96 overflow-y-auto;
+      }
+
+      .env-form-group {
+        @apply mb-4;
+      }
+
+      .env-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+      }
+
+      .env-input {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+      }
+
+      .env-select {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white;
+      }
+
+      .env-btn {
+        @apply px-4 py-2 rounded-md text-sm font-medium transition-colors;
+      }
+
+      .env-btn-primary {
+        @apply bg-blue-600 hover:bg-blue-700 text-white;
+      }
+
+      .env-btn-secondary {
+        @apply bg-gray-200 hover:bg-gray-300 text-gray-700;
+      }
+
+      .env-toggle-btn {
+        @apply fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg transition-all;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .env-toggle-btn.toolbar-open {
+        @apply opacity-0 pointer-events-none;
+      }
+
+      @media (max-width: 640px) {
+        .env-toolbar {
+          @apply bottom-0 right-0 left-0 rounded-t-lg rounded-b-none;
+          max-width: 100%;
         }
 
-        /* Tabs */
-        .tab-active {
-            @apply bg-blue-600 text-white;
-        }
-        .tab-inactive {
-            @apply bg-gray-200 hover:bg-gray-300 transition-colors;
+        .env-toolbar.expanded {
+          width: 100%;
         }
 
-        /* Cards and sections */
-        .card {
-            @apply bg-white rounded-lg shadow-md p-6 mb-6;
-        }
-        .section-title {
-            @apply text-xl font-bold mb-4;
+        .env-toggle-btn {
+          @apply bottom-4 right-4;
+          width: 48px;
+          height: 48px;
         }
 
-        /* Form elements */
-        .form-group {
-            @apply mb-4;
+        .env-toolbar-content {
+          max-height: 60vh;
         }
-        .form-label {
-            @apply block text-gray-700 mb-2 font-medium;
-        }
-        .qty-control {
-            @apply flex items-center border rounded-md overflow-hidden;
-        }
-        .qty-btn {
-            @apply py-2 px-4 bg-gray-100 hover:bg-gray-200 transition-colors;
-        }
-        .qty-input {
-            @apply py-2 px-4 text-center w-full;
-        }
+      }
+    }
 
-        /* Payment methods */
-        .payment-option {
-            @apply flex items-center p-3 border rounded-lg cursor-pointer bg-white hover:bg-gray-50 mb-3 transition-colors;
-        }
-        .payment-option.selected {
-            @apply bg-blue-50 border-blue-300;
-        }
+    .loading-overlay {
+      @apply fixed inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-50;
+      display: none;
+    }
 
-        /* Toast notification */
-        .toast {
-            @apply fixed top-5 right-5 p-4 rounded-lg shadow-lg;
-            z-index: 100;
-            max-width: 300px;
-            transition: all 0.3s ease-in-out;
-            transform: translateY(-100px);
-            opacity: 0;
-        }
-        .toast.success {
-            @apply bg-green-500 text-white;
-        }
-        .toast.error {
-            @apply bg-red-500 text-white;
-        }
-        .toast.visible {
-            transform: translateY(0);
-            opacity: 1;
-        }
+    .spinner {
+      @apply w-10 h-10 border-3 border-gray-300 border-t-blue-600 rounded-full;
+      animation: spin 0.8s linear infinite;
+    }
 
-        /* Debug console */
-        .debug-console {
-            @apply fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 h-60 overflow-y-auto;
-            display: none;
-            z-index: 50;
-            font-family: monospace;
-        }
-        .debug-handle {
-            @apply fixed bottom-0 right-5 bg-gray-900 text-white px-3 py-1 rounded-t-lg cursor-pointer;
-            z-index: 51;
-        }
-        .debug-entry {
-            @apply mb-1 border-l-4 pl-2;
-        }
-        .debug-entry.INFO {
-            @apply border-blue-500;
-        }
-        .debug-entry.WARN {
-            @apply border-yellow-500;
-        }
-        .debug-entry.ERROR {
-            @apply border-red-500;
-        }
-        .debug-entry.DEBUG {
-            @apply border-gray-500;
-        }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
-        /* Loading overlay */
-        .loading-overlay {
-            @apply fixed inset-0 bg-black/50 flex items-center justify-center;
-            z-index: 200;
-            display: none;
-        }
-        .spinner {
-            @apply w-10 h-10 border-4 border-white/30 border-t-white rounded-full;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .bg-gray-100{
-            background-color: #f3f4f6 !important;
-        }
-    </style>
-    <script>
-        window.fwSettings={
-            'widget_id':501000001543,
-            'custom_fields': {
-                'source': 'custom',
-                'page_url': window.location.href,
-                'referrer': document.referrer
-            }
-        };
-        !function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}()
-    </script>
-    <script type='text/javascript' src='https://mec-widget.freshworks.com/widgets/501000001543.js' async defer></script>
+    .toast {
+      @apply fixed top-5 right-5 p-4 rounded-md shadow-lg z-50 flex items-center gap-3;
+      max-width: calc(100vw - 40px);
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+    }
 
+    @media (max-width: 640px) {
+      .toast {
+        @apply top-auto bottom-5 left-5 right-5 max-w-none;
+        transform: translateY(200px);
+      }
+
+      .toast.visible {
+        transform: translateY(0);
+      }
+    }
+
+    .toast.visible {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      @apply bg-green-600 text-white;
+    }
+
+    .toast.error {
+      @apply bg-red-600 text-white;
+    }
+
+    @media (max-width: 1024px) {
+      .order-summary-sidebar {
+        @apply border-b border-gray-200 bg-gray-50;
+      }
+    }
+
+    @media (max-width: 768px) {
+      /* Stack payment methods vertically on mobile */
+      .payment-method {
+        @apply mb-3;
+      }
+
+      /* Ensure buttons are full width on mobile */
+      .btn-primary,
+      .nav-button,
+      .nav-button-outline {
+        @apply w-full;
+      }
+
+      /* Better spacing on mobile */
+      .input-field {
+        @apply text-base; /* Prevent zoom on iOS */
+      }
+
+      /* Touch-friendly targets */
+      .payment-method {
+        @apply py-4;
+      }
+    }
+
+    @media (max-width: 640px) {
+      /* Smaller padding on mobile */
+      .max-w-2xl,
+      .max-w-xl {
+        @apply px-4;
+      }
+
+      /* Stack discount code input and button */
+      .discount-container {
+        @apply flex-col;
+      }
+
+      .discount-container button {
+        @apply w-full;
+      }
+    }
+
+    .express-checkout {
+      @apply border border-gray-300 rounded-md p-4 hover:bg-gray-50 transition-all cursor-pointer text-center font-medium;
+      min-height: 48px; /* Ensure touch-friendly height */
+    }
+
+    .badge-quantity {
+      @apply absolute -top-2 -right-2 bg-gray-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold;
+    }
+
+    /* Prevent iOS zoom on input focus */
+    @supports (-webkit-touch-callout: none) {
+      input,
+      select,
+      textarea {
+        font-size: 16px !important;
+      }
+    }
+
+    /* Better mobile scrolling */
+    @media (max-width: 768px) {
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      }
+
+      /* Ensure payment buttons are touch-friendly */
+      .payment-method {
+        min-height: 60px;
+      }
+
+      /* Make radio buttons larger on mobile */
+      input[type="radio"] {
+        width: 20px;
+        height: 20px;
+      }
+      .desktop-menu {
+        display: none;
+      }
+    }
+
+
+  </style>
 </head>
-<body class="bg-gray-100">
-<div class="container">
-    <header class="mb-8">
-        <h1 class="text-3xl font-bold text-center text-blue-800">Amwal Checkout Implementation</h1>
-        <p class="text-center text-gray-600 mt-2">Complete implementation for both products and services</p>
-    </header>
+<body>
 
-    <!-- Documentation Card -->
-    <div class="card">
-        <h2 class="text-xl font-semibold text-blue-700 mb-4">Documentation & Getting Started</h2>
-
-        <div class="grid md:grid-cols-2 gap-6">
-            <div>
-                <h3 class="font-medium text-lg mb-2">Official Documentation</h3>
-                <ul class="space-y-2 text-gray-700">
-                    <li><a href="https://docs.amwal.tech/reference/getting-started-1#/" class="text-blue-600 hover:underline flex items-center" target="_blank" rel="noopener noreferrer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Api Reference
-                    </a></li>
-
-                    <li><a href="https://docs.amwal.tech/docs/woocommerce-installation-guide#/" class="text-blue-600 hover:underline flex items-center" target="_blank" rel="noopener noreferrer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        WooCommerce Plugin
-                    </a></li>
-                    <li><a href="https://docs.amwal.tech/docs/magento-installation#/" class="text-blue-600 hover:underline flex items-center" target="_blank" rel="noopener noreferrer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Magento Plugin
-                    </a></li>
-                    <li><a href="https://docs.amwal.tech/docs/shopify-installation-guide#/" class="text-blue-600 hover:underline flex items-center" target="_blank" rel="noopener noreferrer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Shopify Plugin
-                    </a></li>
-                    <li><a href="https://docs.amwal.tech" class="text-blue-600 hover:underline flex items-center" target="_blank" rel="noopener noreferrer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Amwal Documentation
-                    </a></li>
-                    <li><a href="https://qa-checkout.sa.amwal.tech/?path=/story/components-amwalcheckoutbutton--example&args=merchantId:sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333;enableInstallmentsTimeline:!false"  target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Playground
-                    </a></li>
-                    <li><a href="https://github.com/amwal-tech/exmaple" class="text-blue-600 hover:underline flex items-center" target="_blank" rel="noopener noreferrer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                        </svg>
-                        GitHub Examples
-                    </a></li>
-                </ul>
-
-                <div class="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
-                    <h3 class="font-medium text-blue-800 mb-2 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Implementation Notes
-                    </h3>
-                    <ul class="list-disc list-inside space-y-1 text-blue-900">
-                        <li>Ensure you have a valid merchant ID</li>
-                        <li>Test in the sandbox environment before going live</li>
-                        <li>Always implement proper error handling for failed transactions</li>
-                        <li>Use the debug console in this example to track events and troubleshoot issues</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="font-medium text-lg mb-2">Getting Started</h3>
-                <ol class="list-decimal list-inside space-y-2 text-gray-700">
-                    <li>Sign up for an Amwal account at <a href="https://merchant.sa.amwal.tech" class="text-blue-600 hover:underline">merchant.sa.amwal.tech</a></li>
-                    <li>Create a new merchant and get your <span class="bg-gray-100 px-1 rounded">merchant-id</span></li>
-                    <li>Install the Amwal Checkout button:</li>
-                    <div class="bg-gray-100 p-2 rounded my-2 text-sm font-mono">
-                        &lt;script type="module" src="https://cdn.jsdelivr.net/npm/amwal-checkout-button@latest/dist/checkout/checkout.esm.js"&gt;&lt;/script&gt;
-                    </div>
-                    <li>Add the Amwal Checkout button to your page:</li>
-                    <div class="bg-gray-100 p-2 rounded my-2 text-sm font-mono">
-                        &lt;amwal-checkout-button<br>
-                        &nbsp;&nbsp;merchant-id="your-merchant-id"<br>
-                        &nbsp;&nbsp;amount="100"<br>
-                        &nbsp;&nbsp;country-code="SA"<br>
-                        &nbsp;&nbsp;locale="en"&gt;<br>
-                        &lt;/amwal-checkout-button&gt;
-                    </div>
-                    <li>Set up event listeners to handle checkout results</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tab Navigation -->
-    <div class="flex justify-center mb-6">
-        <button id="product-tab" class="tab-active py-2 px-4 rounded-l-lg font-medium" aria-selected="true" role="tab">
-            Product Example
-        </button>
-        <button id="service-tab" class="tab-inactive py-2 px-4 rounded-r-lg font-medium" aria-selected="false" role="tab">
-            Service Example
-        </button>
-    </div>
-
-    <!-- Product Checkout Example -->
-    <div id="product-content" class="card" role="tabpanel" aria-labelledby="product-tab">
-        <div class="grid md:grid-cols-2 gap-8">
-            <!-- Product Image and Details -->
-            <div>
-                <div class="bg-gray-200 h-72 rounded-lg flex items-center justify-center">
-                    <span class="text-gray-500">Product Image</span>
-                </div>
-                <h2 class="text-xl font-bold mt-4">Premium Wireless Headphones</h2>
-                <div class="flex items-center mt-2">
-                    <div class="flex text-yellow-400">
-                        <!-- 5 stars -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                    </div>
-                    <span class="text-gray-600 ml-2">5.0 (128 reviews)</span>
-                </div>
-                <p class="text-gray-600 mt-4">Experience premium sound quality with these wireless headphones. Features noise cancellation, long battery life, and comfortable ear cushions.</p>
-
-                <div class="mt-4">
-                    <h3 class="font-semibold">Features:</h3>
-                    <ul class="list-disc pl-5 mt-2 text-gray-600">
-                        <li>Active noise cancellation</li>
-                        <li>40+ hours of battery life</li>
-                        <li>Fast charging - 5min for 3hrs of playback</li>
-                        <li>Bluetooth 5.2 connectivity</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Checkout Section -->
-            <div>
-                <div class="bg-gray-50 p-6 rounded-lg">
-                    <div class="flex justify-between mb-4">
-                        <span class="font-medium">Price:</span>
-                        <span class="font-bold" id="product-price">SAR 399.00</span>
-                    </div>
-                    <div class="flex justify-between mb-4">
-                        <span class="font-medium">Shipping:</span>
-                        <span id="product-shipping">SAR 20.00</span>
-                    </div>
-                    <div class="flex justify-between mb-4">
-                        <span class="font-medium">Tax:</span>
-                        <span id="product-tax">SAR 21.00</span>
-                    </div>
-                    <div class="border-t pt-4 mt-4 flex justify-between">
-                        <span class="font-bold">Total:</span>
-                        <span class="font-bold text-lg" id="product-total">SAR 440.00</span>
-                    </div>
-
-                    <div class="mt-6">
-                        <label class="form-label" for="product-qty">Quantity:</label>
-                        <div class="qty-control">
-                            <button id="decrease-qty" class="qty-btn" aria-label="Decrease quantity">-</button>
-                            <input type="text" id="product-qty" value="1" readonly class="qty-input" aria-label="Product quantity">
-                            <button id="increase-qty" class="qty-btn" aria-label="Increase quantity">+</button>
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <div class="mb-4">
-                            <h3 class="text-lg font-medium mb-3">Select Payment Method</h3>
-
-                            <div class="space-y-3">
-                                <!-- Credit Card Option -->
-                                <label class="payment-option selected" id="card-payment-option">
-                                    <input type="radio" name="payment-method" value="card" checked class="mr-3">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                        </svg>
-                                        <div>
-                                            <div class="font-medium">Credit/Debit Card</div>
-                                            <div class="text-sm text-gray-600">Pay the full amount now</div>
-                                        </div>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-800">42% OFF</span>
-                                    </div>
-                                </label>
-
-                                <!-- Installments Option -->
-                                <label class="payment-option" id="installment-payment-option">
-                                    <input type="radio" name="payment-method" value="installment" class="mr-3">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <div>
-                                            <div class="font-medium">Pay in installment</div>
-                                            <div class="text-sm text-gray-600">0% bank installments up to 12 months</div>
-                                        </div>
-                                    </div>
-                                </label>
-
-                                <!-- Apple Pay Option -->
-                                <label class="payment-option" id="apple-payment-option">
-                                    <input type="radio" name="payment-method" value="apple" class="mr-3">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M17.005 19.762c-.937 1.382-1.866 2.764-3.414 2.857-1.42.091-1.893-.865-3.544-.865-1.659 0-2.179.865-3.552.923-1.47.065-2.568-1.46-3.551-2.806-1.87-2.736-3.29-7.732-1.396-11.052.898-1.55 2.507-2.52 4.231-2.52 1.659-.037 3.21 1.1 4.231 1.1.939 0 2.694-1.37 4.513-1.16.768.037 2.905.316 4.276 2.318-2.058 1.244-2.986 2.87-2.986 4.876 0 2.488 1.519 4.37 3.192 5.33zm-3.245-17.098c.91-1.096 1.58-2.575 1.397-4.101-1.47.065-3.197.98-4.187 2.114-.91 1.024-1.611 2.576-1.397 4.03 1.524.073 3.116-.846 4.187-2.043z"/>
-                                        </svg>
-                                        <div>
-                                            <div class="font-medium">Apple Pay</div>
-                                            <div class="text-sm text-gray-600">Quick checkout with Apple Pay</div>
-                                        </div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Amwal Checkout Buttons Container -->
-                        <div id="payment-method-buttons">
-                            <!-- Credit Card Payment -->
-                            <div id="card-payment" class="payment-button block">
-                                <amwal-checkout-button
-                                        id="card-checkout"
-                                        merchant-id="sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333"
-                                        amount="440"
-                                        tax="21"
-                                        country-code="SA"
-                                        locale="en"
-                                        dark-mode="off"
-                                        label="Pay Now"
-                                        address-required="true"
-                                        discount="200"
-                                        show-discount-ribbon="true"
-                                        enable-pre-checkout-trigger="true"
-                                        enable-pre-pay-trigger="true"
-                                        debug="true"
-                                        class="w-full">
-                                </amwal-checkout-button>
-                            </div>
-
-                            <!-- Installment Payment -->
-                            <div id="installment-payment" class="payment-button hidden">
-                                <amwal-checkout-button
-                                        id="installment-checkout"
-                                        merchant-id="sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333"
-                                        amount="440"
-                                        country-code="SA"
-                                        locale="en"
-                                        dark-mode="off"
-                                        label="Pay in installment"
-                                        only-show-bank-installment="true"
-                                        address-required="true"
-                                        enable-pre-checkout-trigger="true"
-                                        enable-pre-pay-trigger="true"
-                                        class="w-full">
-                                </amwal-checkout-button>
-                            </div>
-
-                            <!-- Apple Pay -->
-                            <div id="apple-payment" class="payment-button hidden">
-                                <amwal-checkout-button
-                                        id="apple-checkout"
-                                        merchant-id="sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333"
-                                        amount="440"
-                                        country-code="SA"
-                                        locale="en"
-                                        dark-mode="off"
-                                        label="Pay with Apple Pay"
-                                        address-required="true"
-                                        enable-apple-checkout="true"
-                                        enable-pre-checkout-trigger="true"
-                                        enable-pre-pay-trigger="true"
-                                        class="w-full">
-                                </amwal-checkout-button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Service Checkout Example -->
-    <div id="service-content" class="card hidden" role="tabpanel" aria-labelledby="service-tab">
-        <div class="grid md:grid-cols-2 gap-8">
-            <!-- Service Details -->
-            <div>
-                <div class="bg-gray-200 h-72 rounded-lg flex items-center justify-center">
-                    <span class="text-gray-500">Service Image</span>
-                </div>
-                <h2 class="text-xl font-bold mt-4">Premium Website Development</h2>
-                <div class="flex items-center mt-2">
-                    <div class="flex text-yellow-400">
-                        <!-- 5 stars -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                    </div>
-                    <span class="text-gray-600 ml-2">5.0 (53 reviews)</span>
-                </div>
-                <p class="text-gray-600 mt-4">Professional website development service tailored to your business needs. Includes responsive design, SEO optimization, and user-friendly interface.</p>
-
-                <div class="mt-4">
-                    <h3 class="font-semibold">Service Includes:</h3>
-                    <ul class="list-disc pl-5 mt-2 text-gray-600">
-                        <li>Custom design based on your requirements</li>
-                        <li>Mobile-responsive layout</li>
-                        <li>Basic SEO setup</li>
-                        <li>Contact form integration</li>
-                        <li>3 rounds of revisions</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Checkout Section -->
-            <div>
-                <div class="bg-gray-50 p-6 rounded-lg">
-                    <div class="flex justify-between mb-4">
-                        <span class="font-medium">Base Price:</span>
-                        <span class="font-bold">SAR 2,499.00</span>
-                    </div>
-
-                    <div class="mt-4 mb-6">
-                        <h3 class="font-semibold mb-3">Select Package:</h3>
-                        <div class="space-y-3">
-                            <label class="payment-option selected" id="basic-package-option">
-                                <input type="radio" name="service-package" value="basic" checked class="mr-3">
-                                <div>
-                                    <div class="font-medium">Basic Package</div>
-                                    <div class="text-sm text-gray-600">5-page website with basic features</div>
-                                </div>
-                                <div class="ml-auto font-medium">SAR 2,499.00</div>
-                            </label>
-                            <label class="payment-option" id="standard-package-option">
-                                <input type="radio" name="service-package" value="standard" class="mr-3">
-                                <div>
-                                    <div class="font-medium">Standard Package</div>
-                                    <div class="text-sm text-gray-600">10-page website with blog integration</div>
-                                </div>
-                                <div class="ml-auto font-medium">SAR 3,999.00</div>
-                            </label>
-                            <label class="payment-option" id="premium-package-option">
-                                <input type="radio" name="service-package" value="premium" class="mr-3">
-                                <div>
-                                    <div class="font-medium">Premium Package</div>
-                                    <div class="text-sm text-gray-600">E-commerce website with payment integration</div>
-                                </div>
-                                <div class="ml-auto font-medium">SAR 5,999.00</div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="border-t pt-4 mt-4 flex justify-between">
-                        <span class="font-bold">Total:</span>
-                        <span class="font-bold text-lg" id="service-total">SAR 2,499.00</span>
-                    </div>
-
-                    <div class="mt-6">
-                        <div class="mb-4">
-                            <h3 class="text-lg font-medium mb-3">Select Payment Method</h3>
-
-                            <div class="space-y-3">
-                                <!-- Credit Card Option -->
-                                <label class="payment-option selected" id="service-card-option">
-                                    <input type="radio" name="service-payment-method" value="card" checked class="mr-3">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                        </svg>
-                                        <div>
-                                            <div class="font-medium">Credit/Debit Card</div>
-                                            <div class="text-sm text-gray-600">Pay the full amount now</div>
-                                        </div>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-800">42% OFF</span>
-                                    </div>
-                                </label>
-
-                                <!-- Installments Option -->
-                                <label class="payment-option" id="service-installment-option">
-                                    <input type="radio" name="service-payment-method" value="installment" class="mr-3">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <div>
-                                            <div class="font-medium">Pay in installment</div>
-                                            <div class="text-sm text-gray-600">0% bank installments up to 12 months</div>
-                                        </div>
-                                    </div>
-                                </label>
-
-                                <!-- Apple Pay Option -->
-                                <label class="payment-option" id="service-apple-option">
-                                    <input type="radio" name="service-payment-method" value="apple" class="mr-3">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M17.005 19.762c-.937 1.382-1.866 2.764-3.414 2.857-1.42.091-1.893-.865-3.544-.865-1.659 0-2.179.865-3.552.923-1.47.065-2.568-1.46-3.551-2.806-1.87-2.736-3.29-7.732-1.396-11.052.898-1.55 2.507-2.52 4.231-2.52 1.659-.037 3.21 1.1 4.231 1.1.939 0 2.694-1.37 4.513-1.16.768.037 2.905.316 4.276 2.318-2.058 1.244-2.986 2.87-2.986 4.876 0 2.488 1.519 4.37 3.192 5.33zm-3.245-17.098c.91-1.096 1.58-2.575 1.397-4.101-1.47.065-3.197.98-4.187 2.114-.91 1.024-1.611 2.576-1.397 4.03 1.524.073 3.116-.846 4.187-2.043z"/>
-                                        </svg>
-                                        <div>
-                                            <div class="font-medium">Apple Pay</div>
-                                            <div class="text-sm text-gray-600">Quick checkout with Apple Pay</div>
-                                        </div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Service Amwal Checkout Buttons -->
-                        <div id="service-payment-buttons">
-                            <!-- Credit Card Payment -->
-                            <div id="service-card-payment" class="payment-button block">
-                                <amwal-checkout-button
-                                        id="service-card-checkout"
-                                        merchant-id="sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333"
-                                        amount="2499"
-                                        country-code="SA"
-                                        locale="en"
-                                        dark-mode="off"
-                                        label="Pay Now"
-                                        address-required="false"
-                                        email-required="true"
-                                        discount="200"
-                                        show-discount-ribbon="true"
-                                        enable-pre-checkout-trigger="true"
-                                        enable-pre-pay-trigger="true"
-                                        class="w-full">
-                                </amwal-checkout-button>
-                            </div>
-
-                            <!-- Installment Payment -->
-                            <div id="service-installment-payment" class="payment-button hidden">
-                                <amwal-checkout-button
-                                        id="service-installment-checkout"
-                                        merchant-id="sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333"
-                                        amount="2499"
-                                        country-code="SA"
-                                        locale="en"
-                                        dark-mode="off"
-                                        label="Pay in installment"
-                                        only-show-bank-installment="true"
-                                        address-required="false"
-                                        email-required="true"
-                                        enable-pre-checkout-trigger="true"
-                                        enable-pre-pay-trigger="true"
-                                        class="w-full">
-                                </amwal-checkout-button>
-                            </div>
-
-                            <!-- Apple Pay -->
-                            <div id="service-apple-payment" class="payment-button hidden">
-                                <amwal-checkout-button
-                                        id="service-apple-checkout"
-                                        merchant-id="sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333"
-                                        amount="2499"
-                                        country-code="SA"
-                                        locale="en"
-                                        dark-mode="off"
-                                        label="Pay with Apple Pay"
-                                        address-required="false"
-                                        enable-apple-checkout="true"
-                                        email-required="true"
-                                        enable-pre-checkout-trigger="true"
-                                        enable-pre-pay-trigger="true"
-                                        class="w-full">
-                                </amwal-checkout-button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Integration Security Overview -->
-    <div class="card">
-        <div class="pb-2 flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-blue-700">Integration Security Overview</h2>
-        </div>
-        <p class="text-gray-700 mb-4">
-            Ensuring secure and reliable transactions is central to Amwal Checkout. Below is a comprehensive overview of the security measures implemented throughout the integration lifecycle.
-        </p>
-        <div class="mt-4">
-            <input type="checkbox" id="toggle-security" class="peer hidden">
-            <label for="toggle-security" class="flex justify-between items-center cursor-pointer text-blue-600 font-medium mb-2">
-                <span>View Details</span>
-                <svg class="h-5 w-5 transform transition-transform duration-300 peer-checked:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-            </label>
-            <div class="max-h-0 overflow-hidden transition-all duration-500 peer-checked:max-h-[1000px]">
-                <ul class="list-disc pl-5 space-y-3 text-gray-600">
-                    <li>
-                        <strong>End-to-End Encryption:</strong>
-                        All communication between the client (browser/mobile) and Amwal servers is protected using <span class="font-medium">TLS 1.2+</span> with enforced HTTPS. No sensitive data is transmitted over plain channels.
-                    </li>
-                    <li>
-                        <strong>PCI DSS Compliance:</strong>
-                        Amwal’s checkout button is a hosted solution, meaning <span class="font-medium">payment details never touch the merchant’s servers</span>. This reduces your PCI scope and ensures compliance with industry standards.
-                    </li>
-                    <li>
-                        <strong>Webhook Signing & Verification:</strong>
-                        Amwal uses <code>HMAC-SHA256</code> to sign all webhook payloads. Merchants can verify authenticity using their secret key to ensure data integrity and source trust.
-                    </li>
-                    <li>
-                        <strong>Pre-Checkout Triggers:</strong>
-                        Use the <code>amwalPreCheckoutTrigger</code> event to inject customer data, enforce business rules, or perform fraud checks <em>before</em> the payment sheet is shown. This helps stop attacks early in the flow.
-                    </li>
-                    <li>
-                        <strong>Real-Time Address Validation:</strong>
-                        During checkout, Amwal provides dynamic address updates, and the merchant can return allowed shipping options. This reduces spoofed address attempts and ensures validated logistics.
-                    </li>
-                    <li>
-                        <strong>Secure Sandbox Environment:</strong>
-                        Developers can test integrations in a fully isolated sandbox mode that mirrors production behavior—safe for experimentation, QA, and load testing.
-                    </li>
-                    <li>
-                        <strong>JavaScript Module Isolation:</strong>
-                        The Amwal checkout is loaded via ES Modules and sandboxed into an iframe where applicable. This prevents DOM-level tampering and protects your site against script injection attacks.
-                    </li>
-                    <li>
-                        <strong>Debug Console for Auditing:</strong>
-                        The built-in debug console captures all transaction events, API calls, and error messages for developers to review and export. This helps in security audits and monitoring integration integrity.
-                    </li>
-                    <li>
-                        <strong>Token-Based Authentication:</strong>
-                        Backend endpoints communicating with Amwal must use API keys or OAuth tokens (if applicable). These should be securely stored and rotated periodically.
-                    </li>
-                </ul>
-
-                <p class="mt-4 text-sm text-gray-500">
-                    For full details, integration tips, and compliance support, visit the
-                    <a href="https://docs.amwal.tech/security" class="text-blue-600 hover:underline">Amwal Security Documentation</a>.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
-
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="loading-overlay">
-        <div class="spinner"></div>
-    </div>
-
-    <!-- Debug Console -->
-    <div id="debug-console" class="debug-console">
-        <div class="flex justify-between items-center mb-2">
-            <div>
-                <span class="font-bold">Debug Console</span>
-                <span class="ml-2">
-                    <button id="debug-clear" class="text-xs bg-red-600 text-white px-2 py-1 rounded">Clear</button>
-                    <button id="debug-export" class="text-xs bg-green-600 text-white px-2 py-1 rounded ml-1">Export Logs</button>
+<!-- Header Navigation -->
+<header class="header-nav">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <a href="#" class="flex items-center">
+          <img src="https://cdn.prod.website-files.com/62294ce746440b7bc08b4fc5/624352eb48193d537d329386_1-2-p-500.png"
+               alt="Amwal Store" class="h-8">
+        </a>
+        <!-- Environment Badge -->
+        <span id="env-badge" class="env-badge sandbox hidden md:inline-flex">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <span id="env-text">Sandbox</span>
                 </span>
-            </div>
-            <div>
-                <label class="text-xs mr-2">
-                    <input type="checkbox" id="debug-auto-scroll" checked> Auto-scroll
-                </label>
-                <select id="debug-level" class="text-xs bg-gray-800 text-white px-2 py-1 rounded">
-                    <option value="DEBUG">All Levels</option>
-                    <option value="INFO">Info & Above</option>
-                    <option value="WARN">Warnings & Errors</option>
-                    <option value="ERROR">Errors Only</option>
-                </select>
-            </div>
-        </div>
-        <div id="debug-content"></div>
+      </div>
+      <!-- Navigation Links -->
+      <nav class="md:flex items-center space-x-8 desktop-menu">
+        <a href="https://www.amwal.tech" class="nav-link flex items-center gap-2" target="_blank">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-4m4 0h-4m4 0H8m4 0H8"></path>
+          </svg>
+          Product
+        </a>
+
+        <a href="https://docs.amwal.tech" class="nav-link flex items-center gap-2" target="_blank"
+           rel="noopener noreferrer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          Docs
+        </a>
+        <a href="https://github.com/amwal-tech" class="nav-link flex items-center gap-2" target="_blank"
+           rel="noopener noreferrer">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+      </nav>
+
+      <!-- Auth Buttons -->
+      <div class="flex items-center space-x-4 desktop-menu">
+        <a class="nav-button flex items-center gap-2" href="https://merchant.sa.amwal.tech" target="_blank" rel="noopener noreferrer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+          </svg>
+          Login
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="nav-link p-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
     </div>
-    <div id="debug-handle" class="debug-handle">Debug</div>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 py-4">
+      <div class="space-y-2">
+        <div class="pb-2 border-b border-gray-200">
+                    <span id="env-badge-mobile" class="env-badge sandbox inline-flex">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        <span id="env-text-mobile">Sandbox Mode</span>
+                    </span>
+        </div>
+        <a href="https://www.amwal.tech" class="nav-link flex items-center gap-2" target="_blank">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-4m4 0h-4m4 0H8m4 0H8"></path>
+          </svg>
+          Product
+        </a>
+
+        <a href="https://docs.amwal.tech" class="nav-link flex items-center gap-2" target="_blank"
+           rel="noopener noreferrer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          Docs
+        </a>
+        <a href="https://github.com/amwal-tech" class="nav-link flex items-center gap-2" target="_blank"
+           rel="noopener noreferrer">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+        <div class="pt-4 border-t border-gray-200 space-y-2">
+          <a class="nav-button w-full flex items-center justify-center gap-2" href="https://merchant.sa.amwal.tech" target="_blank"  rel="noopener noreferrer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+            </svg>
+            Login
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="loading-overlay">
+  <div class="spinner"></div>
 </div>
 
-<!-- JavaScript -->
-<script type="module">
-    // Logger Module - Handles debugging and logging
-    class Logger {
-        constructor() {
-            this.levels = {
-                DEBUG: 0,
-                INFO: 1,
-                WARN: 2,
-                ERROR: 3
-            };
-            this.currentLevel = this.levels.DEBUG;
-            this.consoleOutput = true;
-            this.entries = [];
-            this.maxEntries = 100;
-        }
+<!-- Toast Container -->
+<div id="toast" class="toast"></div>
 
-        debug(message, data) {
-            this._log(this.levels.DEBUG, message, data);
-            return this;
-        }
+<div class="min-h-screen lg:grid lg:grid-cols-2">
 
-        info(message, data) {
-            this._log(this.levels.INFO, message, data);
-            return this;
-        }
+  <!-- Left Column - Checkout Form -->
+  <div class="lg:border-r border-gray-200">
+    <div class="max-w-2xl mx-auto px-6 sm:px-8 lg:px-12 py-6 lg:py-10">
 
-        warn(message, data) {
-            this._log(this.levels.WARN, message, data);
-            return this;
-        }
+      <!-- Logo & Breadcrumb -->
+      <div class="mb-8">
+        <nav class="breadcrumb">
+          <a href="#" class="breadcrumb-item">Cart</a>
+          <span class="breadcrumb-separator">›</span>
+          <span class="text-gray-900 font-medium">Information</span>
+          <span class="breadcrumb-separator">›</span>
+          <span class="text-gray-400">Shipping</span>
+          <span class="breadcrumb-separator">›</span>
+          <span class="text-gray-400">Payment</span>
+        </nav>
+      </div>
 
-        error(message, data) {
-            this._log(this.levels.ERROR, message, data);
-            return this;
-        }
+      <!-- Express Checkout -->
+      <div class="mb-8">
+        <div class="text-sm text-gray-600 mb-4 text-center flex flex-col sm:flex-row items-center justify-center gap-2">
+          <span>Bank Installment with Amwal</span>
+          <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">0 fees</span>
+        </div>
+        <div class="space-y-3">
+          <amwal-checkout-button
+            id="express-checkout-btn"
+            amount="931.50"
+            country-code="SA"
+            locale="en"
+            label="Pay with Amwal"
+            address-required="false"
+            class="w-full">
+          </amwal-checkout-button>
+        </div>
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-200"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-white text-gray-500">OR</span>
+          </div>
+        </div>
+      </div>
 
-        _log(level, message, data) {
-            this._logToConsole(level, message, data);
-            this._logToDebugConsole(level, message, data);
-            return this;
-        }
+      <!-- Contact Information -->
+      <div class="mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Contact</h2>
+        <div class="space-y-4">
+          <div>
+            <input
+              type="email"
+              id="customer-email"
+              class="input-field"
+              value="ahmed.almansour@example.com"
+              placeholder="Email"
+            />
+          </div>
+          <label class="flex items-start gap-2 text-sm text-gray-700">
+            <input type="checkbox" checked
+                   class="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+            <span>Email me with news and offers</span>
+          </label>
+        </div>
+      </div>
 
-        _logToConsole(level, message, data) {
-            if (!this.consoleOutput) return;
+      <!-- Shipping Address -->
+      <div class="mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Shipping address</h2>
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <input
+                type="text"
+                id="customer-first-name"
+                class="input-field"
+                value="Ahmed"
+                placeholder="First name"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                id="customer-last-name"
+                class="input-field"
+                value="Al-Mansour"
+                placeholder="Last name"
+              />
+            </div>
+          </div>
+          <div>
+            <input
+              type="text"
+              id="address-street1"
+              class="input-field"
+              value="123 King Fahd Road"
+              placeholder="Address"
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              id="address-street2"
+              class="input-field"
+              value="Apartment 4B"
+              placeholder="Apartment, suite, etc. (optional)"
+            />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div>
+              <input
+                type="text"
+                id="address-city"
+                class="input-field"
+                value="Riyadh"
+                placeholder="City"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                id="address-state"
+                class="input-field"
+                value="Riyadh"
+                placeholder="State"
+              />
+            </div>
+            <div class="sm:col-span-2 md:col-span-1">
+              <input
+                type="text"
+                id="address-postcode"
+                class="input-field"
+                value="12345"
+                placeholder="Postal code"
+              />
+            </div>
+          </div>
+          <div>
+            <select id="address-country" class="input-field">
+              <option value="SA">Saudi Arabia</option>
+              <option value="AE">United Arab Emirates</option>
+              <option value="KW">Kuwait</option>
+            </select>
+          </div>
+          <div>
+            <input
+              type="tel"
+              id="customer-phone"
+              class="input-field"
+              value="+966501234567"
+              placeholder="Phone"
+            />
+          </div>
+          <label class="flex items-start gap-2 text-sm text-gray-700">
+            <input type="checkbox" class="mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+            <span>Save this information for next time</span>
+          </label>
+        </div>
+      </div>
 
-            switch (level) {
-                case this.levels.DEBUG:
-                    console.debug(message, data || '');
-                    break;
-                case this.levels.INFO:
-                    console.info(message, data || '');
-                    break;
-                case this.levels.WARN:
-                    console.warn(message, data || '');
-                    break;
-                case this.levels.ERROR:
-                    console.error(message, data || '');
-                    break;
-            }
-        }
+      <!-- Shipping Method -->
+      <div class="mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Shipping method</h2>
+        <div class="border border-gray-300 rounded-md p-4 flex justify-between items-center bg-blue-50">
+          <div class="flex items-center gap-3">
+            <input type="radio" checked class="w-4 h-4 text-blue-600">
+            <span class="text-gray-900 font-medium">Standard Shipping</span>
+          </div>
+          <span class="text-gray-900 font-medium">Free</span>
+        </div>
+      </div>
 
-        _logToDebugConsole(level, message, data) {
-            if (level < this.currentLevel) return;
+      <!-- Payment Method - Simple Toggle -->
+      <div class="mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment</h2>
+        <div class="text-xs text-gray-500 mb-3">All transactions are secure and encrypted.</div>
 
-            const debugContent = document.getElementById('debug-content');
-            if (!debugContent) return;
+        <div class="space-y-0 border border-gray-300 rounded-md overflow-hidden">
+          <!-- Bank Installments -->
+          <div class="border-b border-gray-300">
+            <label class="block p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="payment" value="installment" checked
+                         class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                  <span class="text-gray-900 font-medium">Bank Installments</span>
+                </div>
+                <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">Most Popular</span>
+              </div>
+            </label>
+            <div id="details-installment" class="bg-gray-50 px-4 py-3 border-t border-gray-200">
+              <div class="text-sm text-gray-700">
+                <amwal-checkout-button
+                  id="installment-checkout-btn"
+                  amount="931.50"
+                  country-code="SA"
+                  locale="en"
+                  label="Bank Installment"
+                  only-show-bank-installment="true"
+                  address-required="false"
+                  class="w-full">
+                </amwal-checkout-button>
+              </div>
+            </div>
+          </div>
 
-            // Create log entry
-            const entry = {
-                timestamp: new Date(),
-                level: Object.keys(this.levels)[level],
-                message,
-                data
-            };
+          <!-- Quick Checkout -->
+          <div class="border-b border-gray-300">
+            <label class="block p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <input type="radio" name="payment" value="quick"
+                       class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                <span class="text-gray-900 font-medium">Quick Checkout</span>
+              </div>
+            </label>
+            <div id="details-quick" class="bg-gray-50 px-4 py-3 border-t border-gray-200 hidden">
+              <div class="text-sm text-gray-700">
+                <amwal-checkout-button
+                  id="quick-checkout-btn"
+                  amount="931.50"
+                  country-code="SA"
+                  locale="en"
+                  label="Pay Now"
+                  address-required="false"
+                  class="w-full">
+                </amwal-checkout-button>
+              </div>
+            </div>
+          </div>
 
-            // Add to entries array
-            this.entries.unshift(entry);
-            if (this.entries.length > this.maxEntries) {
-                this.entries.pop();
-            }
+          <!-- Apple Pay -->
+          <div class="border-b border-gray-300">
+            <label class="block p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <input type="radio" name="payment" value="apple"
+                       class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                <span class="text-gray-900 font-medium">Apple Pay</span>
+              </div>
+            </label>
+            <div id="details-apple" class="bg-gray-50 px-4 py-3 border-t border-gray-200 hidden">
+              <div class="text-sm text-gray-700">
+                <amwal-checkout-button
+                  id="apple-checkout-btn"
+                  amount="931.50"
+                  country-code="SA"
+                  locale="en"
+                  label="Pay with Apple Pay"
+                  address-required="false"
+                  enable-apple-checkout="true"
+                  class="w-full">
+                </amwal-checkout-button>
+              </div>
+            </div>
+          </div>
 
-            // Create DOM element
-            const entryDiv = document.createElement('div');
-            entryDiv.className = `debug-entry ${entry.level}`;
+          <!-- Credit Card -->
+          <div>
+            <label class="block p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+              <div class="flex items-center gap-3">
+                <input type="radio" name="payment" value="credit"
+                       class="w-4 h-4 text-blue-600 focus:ring-blue-500">
+                <span class="text-gray-900 font-medium">Credit Card</span>
+              </div>
+            </label>
+            <div id="details-credit" class="bg-gray-50 px-4 py-3 border-t border-gray-200 hidden">
+              <div class="p-2 bg-blue-50 rounded text-xs text-blue-700 flex items-start gap-2 mb-3">
+                <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                <span><strong>Tip:</strong> Use Amwal above for instant checkout with no manual entry</span>
+              </div>
+              <div class="text-sm text-gray-700">
+                <div class="space-y-3">
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Card Number</label>
+                    <input type="text" placeholder="Enter 16-digit card number manually" class="input-field text-sm">
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs font-medium text-gray-700 mb-1">Expiry</label>
+                      <input type="text" placeholder="MM/YY" class="input-field text-sm">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-medium text-gray-700 mb-1">CVC</label>
+                      <input type="text" placeholder="3-4 digits" class="input-field text-sm">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Cardholder Name</label>
+                    <input type="text" placeholder="Enter full name as on card" class="input-field text-sm">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            const timestamp = entry.timestamp.toISOString().split('T')[1].slice(0, -1);
-            let content = `<span class="text-gray-400">[${timestamp}]</span> <span class="font-bold">[${entry.level}]</span> ${entry.message}`;
+        <div class="mt-4 bg-blue-50 rounded-md p-4">
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
+                 viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+            <div class="text-sm text-blue-900">
+              <p class="font-medium mb-1">Your payment is secure</p>
+              <p class="text-blue-700">We use bank-level encryption to protect your data.</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            if (data) {
-                try {
-                    if (typeof data === 'object') {
-                        content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">${JSON.stringify(data, null, 2)}</pre>`;
-                    } else {
-                        content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">${data}</pre>`;
-                    }
-                } catch (e) {
-                    content += `<pre class="text-xs mt-1 bg-gray-800 p-1 rounded">[Object cannot be stringified]</pre>`;
-                }
-            }
+      <!-- Billing Address -->
+      <div class="mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Billing address</h2>
+        <label class="flex items-center gap-2 text-sm text-gray-700">
+          <input type="radio" checked class="rounded-full border-gray-300 text-blue-600 focus:ring-blue-500">
+          <span>Same as shipping address</span>
+        </label>
+      </div>
 
-            entryDiv.innerHTML = content;
-            debugContent.insertBefore(entryDiv, debugContent.firstChild);
+      <!-- Navigation Buttons -->
+      <div class="flex items-center justify-between pt-4 border-t border-gray-200 mb-8">
+        <a href="#" class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Return to cart
+        </a>
+        <button class="bg-gray-400 text-white font-medium px-6 py-4 rounded-md w-full max-w-xs cursor-not-allowed flex items-center justify-center gap-2"
+                id="complete-order-btn" disabled>
+          <span>Complete order</span>
+          <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">Amwal above</span>
+        </button>
+      </div>
 
-            // Auto-scroll
-            if (document.getElementById('debug-auto-scroll').checked) {
-                debugContent.scrollTop = 0;
-            }
-        }
+      <!-- Footer Links -->
+      <div class="text-xs text-gray-500 space-y-2">
+        <div class="flex items-center justify-center gap-4">
+          <a href="#" class="hover:text-gray-700">Refund policy</a>
+          <span>•</span>
+          <a href="#" class="hover:text-gray-700">Privacy policy</a>
+          <span>•</span>
+          <a href="#" class="hover:text-gray-700">Terms of service</a>
+        </div>
+      </div>
 
-        setLevel(level) {
-            if (typeof level === 'string' && this.levels[level] !== undefined) {
-                this.currentLevel = this.levels[level];
-            } else if (typeof level === 'number' && level >= 0 && level <= 3) {
-                this.currentLevel = level;
-            }
-            return this;
-        }
+    </div>
+  </div>
 
-        enableConsole(enable = true) {
-            this.consoleOutput = Boolean(enable);
-            return this;
-        }
+  <!-- Right Column - Order Summary -->
+  <div class="order-summary-sidebar bg-gray-50 border-b lg:border-b-0 lg:border-l border-gray-200">
+    <div class="max-w-xl mx-auto px-6 sm:px-8 lg:px-12 py-6 lg:py-10 lg:sticky lg:top-0">
 
-        getEntries() {
-            return [...this.entries];
-        }
+      <!-- Product List -->
+      <div class="space-y-4 mb-6">
+        <div class="order-summary-item">
+          <div class="relative">
+            <div class="w-16 h-16 bg-white border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+              <img src="https://i0.wp.com/shop.amwal.tech/wp-content/uploads/2022/08/Amwal-Sticker.png" alt="Product Image" class="w-full h-full object-cover">
+            </div>
+            <span class="badge-quantity" id="summary-quantity">1</span>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-medium text-gray-900" id="summary-product-name">Amwal Poster</h3>
+            <p class="text-xs text-gray-600 mt-1">Size: 24" x 36"</p>
+          </div>
+          <div class="text-sm font-medium text-gray-900" id="summary-item-price">SAR 5,000.00</div>
+        </div>
+      </div>
 
-        clear() {
-            this.entries = [];
-            const debugContent = document.getElementById('debug-content');
-            if (debugContent) {
-                debugContent.innerHTML = '';
-            }
-            return this;
-        }
+      <!-- Discount Code -->
+      <div class="mb-6">
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input
+            type="text"
+            class="input-field flex-1"
+            placeholder="Discount code or gift card"
+          />
+          <button class="px-6 py-3 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 transition-all whitespace-nowrap">
+            Apply
+          </button>
+        </div>
+      </div>
 
-        export() {
-            const exportData = {
-                timestamp: new Date().toISOString(),
-                entries: this.entries
-            };
-            const dataStr = JSON.stringify(exportData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      <!-- Price Summary -->
+      <div class="space-y-3 pb-4 border-b border-gray-200 mb-4">
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">Subtotal</span>
+          <span class="text-gray-900" id="summary-subtotal">SAR 5,000.00</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">Shipping</span>
+          <span class="text-gray-900">Free</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">Discount</span>
+          <span class="text-green-600" id="summary-discount">-SAR 500.00</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">Tax (VAT 15%)</span>
+          <span class="text-gray-900" id="summary-tax">SAR 675.00</span>
+        </div>
+      </div>
 
-            const exportLink = document.createElement('a');
-            exportLink.setAttribute('href', dataUri);
-            exportLink.setAttribute('download', `amwal-debug-${new Date().toISOString()}.json`);
-            document.body.appendChild(exportLink);
-            exportLink.click();
-            document.body.removeChild(exportLink);
-            return this;
-        }
+      <!-- Total -->
+      <div class="flex justify-between items-center mb-6">
+        <span class="text-base font-semibold text-gray-900">Total</span>
+        <div class="text-right">
+          <div class="text-xs text-gray-500 mb-1">SAR</div>
+          <div class="text-2xl font-bold text-gray-900" id="summary-total">5,175.00</div>
+        </div>
+      </div>
+
+      <!-- Test Cards Section - For Development/Testing -->
+      <div class="border border-amber-300 bg-amber-50 rounded-lg overflow-hidden">
+        <button
+          class="w-full px-3 py-2.5 flex items-center justify-between bg-amber-100 hover:bg-amber-200 transition-colors">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+            <span class="text-sm font-semibold text-amber-900">Test Cards</span>
+          </div>
+        </button>
+
+        <div id="test-cards-content" class="p-3">
+          <p class="text-xs text-amber-800 mb-3">
+            Use these test cards for development and testing only.
+          </p>
+
+          <!-- Pay in Full Cards -->
+          <div class="mb-4">
+            <h3 class="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+              Pay in Full
+            </h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full bg-white border border-gray-300 text-xs">
+                <thead class="bg-gray-100">
+                <tr>
+                  <th class="px-2 py-1.5 text-left font-semibold text-gray-700 border-b">Card Number</th>
+                  <th class="px-2 py-1.5 text-left font-semibold text-gray-700 border-b">Exp</th>
+                  <th class="px-2 py-1.5 text-left font-semibold text-gray-700 border-b">CCV</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-2 py-1.5 font-mono text-gray-900">5454 5454 5454 5454</td>
+                  <td class="px-2 py-1.5 text-gray-600">Any</td>
+                  <td class="px-2 py-1.5 text-gray-600">Any</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-2 py-1.5 font-mono text-gray-900">4000 0000 0000 0002</td>
+                  <td class="px-2 py-1.5 text-gray-600">05/26</td>
+                  <td class="px-2 py-1.5 text-gray-600">123</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-2 py-1.5 font-mono text-gray-900">5453 0100 0009 5539</td>
+                  <td class="px-2 py-1.5 text-gray-600">12/25</td>
+                  <td class="px-2 py-1.5 text-gray-600">300</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-2 py-1.5 font-mono text-gray-900">5200 0000 0000 0007</td>
+                  <td class="px-2 py-1.5 text-gray-600">10/26</td>
+                  <td class="px-2 py-1.5 text-gray-600">977</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-2 py-1.5 font-mono text-gray-900">5123 4500 0000 0008</td>
+                  <td class="px-2 py-1.5 text-gray-600">12/25</td>
+                  <td class="px-2 py-1.5 text-gray-600">212</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-2 py-1.5 font-mono text-gray-900">4464 0400 0000 0007</td>
+                  <td class="px-2 py-1.5 text-gray-600">02/25</td>
+                  <td class="px-2 py-1.5 text-gray-600">123</td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-2 py-1.5 font-mono text-gray-900">4111 1111 1111 1111</td>
+                  <td class="px-2 py-1.5 text-gray-600">Any</td>
+                  <td class="px-2 py-1.5 text-gray-600">Any</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Installment Cards -->
+          <div>
+            <h3 class="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+              Installment
+            </h3>
+
+            <div class="overflow-x-auto">
+              <table class="min-w-full bg-white border border-gray-300 text-xs">
+                <thead class="bg-gray-100">
+                <tr>
+                  <th class="px-2 py-1.5 text-left font-semibold text-gray-700 border-b">Card Number</th>
+                  <th class="px-2 py-1.5 text-left font-semibold text-gray-700 border-b">Exp</th>
+                  <th class="px-2 py-1.5 text-left font-semibold text-gray-700 border-b">CCV</th>
+                  <th class="px-2 py-1.5 text-left font-semibold text-gray-700 border-b">Status</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-2 py-1.5 font-mono text-gray-900">5454 5454 5454 5454</td>
+                  <td class="px-2 py-1.5 text-gray-600">05/30</td>
+                  <td class="px-2 py-1.5 text-gray-600">123</td>
+                  <td class="px-2 py-1.5">
+                                        <span class="inline-flex items-center gap-1 text-green-700 bg-green-50 px-2 py-0.5 rounded-full font-medium">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            Success
+                                        </span>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-2 py-1.5 font-mono text-gray-900">4173 2397 5386 4971</td>
+                  <td class="px-2 py-1.5 text-gray-600">Any</td>
+                  <td class="px-2 py-1.5 text-gray-600">Any</td>
+                  <td class="px-2 py-1.5">
+                                        <span class="inline-flex items-center gap-1 text-red-700 bg-red-50 px-2 py-0.5 rounded-full font-medium">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                            Auth Failure
+                                        </span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-3 text-xs text-gray-600 bg-gray-50 p-2 rounded border border-gray-200">
+            <p><strong>Tip:</strong> "Any" = use any valid value</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Environment Configuration Toolbar -->
+<button id="env-toggle-btn" class="env-toggle-btn" title="Open Environment Settings">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+  </svg>
+</button>
+
+<div id="env-toolbar" class="env-toolbar collapsed" style="display: none;">
+  <!-- Toolbar Header -->
+  <div class="env-toolbar-header" id="env-toolbar-header">
+    <div class="flex items-center gap-2">
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+      </svg>
+      <h3 class="text-white font-semibold text-sm">Environment Settings</h3>
+    </div>
+    <button id="env-toolbar-close" class="text-white hover:text-gray-200 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Toolbar Content -->
+  <div class="env-toolbar-content" id="env-toolbar-content">
+    <!-- Current Environment Info -->
+    <div class="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Current Environment</span>
+        <span id="toolbar-env-badge" class="env-badge sandbox text-xs">
+                    Sandbox
+                </span>
+      </div>
+      <div class="text-xs text-gray-600">
+        <p><strong>Merchant ID:</strong></p>
+        <code id="toolbar-merchant-id" class="block mt-1 text-xs bg-white px-2 py-1 rounded border border-gray-200">Loading...</code>
+      </div>
+    </div>
+
+    <!-- Environment Selection -->
+    <div class="env-form-group">
+      <label class="env-label" for="env-select">Select Environment</label>
+      <select id="env-select" class="env-select">
+        <option value="sandbox">Sandbox (Testing)</option>
+        <option value="production">Production (Live)</option>
+        <option value="custom">Custom (Manual Config)</option>
+      </select>
+    </div>
+
+    <!-- Custom Environment Fields (Hidden by default) -->
+    <div id="custom-env-fields" style="display: none;">
+      <div class="env-form-group">
+        <label class="env-label" for="custom-merchant-id">
+          Merchant ID
+          <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          id="custom-merchant-id"
+          class="env-input"
+          placeholder="e.g., prod-amwal-abc123"
+        >
+      </div>
+
+      <div class="env-form-group">
+        <label class="env-label" for="custom-pay-url">
+          Pay URL (Optional)
+        </label>
+        <input
+          type="url"
+          id="custom-pay-url"
+          class="env-input"
+          placeholder="https://pay.custom.domain"
+        >
+        <p class="text-xs text-gray-500 mt-1">Leave empty to use default</p>
+      </div>
+
+      <div class="env-form-group">
+        <label class="env-label" for="custom-api-url">
+          API URL (Optional)
+        </label>
+        <input
+          type="url"
+          id="custom-api-url"
+          class="env-input"
+          placeholder="https://api.custom.domain"
+        >
+        <p class="text-xs text-gray-500 mt-1">Leave empty to use default</p>
+      </div>
+
+      <div class="env-form-group">
+        <label class="flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" id="custom-debug" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          <span>Enable Debug Mode</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Preset Environment Info -->
+    <div id="preset-env-info" class="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <p class="text-xs text-gray-600 mb-2">
+        <strong>Sandbox Environment:</strong>
+      </p>
+      <ul class="text-xs text-gray-600 space-y-1 ml-4 list-disc">
+        <li>Test transactions only</li>
+        <li>Use test cards provided</li>
+        <li>No real money processed</li>
+        <li>Debug mode enabled</li>
+      </ul>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex gap-2">
+      <button id="env-apply-btn" class="env-btn env-btn-primary flex-1 flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        Apply & Reload
+      </button>
+      <button id="env-reset-btn" class="env-btn env-btn-secondary">
+        Reset
+      </button>
+    </div>
+
+    <!-- Warning Message -->
+    <div class="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+      <div class="flex items-start gap-2">
+        <svg class="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        <p class="text-xs text-amber-800">
+          <strong>Note:</strong> Changing environment will reload the page and apply new settings to all checkout buttons.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================
+  // LOCAL STORAGE MANAGER
+  // ============================================
+  class StorageManager {
+    constructor() {
+      this.STORAGE_KEY = 'amwal_env_config';
     }
 
-    // UI Service - Handles UI related functionality
-    class UIService {
-        constructor(logger) {
-            this.logger = logger;
-            this.elements = {
-                toast: document.getElementById('toast'),
-                loadingOverlay: document.getElementById('loading-overlay')
-            };
-        }
-
-        showToast(message, type = 'success', duration = 3000) {
-            const toast = this.elements.toast;
-            toast.textContent = message;
-            toast.className = `toast ${type}`;
-
-            // Use setTimeout with 10ms to allow the DOM to update before adding the visible class
-            setTimeout(() => {
-                toast.classList.add('visible');
-            }, 10);
-
-            // Hide toast after duration
-            setTimeout(() => {
-                toast.classList.remove('visible');
-            }, duration);
-
-            this.logger.debug(`Toast displayed: ${message}`, { type, duration });
-            return this;
-        }
-
-        showLoading(show = true) {
-            if (show) {
-                this.elements.loadingOverlay.style.display = 'flex';
-                this.logger.debug('Loading overlay shown');
-            } else {
-                this.elements.loadingOverlay.style.display = 'none';
-                this.logger.debug('Loading overlay hidden');
-            }
-            return this;
-        }
+    save(config) {
+      try {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(config));
+        console.log('✅ Configuration saved to localStorage:', config);
+        return true;
+      } catch (error) {
+        console.error('❌ Failed to save to localStorage:', error);
+        return false;
+      }
     }
 
-    // TabManager - Handles tab switching functionality
-    class TabManager {
-        constructor(logger) {
-            this.logger = logger;
-            this.tabs = {
-                product: {
-                    tab: document.getElementById('product-tab'),
-                    content: document.getElementById('product-content')
-                },
-                service: {
-                    tab: document.getElementById('service-tab'),
-                    content: document.getElementById('service-content')
-                }
-            };
-            this.activeTab = 'product';
+    load() {
+      try {
+        const stored = localStorage.getItem(this.STORAGE_KEY);
+        if (stored) {
+          const config = JSON.parse(stored);
+          console.log('✅ Configuration loaded from localStorage:', config);
+          return config;
         }
-
-        init() {
-            // Switch to product tab
-            this.tabs.product.tab.addEventListener('click', () => this.switchTab('product'));
-
-            // Switch to service tab
-            this.tabs.service.tab.addEventListener('click', () => this.switchTab('service'));
-
-            this.logger.info('Tab manager initialized');
-            return this;
-        }
-
-        switchTab(tabName) {
-            if (tabName === this.activeTab) return;
-
-            const tabs = Object.keys(this.tabs);
-
-            // Update active tab
-            this.activeTab = tabName;
-
-            // Update UI
-            tabs.forEach(tab => {
-                if (tab === tabName) {
-                    this.tabs[tab].tab.classList.add('tab-active');
-                    this.tabs[tab].tab.classList.remove('tab-inactive');
-                    this.tabs[tab].tab.setAttribute('aria-selected', 'true');
-                    this.tabs[tab].content.classList.remove('hidden');
-                } else {
-                    this.tabs[tab].tab.classList.remove('tab-active');
-                    this.tabs[tab].tab.classList.add('tab-inactive');
-                    this.tabs[tab].tab.setAttribute('aria-selected', 'false');
-                    this.tabs[tab].content.classList.add('hidden');
-                }
-            });
-
-            this.logger.info(`Switched to ${tabName} tab`);
-            return this;
-        }
+      } catch (error) {
+        console.error('❌ Failed to load from localStorage:', error);
+      }
+      return null;
     }
 
-    // ProductModule - Handles product-related functionality
-    class ProductModule {
-        constructor(logger) {
-            this.logger = logger;
-            this.elements = {
-                decreaseQty: document.getElementById('decrease-qty'),
-                increaseQty: document.getElementById('increase-qty'),
-                productQty: document.getElementById('product-qty'),
-                productPrice: document.getElementById('product-price'),
-                productShipping: document.getElementById('product-shipping'),
-                productTax: document.getElementById('product-tax'),
-                productTotal: document.getElementById('product-total'),
-                cardPayment: document.getElementById('card-payment'),
-                installmentPayment: document.getElementById('installment-payment'),
-                applePayment: document.getElementById('apple-payment'),
-                cardCheckout: document.getElementById('card-checkout'),
-                installmentCheckout: document.getElementById('installment-checkout'),
-                appleCheckout: document.getElementById('apple-checkout')
-            };
+    clear() {
+      try {
+        localStorage.removeItem(this.STORAGE_KEY);
+        console.log('✅ Configuration cleared from localStorage');
+        return true;
+      } catch (error) {
+        console.error('❌ Failed to clear localStorage:', error);
+        return false;
+      }
+    }
+  }
 
-            this.state = {
-                basePrice: 399,
-                shipping: 20,
-                taxRate: 0.15,
-                quantity: 1,
-                tax: 21,
-                total: 440,
-                shippingMethods: [
-                    { id: 'standard', name: 'Standard Shipping', price: 20, deliveryDays: '3-5' },
-                    { id: 'express', name: 'Express Shipping', price: 50, deliveryDays: '1-2' },
-                    { id: 'same-day', name: 'Same Day Delivery', price: 100, deliveryDays: 'Today' }
-                ],
-                selectedShippingMethod: 'standard',
-                demoAddress: {
-                    firstName: 'Mohammed',
-                    lastName: 'Al-Saud',
-                    addressLine1: '123 King Fahd Road',
-                    addressLine2: 'Apartment 4B',
-                    city: 'Riyadh',
-                    state: 'Riyadh Province',
-                    postalCode: '12345',
-                    country: 'SA',
-                    phoneNumber: '+966501234567',
-                    email: 'customer@example.com'
-                }
-            };
-        }
+  // ============================================
+  // ENVIRONMENT CONFIGURATION
+  // ============================================
+  const ENV_CONFIG = {
+    // Storage manager instance
+    storage: new StorageManager(),
 
-        init() {
-            this.initQuantity();
-            this.initPaymentMethods();
-            this.logger.info('Product module initialized');
-            return this;
-        }
+    // Default environments
+    DEFAULTS: {
+      sandbox: {
+        merchantId: 'sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333',
+        payUrl: 'https://pay.sa.amwal.tech',
+        apiUrl: 'https://backend.sa.amwal.tech',
+        debug: true
+      },
+      production: {
+        merchantId: 'prod-amwal-5563d261-8545-418b-b122-8767a2e59931',
+        payUrl: 'https://pay.sa.amwal.tech',
+        apiUrl: 'https://backend.sa.amwal.tech',
+        debug: false
+      },
+      custom: {
+        merchantId: 'sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333',
+        payUrl: 'https://pay.amwal.dev',
+        apiUrl: 'https://qa.amwal.dev',
+        debug: true
+      }
+    },
 
-        initQuantity() {
-            // Decrease quantity
-            this.elements.decreaseQty.addEventListener('click', () => {
-                if (this.state.quantity > 1) {
-                    this.state.quantity--;
-                    this.updatePrice();
-                    this.logger.debug('Quantity decreased', { newQuantity: this.state.quantity });
-                } else {
-                    this.logger.debug('Cannot decrease quantity below 1');
-                }
-            });
+    // Current environment: 'sandbox', 'production', or 'custom'
+    CURRENT_ENV: 'sandbox',
 
-            // Increase quantity
-            this.elements.increaseQty.addEventListener('click', () => {
-                this.state.quantity++;
-                this.updatePrice();
-                this.logger.debug('Quantity increased', { newQuantity: this.state.quantity });
-            });
+    // Environment-specific settings
+    ENVIRONMENTS: {},
 
-            return this;
-        }
+    // Initialize from localStorage or defaults
+    init() {
+      const saved = this.storage.load();
 
-        updatePrice() {
-            const subtotal = this.state.basePrice * this.state.quantity;
-            const tax = Math.round(subtotal * this.state.taxRate);
-            const total = subtotal + this.state.shipping + tax;
+      if (saved && saved.currentEnv && saved.environments) {
+        // Load from localStorage
+        this.CURRENT_ENV = saved.currentEnv;
+        this.ENVIRONMENTS = saved.environments;
+        console.log('📦 Loaded environment from localStorage');
+      } else {
+        // Use defaults
+        this.CURRENT_ENV = 'sandbox';
+        this.ENVIRONMENTS = JSON.parse(JSON.stringify(this.DEFAULTS));
+        console.log('🆕 Using default environment configuration');
+      }
+    },
 
-            this.elements.productQty.value = this.state.quantity;
-            this.elements.productPrice.textContent = `SAR ${subtotal.toFixed(2)}`;
-            this.elements.productTax.textContent = `SAR ${tax.toFixed(2)}`;
-            this.elements.productTotal.textContent = `SAR ${total.toFixed(2)}`;
-            this.state.tax = tax;
-            this.state.total = total;
+    // Get current environment settings
+    get current() {
+      return this.ENVIRONMENTS[this.CURRENT_ENV];
+    },
 
-            // Update Amwal button amounts
-            this.elements.cardCheckout.setAttribute('amount', total.toString());
-            this.elements.cardCheckout.setAttribute('tax', tax.toString());
-            this.elements.installmentCheckout.setAttribute('amount', total.toString());
-            this.elements.appleCheckout.setAttribute('amount', total.toString());
+    // Save current configuration to localStorage
+    save() {
+      const config = {
+        currentEnv: this.CURRENT_ENV,
+        environments: this.ENVIRONMENTS
+      };
+      return this.storage.save(config);
+    },
 
-            this.logger.info('Product price updated', { subtotal, tax, total, quantity: this.state.quantity });
-            return this;
-        }
+    // Switch environment
+    setEnvironment(env) {
+      if (this.ENVIRONMENTS[env]) {
+        this.CURRENT_ENV = env;
+        this.save();
+        console.log(`✅ Environment switched to: ${env}`, this.current);
+        return true;
+      }
+      console.error(`❌ Invalid environment: ${env}`);
+      return false;
+    },
 
-        initPaymentMethods() {
-            const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
-            const paymentOptions = document.querySelectorAll('#product-content .payment-option');
+    // Update custom environment settings
+    setCustom(merchantId, payUrl, apiUrl, debug = true) {
+      this.ENVIRONMENTS.custom = {
+        merchantId,
+        payUrl: payUrl || this.DEFAULTS.custom.payUrl,
+        apiUrl: apiUrl || this.DEFAULTS.custom.apiUrl,
+        debug
+      };
+      this.CURRENT_ENV = 'custom';
+      this.save();
+      console.log('✅ Custom environment configured:', this.current);
+    },
 
-            paymentMethods.forEach(method => {
-                method.addEventListener('change', (event) => {
-                    const value = event.target.value;
+    // Reset to defaults
+    reset() {
+      this.CURRENT_ENV = 'sandbox';
+      this.ENVIRONMENTS = JSON.parse(JSON.stringify(this.DEFAULTS));
+      this.save();
+      console.log('🔄 Reset to default configuration');
+    },
 
-                    // Update styling
-                    paymentOptions.forEach(option => {
-                        option.classList.remove('selected');
-                    });
-                    document.getElementById(`${value}-payment-option`).classList.add('selected');
+    // Clear saved configuration
+    clearSaved() {
+      this.storage.clear();
+      this.ENVIRONMENTS = JSON.parse(JSON.stringify(this.DEFAULTS));
+      this.CURRENT_ENV = 'sandbox';
+      console.log('🗑️ Cleared saved configuration');
+    }
+  };
 
-                    // Show correct payment button
-                    this.elements.cardPayment.classList.add('hidden');
-                    this.elements.installmentPayment.classList.add('hidden');
-                    this.elements.applePayment.classList.add('hidden');
-                    document.getElementById(`${value}-payment`).classList.remove('hidden');
+  // Initialize ENV_CONFIG on load
+  ENV_CONFIG.init();
 
-                    this.logger.info('Product payment method changed', { method: value });
-                });
-            });
-
-            return this;
-        }
+  // Logger
+  class Logger {
+    info(message, data = null) {
+      console.log(`[INFO] ${message}`, data || '');
     }
 
-    // ServiceModule - Handles service-related functionality
-    class ServiceModule {
-        constructor(logger) {
-            this.logger = logger;
-            this.elements = {
-                serviceTotal: document.getElementById('service-total'),
-                serviceCardPayment: document.getElementById('service-card-payment'),
-                serviceInstallmentPayment: document.getElementById('service-installment-payment'),
-                serviceApplePayment: document.getElementById('service-apple-payment'),
-                serviceCardCheckout: document.getElementById('service-card-checkout'),
-                serviceInstallmentCheckout: document.getElementById('service-installment-checkout'),
-                serviceAppleCheckout: document.getElementById('service-apple-checkout')
-            };
-
-            this.state = {
-                packages: {
-                    basic: { price: 2499, name: 'Basic Package' },
-                    standard: { price: 3999, name: 'Standard Package' },
-                    premium: { price: 5999, name: 'Premium Package' }
-                },
-                selectedPackage: 'basic',
-                total: 2499
-            };
-        }
-
-        init() {
-            this.initPackages();
-            this.initPaymentMethods();
-            this.logger.info('Service module initialized');
-            return this;
-        }
-
-        initPackages() {
-            const servicePackages = document.querySelectorAll('input[name="service-package"]');
-            const packageOptions = document.querySelectorAll('#service-content label[id$="-package-option"]');
-
-            servicePackages.forEach(pkg => {
-                pkg.addEventListener('change', (event) => {
-                    const value = event.target.value;
-
-                    // Update styling
-                    packageOptions.forEach(option => {
-                        option.classList.remove('selected');
-                    });
-                    document.getElementById(`${value}-package-option`).classList.add('selected');
-
-                    // Update price
-                    this.updatePackage(value);
-
-                    this.logger.info('Service package changed', { package: value });
-                });
-            });
-
-            return this;
-        }
-
-        updatePackage(packageName) {
-            if (this.state.packages[packageName]) {
-                this.state.selectedPackage = packageName;
-                this.state.total = this.state.packages[packageName].price;
-
-                // Update UI
-                this.elements.serviceTotal.textContent = `SAR ${this.state.total.toFixed(2)}`;
-
-                // Update Amwal button amounts
-                this.elements.serviceCardCheckout.setAttribute('amount', this.state.total.toString());
-                this.elements.serviceInstallmentCheckout.setAttribute('amount', this.state.total.toString());
-                this.elements.serviceAppleCheckout.setAttribute('amount', this.state.total.toString());
-
-                this.logger.info('Service package updated', {
-                    package: packageName,
-                    price: this.state.packages[packageName].price
-                });
-            }
-            return this;
-        }
-
-        initPaymentMethods() {
-            const paymentMethods = document.querySelectorAll('input[name="service-payment-method"]');
-            const paymentOptions = document.querySelectorAll('#service-content .payment-option');
-
-            paymentMethods.forEach(method => {
-                method.addEventListener('change', (event) => {
-                    const value = event.target.value;
-
-                    // Update styling
-                    paymentOptions.forEach(option => {
-                        option.classList.remove('selected');
-                    });
-                    document.getElementById(`service-${value}-option`).classList.add('selected');
-
-                    // Show correct payment button
-                    this.elements.serviceCardPayment.classList.add('hidden');
-                    this.elements.serviceInstallmentPayment.classList.add('hidden');
-                    this.elements.serviceApplePayment.classList.add('hidden');
-                    document.getElementById(`service-${value}-payment`).classList.remove('hidden');
-
-                    this.logger.info('Service payment method changed', { method: value });
-                });
-            });
-
-            return this;
-        }
+    warn(message, data = null) {
+      console.warn(`[WARN] ${message}`, data || '');
     }
 
-    // CheckoutModule - Handles Amwal checkout functionality
-    class CheckoutModule {
-        constructor(logger, uiService, productModule, serviceModule) {
-            this.logger = logger;
-            this.uiService = uiService;
-            this.productModule = productModule;
-            this.serviceModule = serviceModule;
-        }
+    error(message, data = null) {
+      console.error(`[ERROR] ${message}`, data || '');
+    }
+  }
 
-        init() {
-            this.initProductCheckoutEvents();
-            this.initServiceCheckoutEvents();
-            this.applyDemoDataToCheckout();
-            this.logger.info('Checkout module initialized');
-            return this;
-        }
 
-        initProductCheckoutEvents() {
-            // Add event listeners to product checkout buttons
-            const buttons = [
-                { el: this.productModule.elements.cardCheckout, type: 'card' },
-                { el: this.productModule.elements.installmentCheckout, type: 'installment' },
-                { el: this.productModule.elements.appleCheckout, type: 'apple' }
-            ];
-
-            buttons.forEach(button => {
-                if (button.el) {
-                    this._addCheckoutEventListeners(button.el, button.type, true);
-                }
-            });
-
-            return this;
-        }
-
-        initServiceCheckoutEvents() {
-            // Add event listeners to service checkout buttons
-            const buttons = [
-                { el: this.serviceModule.elements.serviceCardCheckout, type: 'card' },
-                { el: this.serviceModule.elements.serviceInstallmentCheckout, type: 'installment' },
-                { el: this.serviceModule.elements.serviceAppleCheckout, type: 'apple' }
-            ];
-
-            buttons.forEach(button => {
-                if (button.el) {
-                    this._addCheckoutEventListeners(button.el, button.type, false);
-                }
-            });
-
-            return this;
-        }
-
-        _addCheckoutEventListeners(button, buttonType, isProduct = true) {
-            const productOrService = isProduct ? 'Product' : 'Service';
-
-            button.addEventListener('amwalPrePayTrigger', (event) => {
-                this.logger.info(`${productOrService} pre-pay triggered`, event.detail);
-
-                // The payment details from the event
-                const paymentDetails = event.detail || {};
-                this.logger.debug('Payment details', paymentDetails);
-
-                // Perform validation here before allowing payment to proceed
-                // For example: inventory check, fraud detection, etc.
-                const isValid = this._validatePayment(paymentDetails, isProduct);
-
-                if (isValid) {
-                    // Allow payment to proceed
-                    this.logger.info('Payment validation successful, proceeding with payment');
-                    button.dispatchEvent(new CustomEvent('amwalPrePayTriggerAck', {
-                        detail: {
-                            order_total_amount: paymentDetails.total_amount
-                        }
-                    }));
-                } else {
-                    // Abort payment
-                    this.logger.error('Payment validation failed, aborting payment');
-                    button.dispatchEvent(new CustomEvent('amwalPrePayTriggerError', {
-                        detail: {
-                            message: 'Payment validation failed. Please try again.'
-                        }
-                    }));
-
-                    // Optionally show error to user
-                    this.uiService.showToast('Payment validation failed. Please try again.', 'error');
-                }
-            });
-            button.addEventListener('amwalPreCheckoutTrigger', (event) => {
-                this.logger.info(`${productOrService} pre-checkout triggered`, event.detail);
-
-                // Only add demo data for product checkout
-                if (isProduct) {
-                    // Get transaction details from the event
-                    const transactionDetails = event.detail || {};
-
-                    // Get your demo data
-                    const demoAddress = this.productModule.state.demoAddress;
-                    const shippingMethod = this.productModule.state.shippingMethods.find(
-                        method => method.id === this.productModule.state.selectedShippingMethod
-                    );
-
-                    // Create modified transaction details with demo data
-                    const modifiedDetails = {
-                        ...transactionDetails,
-                        customerDetails: {
-                            firstName: demoAddress.firstName,
-                            lastName: demoAddress.lastName,
-                            email: demoAddress.email,
-                            phoneNumber: demoAddress.phoneNumber
-                        },
-                        shippingAddress: {
-                            addressLine1: demoAddress.addressLine1,
-                            addressLine2: demoAddress.addressLine2,
-                            city: demoAddress.city,
-                            state: demoAddress.state,
-                            postalCode: demoAddress.postalCode,
-                            country: demoAddress.country
-                        },
-                        shippingMethod: {
-                            id: shippingMethod.id,
-                            name: shippingMethod.name,
-                            price: shippingMethod.price,
-                            description: `${shippingMethod.name} (${shippingMethod.deliveryDays})`
-                        }
-                    };
-
-                    this.logger.debug('Sending demo data to Amwal', modifiedDetails);
-
-                    // Send modified transaction details back to Amwal
-                    button.dispatchEvent(new CustomEvent('amwalPreCheckoutTriggerAck', {
-                        detail: modifiedDetails
-                    }));
-                } else {
-                    // For services, just acknowledge without modification
-                    button.dispatchEvent(new CustomEvent('amwalPreCheckoutTriggerAck'));
-                }
-            });
-
-            // Original checkout events
-            button.addEventListener('amwalCheckoutStart', (event) => {
-                this.logger.info(`${productOrService} ${buttonType} checkout started`, event.detail);
-                this.uiService.showLoading(true);
-            });
-            button.addEventListener('amwalCheckoutSuccess', (event) => {
-                this.logger.info(`${productOrService} ${buttonType} checkout success`, event.detail);
-                this.uiService.showLoading(false);
-                this.uiService.showToast(`Checkout successful! Order ID: ${event.detail.orderId}`, 'success');
-                this.logger.debug('Order details', { orderId: event.detail.orderId });
-            });
-            button.addEventListener('amwalCheckoutFail', (event) => {
-                this.logger.error(`${productOrService} ${buttonType} checkout failed`, event.detail);
-                this.uiService.showLoading(false);
-                this.uiService.showToast('Checkout failed. Please try again.', 'error');
-            });
-
-            // Address events
-            button.addEventListener('amwalAddressCountryUpdate', (event) => {
-                this.logger.info(`${productOrService} address country updated`, event.detail);
-                const country = event.detail;
-                this.logger.debug('Country details', country);
-            });
-            button.addEventListener('amwalAddressStateUpdate', (event) => {
-                this.logger.info(`${productOrService} address state updated`, event.detail);
-                const state = event.detail;
-                this.logger.debug('State details', state);
-            });
-            button.addEventListener('amwalAddressUpdate', (event) => {
-                this.logger.info(`${productOrService} address updated`, event.detail);
-
-                // Only handle shipping methods for products
-                if (isProduct) {
-                    const address = event.detail;
-                    this.logger.debug('Address update received', address);
-
-                    // Get available shipping methods based on the country and city
-                    const country = address.country;
-                    const city = address.city;
-
-                    // You could customize shipping methods based on location
-                    let availableShippingMethods = this.productModule.state.shippingMethods;
-
-                    // Example: If shipping to Riyadh, offer same-day delivery
-                    if (country === 'SA' && city === 'Riyadh') {
-                        // All shipping methods available
-                    }
-                    // If shipping to other SA cities, no same-day but express is available
-                    else if (country === 'SA') {
-                        availableShippingMethods = availableShippingMethods.filter(
-                            method => method.id !== 'same-day'
-                        );
-                    }
-                    // International shipping - only standard shipping
-                    else {
-                        availableShippingMethods = availableShippingMethods.filter(
-                            method => method.id === 'standard'
-                        );
-                    }
-
-                    const shippingOptions = availableShippingMethods.map(method => ({
-                        id: method.id,
-                        label: method.name,
-                        price: method.price,
-                    }));
-
-                    this.logger.debug('Sending shipping options to Amwal', shippingOptions);
-
-                    // Create and dispatch the acknowledgment event with shipping options
-                    button.dispatchEvent(new CustomEvent('amwalAddressAck', {
-                        detail: shippingOptions
-                    }));
-                }
-            });
-            button.addEventListener('amwalDismissed', (event) => {
-                this.logger.info(`${productOrService} checkout dismissed`, event.detail);
-                this.uiService.showLoading(false);
-                // Handle modal dismissal
-                const isSuccessful = event.detail;
-                if (!isSuccessful) {
-                    this.uiService.showToast('Checkout was cancelled.', 'error');
-                }
-            });
-            button.addEventListener('updateOrderOnPaymentsuccess', (event) => {
-                this.logger.info(`${productOrService} order updated after payment`, event.detail);
-                // Update order status in your system
-                const orderDetails = event.detail;
-                this.logger.debug('Updated order details', orderDetails);
-
-                // Close the modal and then redirect
-                if (button && typeof button.dismissModal === 'function') {
-                    button.dismissModal().finally(() => {
-                        this.logger.info('Modal dismissed, now redirecting');
-                    });
-                }
-            });
-        }
-
-        // Validate payment details
-        _validatePayment(paymentDetails, isProduct) {
-            // Implement your payment validation logic here
-            // This is just a simple example
-
-            if (isProduct) {
-                // Product-specific validation
-                const quantity = this.productModule.state.quantity;
-                const isInStock = this._checkInventory(quantity);
-
-                return isInStock;
-            } else {
-                // Service-specific validation
-                const packageType = this.serviceModule.state.selectedPackage;
-                const isAvailable = this._checkServiceAvailability(packageType);
-
-                return isAvailable;
-            }
-        }
-
-        // Sample inventory check method
-        _checkInventory(quantity) {
-            // In a real application, this would check actual inventory
-            // For demo purposes, let's assume we have 10 items in stock
-            const inventoryCount = 10;
-
-            this.logger.debug('Checking inventory', { requested: quantity, available: inventoryCount });
-            return quantity <= inventoryCount;
-        }
-
-        // Sample service availability check
-        _checkServiceAvailability(packageType) {
-            // In a real application, this would check service availability
-            // For demo purposes, let's assume all packages are available
-            this.logger.debug('Checking service availability', { package: packageType });
-            return true;
-        }
-
-        applyDemoDataToCheckout() {
-            // Product checkout buttons
-            const productCheckoutButtons = [
-                this.productModule.elements.cardCheckout,
-                this.productModule.elements.installmentCheckout,
-                this.productModule.elements.appleCheckout
-            ];
-
-            const serviceCheckoutButtons = [
-                this.serviceModule.elements.serviceCardCheckout,
-                this.serviceModule.elements.serviceInstallmentCheckout,
-                this.serviceModule.elements.serviceAppleCheckout
-            ];
-
-            // Define shipping methods
-            const shippingMethodsData = [
-                {
-                    id: 'standard',
-                    label: 'Standard Shipping',
-                    price: 20,
-                },
-                {
-                    id: 'express',
-                    label: 'Express Shipping',
-                    price: 50,
-                },
-                {
-                    id: 'same-day',
-                    label: 'Same Day Delivery',
-                    price: 100,
-                }
-            ];
-
-            // Define all our allowed addresses data
-            const addressData = {
-                // Initial customer data
-                initialFirstName: "Mohammed",
-                initialLastName: "Al-Saud",
-                initialPhoneNumber: "+966501234567",
-                initialEmail: "customer@example.com",
-
-                // Initial address as JSON string
-                initialAddress: JSON.stringify({
-                    street1: "123 King Fahd Road",
-                    street2: "Apartment 4B",
-                    city: "Riyadh",
-                    state: "Riyadh",
-                    country: "SA",
-                    postcode: "12345"
-                }),
-
-                // Allowed countries
-                allowedAddressCountries: JSON.stringify(["SA", "AE", "KW", "US"]),
-
-                // Allowed states by country
-                allowedAddressStates: JSON.stringify({
-                    "SA": {
-                        "1115": "Riyadh",
-                        "1119": "Dammam",
-                        "1121": "Jeddah",
-                        "1122": "Mecca"
-                    },
-                    "AE": {
-                        "1108": "Abu Dhabi",
-                        "1111": "Dubai",
-                        "1114": "Sharjah"
-                    }
-                }),
-
-                // Allowed cities by country and state
-                allowedAddressCities: JSON.stringify({
-                    "SA": {
-                        "1115": ["Riyadh"],
-                        "1119": ["Dammam"]
-                    }
-                }),
-
-                // Countries where postcode is optional
-                postcodeOptionalCountries: JSON.stringify(["SA"]),
-
-                // Feature flags
-                addressHandshake: "",
-                sendExtraAddressFields: "",
-                enablePrePayTrigger: "",
-                enablePreCheckoutTrigger: ""
-            };
-
-            // Apply all attributes to each button
-            this._applyAttributesToButtons(productCheckoutButtons, addressData, shippingMethodsData, true);
-            this._applyAttributesToButtons(serviceCheckoutButtons, addressData, null, false);
-
-            this.logger.info('Demo customer and address data applied to checkout buttons', {
-                customerData: {
-                    firstName: addressData.initialFirstName,
-                    lastName: addressData.initialLastName,
-                    phoneNumber: addressData.initialPhoneNumber,
-                    email: addressData.initialEmail
-                },
-                addressData: JSON.parse(addressData.initialAddress),
-                allowedCountries: JSON.parse(addressData.allowedAddressCountries)
-            });
-
-            return this;
-        }
-
-        _applyAttributesToButtons(buttons, addressData, shippingMethodsData, isProduct) {
-            buttons.forEach(button => {
-                if (!button) return;
-
-                // Set customer information
-                button.setAttribute('initial-first-name', addressData.initialFirstName);
-                button.setAttribute('initial-last-name', addressData.initialLastName);
-                button.setAttribute('initial-phone-number', addressData.initialPhoneNumber);
-                button.setAttribute('initial-email', addressData.initialEmail);
-
-                // Set address information
-                button.setAttribute('initial-address', addressData.initialAddress);
-
-                // Set address restrictions
-                button.setAttribute('allowed-address-countries', addressData.allowedAddressCountries);
-                button.setAttribute('allowed-address-states', addressData.allowedAddressStates);
-                button.setAttribute('allowed-address-cities', addressData.allowedAddressCities);
-                button.setAttribute('postcode-optional-countries', addressData.postcodeOptionalCountries);
-
-                // Set feature flags
-                button.setAttribute('address-handshake', addressData.addressHandshake);
-                button.setAttribute('send-extra-address-fields', addressData.sendExtraAddressFields);
-                button.setAttribute('enable-pre-pay-trigger', addressData.enablePrePayTrigger);
-                button.setAttribute('enable-pre-checkout-trigger', addressData.enablePreCheckoutTrigger);
-
-                // Dynamic shipping details is not needed if we're providing allowed addresses
-                button.setAttribute('enable-dynamic-shipping-details', 'false');
-
-                // Only add shipping methods to product buttons
-                if (isProduct && shippingMethodsData) {
-                    button.setAttribute('shipping-methods', JSON.stringify(shippingMethodsData));
-                }
-            });
-        }
+  // Product Module
+  class ProductModule {
+    constructor(logger) {
+      this.logger = logger;
+      this.productData = {
+        name: 'Amwal Poster',
+        baseAmount: 900,
+        quantity: 1,
+        discountPercent: 10,
+        taxPercent: 15
+      };
     }
 
-    // DebugModule - Handles debug console functionality
-    class DebugModule {
-        constructor(logger) {
-            this.logger = logger;
-            this.elements = {
-                debugConsole: document.getElementById('debug-console'),
-                debugHandle: document.getElementById('debug-handle'),
-                debugContent: document.getElementById('debug-content'),
-                debugClear: document.getElementById('debug-clear'),
-                debugExport: document.getElementById('debug-export'),
-                debugLevel: document.getElementById('debug-level'),
-                debugAutoScroll: document.getElementById('debug-auto-scroll')
-            };
-        }
-
-        init() {
-            // Toggle debug console visibility
-            this.elements.debugHandle.addEventListener('click', () => {
-                const debugConsole = this.elements.debugConsole;
-                if (debugConsole.style.display === 'block') {
-                    debugConsole.style.display = 'none';
-                } else {
-                    debugConsole.style.display = 'block';
-                }
-                this.logger.debug('Debug console toggled');
-            });
-
-            // Clear debug console
-            this.elements.debugClear.addEventListener('click', () => {
-                this.logger.clear();
-                this.logger.info('Debug console cleared');
-            });
-
-            // Export debug logs
-            this.elements.debugExport.addEventListener('click', () => {
-                this.logger.export();
-                this.logger.info('Debug logs exported');
-            });
-
-            // Change debug level
-            this.elements.debugLevel.addEventListener('change', (event) => {
-                const level = event.target.value;
-                this.logger.setLevel(level);
-                this.logger.info('Debug level changed', { level });
-            });
-
-            this.logger.info('Debug module initialized');
-            return this;
-        }
+    init() {
+      this.updateDisplay();
+      this.logger.info('Product module initialized');
     }
 
-    // AmwalCheckoutApp - Main application class
-    class AmwalCheckoutApp {
-        constructor() {
-            // Initialize logger first
-            this.logger = new Logger();
-            this.logger.info('Initializing Amwal Checkout application', { timestamp: new Date().toISOString() });
+    getProductData() {
+      const subtotal = this.productData.baseAmount * this.productData.quantity;
+      const discountAmount = (subtotal * this.productData.discountPercent) / 100;
+      const taxableAmount = subtotal - discountAmount;
+      const taxAmount = (taxableAmount * this.productData.taxPercent) / 100;
+      const total = taxableAmount + taxAmount;
 
-            // Initialize services and modules
-            this.uiService = new UIService(this.logger);
-            this.tabManager = new TabManager(this.logger);
-            this.productModule = new ProductModule(this.logger);
-            this.serviceModule = new ServiceModule(this.logger);
-            this.checkoutModule = new CheckoutModule(this.logger, this.uiService, this.productModule, this.serviceModule);
-            this.debugModule = new DebugModule(this.logger);
-        }
-
-        init() {
-            // Initialize all modules
-            this.tabManager.init();
-            this.productModule.init();
-            this.serviceModule.init();
-            this.checkoutModule.init();
-            this.debugModule.init();
-
-            this.logger.info('AmwalCheckoutApp initialized successfully');
-            return this;
-        }
+      return {
+        ...this.productData,
+        subtotal,
+        discountAmount,
+        taxAmount,
+        total
+      };
     }
 
-    // Initialize the application when the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        const app = new AmwalCheckoutApp();
-        app.init();
-    });
+    calculateTotal() {
+      const data = this.getProductData();
+      return data.total;
+    }
+
+    updateDisplay() {
+      const data = this.getProductData();
+
+      document.getElementById('summary-product-name').textContent = data.name;
+      document.getElementById('summary-quantity').textContent = data.quantity;
+      document.getElementById('summary-item-price').textContent =
+        `SAR ${data.baseAmount.toLocaleString('en-SA', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('summary-subtotal').textContent =
+        `SAR ${data.subtotal.toLocaleString('en-SA', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('summary-discount').textContent =
+        `-SAR ${data.discountAmount.toLocaleString('en-SA', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}`;
+      document.getElementById('summary-tax').textContent =
+        `SAR ${data.taxAmount.toLocaleString('en-SA', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      document.getElementById('summary-total').textContent =
+        data.total.toLocaleString('en-SA', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+      document.dispatchEvent(new CustomEvent('product-updated', {detail: data}));
+    }
+  }
+
+  // Checkout Module
+  class CheckoutModule {
+    constructor(logger, productModule) {
+      this.logger = logger;
+      this.productModule = productModule;
+      this.checkoutButtons = [];
+      this.completeOrderBtn = document.getElementById('complete-order-btn');
+      this.orderDetails = null;
+      this.paymentType = null;
+
+      // Shipping methods state
+      this.shippingMethods = [
+        {
+          "id": "1",
+          "label": "Free shipping",
+          "price": 0
+        }
+      ];
+    }
+
+    init() {
+      this.logger.info('Checkout module initializing...');
+      this.findAndConfigureButtons();
+      this.setupPaymentToggle();
+      this.setupEventListeners();
+      this.updateEnvironmentUI();
+    }
+
+    findAndConfigureButtons() {
+      // Find all amwal-checkout-button elements
+      const buttons = document.querySelectorAll('amwal-checkout-button');
+      this.checkoutButtons = Array.from(buttons);
+
+      if (this.checkoutButtons.length === 0) {
+        this.logger.error('No Amwal checkout buttons found');
+        return;
+      }
+
+      this.logger.info(`Found ${this.checkoutButtons.length} checkout buttons`);
+
+      // Configure each button with environment settings
+      this.checkoutButtons.forEach((button, index) => {
+        this.configureButton(button);
+        this.setupAmwalEventListeners(button);
+        this.logger.info(`Configured button ${index + 1}/${this.checkoutButtons.length}`);
+      });
+
+      this.applyDemoData();
+    }
+
+    configureButton(button) {
+      const env = ENV_CONFIG.current;
+
+      // Set merchant ID from environment
+      button.setAttribute('merchant-id', env.merchantId);
+
+      // Set debug mode
+      button.setAttribute('debug', env.debug.toString());
+
+      // Set pay-url if it's a custom environment
+      if (ENV_CONFIG.CURRENT_ENV === 'custom' && env.payUrl) {
+        button.setAttribute('pay-url', env.payUrl);
+      }
+
+      // Set api-url if it's a custom environment
+      if (ENV_CONFIG.CURRENT_ENV === 'custom' && env.apiUrl) {
+        button.setAttribute('api-url', env.apiUrl);
+      }
+
+      // Update amount for all buttons
+      const total = this.productModule.calculateTotal();
+      button.setAttribute('amount', total.toString());
+
+      this.logger.info('Button configured with environment:', {
+        merchantId: env.merchantId,
+        payUrl: env.payUrl,
+        apiUrl: env.apiUrl,
+        debug: env.debug,
+        amount: total
+      });
+    }
+
+    updateEnvironmentUI() {
+      const env = ENV_CONFIG.CURRENT_ENV;
+      const envText = env.charAt(0).toUpperCase() + env.slice(1);
+
+      // Update badges
+      const badge = document.getElementById('env-badge');
+      const badgeMobile = document.getElementById('env-badge-mobile');
+      const envTextEl = document.getElementById('env-text');
+      const envTextMobile = document.getElementById('env-text-mobile');
+
+      if (badge && envTextEl) {
+        badge.className = `env-badge ${env} inline-flex`;
+        envTextEl.textContent = envText;
+      }
+
+      if (badgeMobile && envTextMobile) {
+        badgeMobile.className = `env-badge ${env} inline-flex`;
+        envTextMobile.textContent = `${envText} Mode`;
+      }
+
+      this.logger.info('Environment UI updated:', envText);
+    }
+
+    updateButtonTotal() {
+      const total = this.productModule.calculateTotal();
+
+      this.checkoutButtons.forEach(button => {
+        button.setAttribute('amount', total.toString());
+      });
+
+      this.logger.info(`Updated checkout amount to: ${total}`);
+    }
+
+    // ============================================
+    // AMWAL EVENT LISTENERS
+    // ============================================
+
+    setupAmwalEventListeners(button) {
+      if (!button) {
+        this.logger.error('Cannot setup Amwal events - button not found');
+        return;
+      }
+
+      // 1. Address Update Event
+      button.addEventListener('amwalAddressUpdate', (event) => {
+        this.logger.info('🏠 Address updated:', event.detail);
+
+        const addressData = event.detail;
+        this.updateShippingMethods(addressData);
+        button.setAttribute('shipping-methods', JSON.stringify(this.shippingMethods));
+
+        setTimeout(() => {
+          button.dispatchEvent(new CustomEvent('amwalAddressAck'));
+          this.logger.info('✅ Address update acknowledged');
+        }, 1000);
+      });
+
+      // 2. Country Selection Event
+      button.addEventListener('amwalAddressCountryUpdate', (event) => {
+        this.logger.info('🌍 Country selected:', event.detail);
+        this.handleCountryChange(event.detail);
+      });
+
+      // 3. State Selection Event
+      button.addEventListener('amwalAddressStateUpdate', (event) => {
+        this.logger.info('🗺️ State selected:', event.detail);
+        this.handleStateChange(event.detail);
+      });
+
+      // 4. Payment Success Event
+      button.addEventListener('amwalCheckoutSuccess', (event) => {
+        this.logger.info('🎉 Payment successful!', event.detail);
+        const { orderId, transactionId } = event.detail;
+        this.handlePaymentSuccess(orderId, transactionId);
+        this.showToast('Payment completed successfully! Order ID: ' + orderId, 'success');
+      });
+
+      // 5. Modal Dismissed Event
+      button.addEventListener('amwalDismissed', (event) => {
+        this.logger.info('❌ Modal dismissed:', event.detail);
+        const { success } = event.detail;
+        if (!success) {
+          this.showToast('Checkout was cancelled', 'error');
+        }
+      });
+
+      // 6. Pre-Checkout Trigger Event
+      button.addEventListener('amwalPreCheckoutTrigger', (event) => {
+        this.logger.info('🔍 Pre-checkout triggered:', event.detail);
+        const validationResult = this.validateBeforeCheckout();
+
+        if (validationResult.isValid) {
+          button.dispatchEvent(new CustomEvent('amwalPreCheckoutTriggerAck'));
+          this.logger.info('✅ Pre-checkout validation passed');
+        } else {
+          button.dispatchEvent(new CustomEvent('amwalPreCheckoutTriggerError', {
+            detail: { message: validationResult.error }
+          }));
+          this.showToast(validationResult.error, 'error');
+        }
+      });
+
+      // 7. Pre-Pay Trigger Event
+      button.addEventListener('amwalPrePayTrigger', (event) => {
+        this.logger.info('💳 Pre-pay triggered:', event.detail);
+        const finalValidation = this.validateBeforePayment();
+
+        if (finalValidation.isValid) {
+          button.dispatchEvent(new CustomEvent('amwalPrePayTriggerAck', {
+            detail: { order_total_amount: this.productModule.calculateTotal() }
+          }));
+          this.logger.info('✅ Pre-pay validation passed');
+        } else {
+          button.dispatchEvent(new CustomEvent('amwalPrePayTriggerError', {
+            detail: { message: finalValidation.error }
+          }));
+          this.showToast(finalValidation.error, 'error');
+        }
+      });
+
+      // 8. Alternative Payment Success Event
+      button.addEventListener('updateOrderOnPaymentsuccess', (event) => {
+        this.logger.info('📦 Order updated on payment success:', event.detail);
+        this.updateOrderAfterPayment(event.detail.orderId);
+      });
+
+      // Error handling event
+      button.addEventListener('amwalCheckoutError', (event) => {
+        this.logger.error('💥 Checkout error:', event.detail);
+        this.showToast('An error occurred during checkout. Please try again.', 'error');
+      });
+    }
+
+    // ============================================
+    // HELPER METHODS FOR EVENT HANDLERS
+    // ============================================
+
+    updateShippingMethods(addressData) {
+      const { city, country, state } = addressData;
+
+      this.shippingMethods = [
+        {
+          "id": "1",
+          "label": "Free shipping",
+          "price": 0
+        }
+      ];
+
+      if (country === 'SA' && (city === 'Riyadh' || city === 'Jeddah')) {
+        this.shippingMethods.push({
+          "id": "2",
+          "label": "Express shipping (1-2 days)",
+          "price": 50
+        });
+      }
+
+      this.shippingMethods.push({
+        "id": "3",
+        "label": "Standard shipping (3-5 days)",
+        "price": 20
+      });
+
+      this.logger.info('Updated shipping methods:', this.shippingMethods);
+    }
+
+    handleCountryChange(countryData) {
+      const { country } = countryData;
+      this.logger.info('Processing country change to:', country);
+    }
+
+    handleStateChange(stateData) {
+      const { state, country } = stateData;
+      this.logger.info('Processing state change to:', state, 'in country:', country);
+    }
+
+    handlePaymentSuccess(orderId, transactionId) {
+      this.logger.info('Processing successful payment:', { orderId, transactionId });
+    }
+
+    updateOrderAfterPayment(orderId) {
+      this.logger.info('Updating order after payment:', orderId);
+    }
+
+    validateBeforeCheckout() {
+      const items = this.productModule.calculateTotal();
+
+      if (items <= 0) {
+        return {
+          isValid: false,
+          error: 'Cart is empty. Please add items before checkout.'
+        };
+      }
+
+      return { isValid: true };
+    }
+
+    validateBeforePayment() {
+      const items = this.productModule.calculateTotal();
+
+      if (items <= 0) {
+        return {
+          isValid: false,
+          error: 'Invalid cart total'
+        };
+      }
+
+      return { isValid: true };
+    }
+
+    showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                ${type === 'success'
+        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>'
+        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'
+      }
+            </svg>
+            <span class="font-medium">${message}</span>
+        `;
+
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('visible'), 100);
+
+      setTimeout(() => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
+
+    setupPaymentToggle() {
+      document.querySelectorAll('input[name="payment"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          document.querySelectorAll('[id^="details-"]').forEach(el => el.classList.add('hidden'));
+          const details = document.getElementById(`details-${e.target.value}`);
+          if (details) details.classList.remove('hidden');
+        });
+      });
+    }
+
+    setupEventListeners() {
+      if (this.completeOrderBtn) {
+        this.completeOrderBtn.addEventListener('click', () => {
+          const btn = document.querySelector('amwal-checkout-button');
+          if (btn) btn.click();
+        });
+      }
+
+      // Listen for product updates to refresh button amounts
+      document.addEventListener('product-updated', () => {
+        this.updateButtonTotal();
+      });
+    }
+
+    applyDemoData() {
+      const mainButton = document.getElementById('express-checkout-btn');
+      if (!mainButton) return;
+
+      const shippingMethodsData = [
+        {
+          id: 'standard',
+          label: 'Standard Shipping',
+          price: 20,
+        },
+        {
+          id: 'express',
+          label: 'Express Shipping',
+          price: 50,
+        },
+        {
+          id: 'same-day',
+          label: 'Same Day Delivery',
+          price: 100,
+        }
+      ];
+
+      const addressData = {
+        initialFirstName: "Ahmed",
+        initialLastName: "Al-Mansour",
+        initialPhoneNumber: "+966501234567",
+        initialEmail: "ahmed.almansour@example.com",
+        initialAddress: JSON.stringify({
+          street1: "123 King Fahd Road",
+          street2: "Apartment 4B",
+          city: "Riyadh",
+          state: "Riyadh",
+          country: "SA",
+          postcode: "12345"
+        }),
+        allowedAddressCountries: JSON.stringify(["SA", "AE", "KW"]),
+        allowedAddressStates: JSON.stringify({
+          "SA": {
+            "1115": "Riyadh",
+            "1119": "Dammam",
+            "1121": "Jeddah",
+            "1122": "Mecca"
+          },
+          "AE": {
+            "1108": "Abu Dhabi",
+            "1111": "Dubai",
+            "1114": "Sharjah"
+          }
+        }),
+        allowedAddressCities: JSON.stringify({
+          "SA": {
+            "1115": ["Riyadh"],
+            "1119": ["Dammam"]
+          }
+        }),
+        shippingMethods: JSON.stringify(shippingMethodsData),
+        postcodeOptionalCountries: JSON.stringify(["SA"])
+      };
+
+      Object.entries(addressData).forEach(([key, value]) => {
+        const attrName = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+        mainButton.setAttribute(attrName, value);
+      });
+
+      this.logger.info('Demo data applied');
+    }
+  }
+
+
+  // Environment Toolbar Module
+  class EnvironmentToolbar {
+    constructor(logger) {
+      this.logger = logger;
+      this.toolbar = document.getElementById('env-toolbar');
+      this.toggleBtn = document.getElementById('env-toggle-btn');
+      this.closeBtn = document.getElementById('env-toolbar-close');
+      this.envSelect = document.getElementById('env-select');
+      this.applyBtn = document.getElementById('env-apply-btn');
+      this.resetBtn = document.getElementById('env-reset-btn');
+      this.customFields = document.getElementById('custom-env-fields');
+      this.presetInfo = document.getElementById('preset-env-info');
+    }
+
+    init() {
+      this.setupEventListeners();
+      this.updateToolbarDisplay();
+      this.logger.info('Environment toolbar initialized');
+    }
+
+    setupEventListeners() {
+      // Toggle toolbar open
+      this.toggleBtn.addEventListener('click', () => {
+        this.openToolbar();
+      });
+
+      // Close toolbar
+      this.closeBtn.addEventListener('click', () => {
+        this.closeToolbar();
+      });
+
+      // Environment selection change
+      this.envSelect.addEventListener('change', () => {
+        this.handleEnvironmentChange();
+      });
+
+      // Apply button
+      this.applyBtn.addEventListener('click', () => {
+        this.applyEnvironment();
+      });
+
+      // Reset button
+      this.resetBtn.addEventListener('click', () => {
+        this.resetToDefault();
+      });
+
+      // Close toolbar when clicking outside
+      document.addEventListener('click', (e) => {
+        if (this.toolbar.style.display !== 'none' &&
+          !this.toolbar.contains(e.target) &&
+          !this.toggleBtn.contains(e.target)) {
+          this.closeToolbar();
+        }
+      });
+    }
+
+    openToolbar() {
+      this.toolbar.style.display = 'block';
+      this.toggleBtn.classList.add('toolbar-open');
+      setTimeout(() => {
+        this.toolbar.classList.remove('collapsed');
+        this.toolbar.classList.add('expanded');
+      }, 10);
+      this.logger.info('Toolbar opened');
+    }
+
+    closeToolbar() {
+      this.toolbar.classList.remove('expanded');
+      this.toolbar.classList.add('collapsed');
+      this.toggleBtn.classList.remove('toolbar-open');
+      setTimeout(() => {
+        this.toolbar.style.display = 'none';
+      }, 300);
+      this.logger.info('Toolbar closed');
+    }
+
+    handleEnvironmentChange() {
+      const selectedEnv = this.envSelect.value;
+
+      if (selectedEnv === 'custom') {
+        this.customFields.style.display = 'block';
+        this.presetInfo.style.display = 'none';
+
+        // Pre-fill with current custom values
+        const customEnv = ENV_CONFIG.ENVIRONMENTS.custom;
+        document.getElementById('custom-merchant-id').value = customEnv.merchantId;
+        document.getElementById('custom-pay-url').value = customEnv.payUrl;
+        document.getElementById('custom-api-url').value = customEnv.apiUrl;
+        document.getElementById('custom-debug').checked = customEnv.debug;
+      } else {
+        this.customFields.style.display = 'none';
+        this.presetInfo.style.display = 'block';
+
+        // Update preset info
+        this.updatePresetInfo(selectedEnv);
+      }
+    }
+
+    updatePresetInfo(env) {
+      const info = {
+        sandbox: {
+          title: 'Sandbox Environment:',
+          points: [
+            'Test transactions only',
+            'Use test cards provided',
+            'No real money processed',
+            'Debug mode enabled'
+          ]
+        },
+        production: {
+          title: 'Production Environment:',
+          points: [
+            'Live transactions',
+            'Real payment processing',
+            'Use actual payment cards',
+            'Debug mode disabled'
+          ]
+        }
+      };
+
+      const envInfo = info[env] || info.sandbox;
+      this.presetInfo.innerHTML = `
+                <p class="text-xs text-gray-600 mb-2">
+                    <strong>${envInfo.title}</strong>
+                </p>
+                <ul class="text-xs text-gray-600 space-y-1 ml-4 list-disc">
+                    ${envInfo.points.map(point => `<li>${point}</li>`).join('')}
+                </ul>
+            `;
+    }
+
+    applyEnvironment() {
+      const selectedEnv = this.envSelect.value;
+
+      if (selectedEnv === 'custom') {
+        const merchantId = document.getElementById('custom-merchant-id').value.trim();
+        const payUrl = document.getElementById('custom-pay-url').value.trim();
+        const apiUrl = document.getElementById('custom-api-url').value.trim();
+        const debug = document.getElementById('custom-debug').checked;
+
+        if (!merchantId) {
+          alert('Please enter a Merchant ID for custom environment');
+          return;
+        }
+
+        ENV_CONFIG.setCustom(merchantId, payUrl, apiUrl, debug);
+        this.logger.info('Custom environment applied:', ENV_CONFIG.current);
+      } else {
+        ENV_CONFIG.setEnvironment(selectedEnv);
+        this.logger.info(`Switched to ${selectedEnv} environment`);
+      }
+
+      // Show success message
+      this.showSuccessMessage();
+
+      // Reload the page to apply changes
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    }
+
+    resetToDefault() {
+      if (confirm('Are you sure you want to reset to default sandbox environment? This will clear all saved settings.')) {
+        ENV_CONFIG.reset();
+        this.logger.info('Reset to default sandbox environment');
+
+        // Show success message
+        this.showSuccessMessage('Settings reset to default');
+
+        setTimeout(() => {
+          location.reload();
+        }, 1000);
+      }
+    }
+
+    showSuccessMessage(message = 'Settings saved successfully') {
+      const toast = document.createElement('div');
+      toast.className = 'toast success visible';
+      toast.innerHTML = `
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span class="font-medium">${message}</span>
+      `;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 300);
+      }, 2000);
+    }
+
+    updateToolbarDisplay() {
+      // Update current environment display
+      const currentEnv = ENV_CONFIG.CURRENT_ENV;
+      const envBadge = document.getElementById('toolbar-env-badge');
+      const merchantId = document.getElementById('toolbar-merchant-id');
+
+      // Update badge
+      if (envBadge) {
+        envBadge.className = `env-badge ${currentEnv} text-xs`;
+        envBadge.textContent = currentEnv.charAt(0).toUpperCase() + currentEnv.slice(1);
+      }
+
+      // Update merchant ID
+      if (merchantId) {
+        merchantId.textContent = ENV_CONFIG.current.merchantId;
+      }
+
+      // Set select value
+      this.envSelect.value = currentEnv;
+
+      // Show/hide custom fields based on current environment
+      if (currentEnv === 'custom') {
+        this.customFields.style.display = 'block';
+        this.presetInfo.style.display = 'none';
+
+        // Fill custom fields with current values
+        const customEnv = ENV_CONFIG.current;
+        document.getElementById('custom-merchant-id').value = customEnv.merchantId;
+        document.getElementById('custom-pay-url').value = customEnv.payUrl;
+        document.getElementById('custom-api-url').value = customEnv.apiUrl;
+        document.getElementById('custom-debug').checked = customEnv.debug;
+      } else {
+        this.customFields.style.display = 'none';
+        this.presetInfo.style.display = 'block';
+        this.updatePresetInfo(currentEnv);
+      }
+
+      this.logger.info('Toolbar display updated');
+    }
+  }
+
+  // Main App
+  class AmwalCheckoutApp {
+    constructor() {
+      this.logger = new Logger();
+      this.productModule = new ProductModule(this.logger);
+      this.checkoutModule = new CheckoutModule(this.logger, this.productModule);
+      this.environmentToolbar = new EnvironmentToolbar(this.logger);
+    }
+
+    init() {
+      // Log environment configuration
+      this.logger.info('🌍 Environment Configuration:', {
+        current: ENV_CONFIG.CURRENT_ENV,
+        settings: ENV_CONFIG.current,
+        savedInLocalStorage: ENV_CONFIG.storage.load() !== null
+      });
+
+      this.productModule.init();
+      this.checkoutModule.init();
+      this.environmentToolbar.init();
+      this.setupMobileMenu();
+      this.logger.info('✅ Amwal checkout app initialized');
+    }
+
+    setupMobileMenu() {
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+
+          const icon = mobileMenuButton.querySelector('svg');
+          if (mobileMenu.classList.contains('hidden')) {
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+          } else {
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+          }
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+            mobileMenu.classList.add('hidden');
+            const icon = mobileMenuButton.querySelector('svg');
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+          }
+        });
+      }
+    }
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    const app = new AmwalCheckoutApp();
+    app.init();
+  });
 </script>
 </body>
 </html>
