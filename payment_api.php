@@ -1,10 +1,178 @@
+<?php
+// Proxy for Amwal API
+session_start();
+
+// Security Configuration
+define('MAX_REQUESTS_PER_HOUR', 100);
+define('ALLOWED_ORIGINS', ['amwal-tech.github.io', 'localhost', '127.0.0.1']);
+define('AMWAL_API_BASE', 'https://backend.sa.amwal.tech');
+
+// Handle API proxy requests
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['proxy'])) {
+    header('Content-Type: application/json');
+
+    // CORS Security - Only allow specific origins
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    $allowedOrigin = null;
+    foreach (ALLOWED_ORIGINS as $allowed) {
+        if (strpos($origin, $allowed) !== false) {
+            $allowedOrigin = $origin;
+            break;
+        }
+    }
+
+    if ($allowedOrigin) {
+        header("Access-Control-Allow-Origin: $allowedOrigin");
+    }
+
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Max-Age: 86400');
+
+    // Handle preflight
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        exit(0);
+    }
+
+    // Rate limiting (simple session-based)
+    $sessionKey = 'api_requests_' . date('Y-m-d-H');
+    if (!isset($_SESSION[$sessionKey])) {
+        $_SESSION[$sessionKey] = 0;
+    }
+
+    if ($_SESSION[$sessionKey] >= MAX_REQUESTS_PER_HOUR) {
+        http_response_code(429);
+        echo json_encode(['error' => 'Rate limit exceeded. Try again later.']);
+        exit;
+    }
+    $_SESSION[$sessionKey]++;
+
+    // Parse and validate input
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if (!$input || !is_array($input)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid JSON input']);
+        exit;
+    }
+
+    // Required fields validation
+    $required = ['apiKey', 'storeId', 'endpoint'];
+    foreach ($required as $field) {
+        if (empty($input[$field]) || !is_string($input[$field])) {
+            http_response_code(400);
+            echo json_encode(['error' => "Missing or invalid: $field"]);
+            exit;
+        }
+    }
+
+    // Sanitize and validate inputs
+    $apiKey = trim(htmlspecialchars($input['apiKey'], ENT_QUOTES, 'UTF-8'));
+    $storeId = trim(htmlspecialchars($input['storeId'], ENT_QUOTES, 'UTF-8'));
+    $endpoint = trim(htmlspecialchars($input['endpoint'], ENT_QUOTES, 'UTF-8'));
+    $method = in_array($input['method'] ?? 'POST', ['GET', 'POST', 'PUT', 'DELETE'])
+        ? $input['method'] : 'POST';
+
+    // Validate UUID format for security
+    if (!preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$/i', $apiKey) ||
+        !preg_match('/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$/i', $storeId)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid API key or Store ID format']);
+        exit;
+    }
+
+    // Validate endpoint starts with /
+    if (!str_starts_with($endpoint, '/')) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid endpoint format']);
+        exit;
+    }
+
+    // Build request headers securely
+    $headers = [
+        'Authorization: ' . $apiKey,
+        'Accept: application/json',
+        'Content-Type: application/json',
+        'User-Agent: AmwalProxy/1.2'
+    ];
+
+    // Optional headers (with validation)
+    if (!empty($input['originHeader']) && is_string($input['originHeader'])) {
+        $originHeader = trim(htmlspecialchars($input['originHeader'], ENT_QUOTES, 'UTF-8'));
+        if (preg_match('/^[a-zA-Z0-9.-]+$/', $originHeader)) {
+            $headers[] = 'Origin: https://' . $originHeader;
+        }
+    }
+
+    if (!empty($input['amwalKey']) && is_string($input['amwalKey'])) {
+        $amwalKey = trim(htmlspecialchars($input['amwalKey'], ENT_QUOTES, 'UTF-8'));
+        if (preg_match('/^(prod|sandbox)-amwal-[a-f0-9-]+$/i', $amwalKey)) {
+            $headers[] = 'X-Amwal-Key: ' . $amwalKey;
+        }
+    }
+
+    // Setup cURL with security best practices
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => AMWAL_API_BASE . $endpoint,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CUSTOMREQUEST => $method,
+        CURLOPT_HTTPHEADER => $headers,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
+        CURLOPT_FOLLOWLOCATION => false,
+        CURLOPT_MAXREDIRS => 0,
+        CURLOPT_USERAGENT => 'AmwalProxy/1.2'
+    ]);
+
+    // Add request body if provided
+    if (!empty($input['data'])) {
+        if (!is_array($input['data']) && !is_object($input['data'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid data format']);
+            curl_close($ch);
+            exit;
+        }
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($input['data']));
+    }
+
+    // Execute request
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    // Handle cURL errors securely
+    if ($curlError || $response === false) {
+        error_log("Amwal API Proxy Error: $curlError");
+        http_response_code(502);
+        echo json_encode(['error' => 'Service temporarily unavailable']);
+        exit;
+    }
+
+    // Return response
+    http_response_code($httpCode);
+
+    // Validate response is JSON to prevent XSS
+    $decodedResponse = json_decode($response, true);
+    if (json_last_error() === JSON_ERROR_NONE) {
+        echo json_encode($decodedResponse);
+    } else {
+        echo $response;
+    }
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amwal Payment API Demo - v1.1.0</title>
+    <title>Amwal Payment API Demo - v1.2.0</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:;">
     <style>
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -70,39 +238,27 @@
             margin-bottom: -5px;
         }
     </style>
-    <script>
-        window.fwSettings={
-            'widget_id':501000001543,
-            'custom_fields': {
-                'source': 'custom',
-                'page_url': window.location.href,
-                'referrer': document.referrer
-            }
-        };
-        !function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}()
-    </script>
-    <script type='text/javascript' src='https://mec-widget.freshworks.com/widgets/501000001543.js' async defer></script>
 </head>
 <body class="bg-gray-50 min-h-screen font-sans antialiased">
 <div class="max-w-6xl mx-auto p-6">
     <!-- Header -->
     <div class="text-center py-12 mb-8">
         <h1 class="text-4xl font-light text-gray-900 mb-2">Amwal Payment API</h1>
-        <p class="text-gray-500 text-lg mb-2">Integration Demo v1.1.0</p>
+        <p class="text-gray-500 text-lg mb-2">Integration Demo v1.2.0</p>
         <p class="text-sm text-gray-400 mb-6">Comprehensive API for creating and managing payment links</p>
         <div class="flex justify-center gap-6 text-sm">
             <a href="https://docs.amwal.tech"
-               target="_blank"
+               target="_blank" rel="noopener noreferrer"
                class="text-gray-600 hover:text-gray-900 underline transition-colors">
                 📖 Documentation
             </a>
             <a href="https://docs.amwal.tech/reference/getting-started-1#/"
-               target="_blank"
+               target="_blank" rel="noopener noreferrer"
                class="text-gray-600 hover:text-gray-900 underline transition-colors">
                 🔗 API Reference
             </a>
             <a href="https://merchant.sa.amwal.tech"
-               target="_blank"
+               target="_blank" rel="noopener noreferrer"
                class="text-gray-600 hover:text-gray-900 underline transition-colors">
                 🏪 Merchant Portal
             </a>
@@ -112,14 +268,15 @@
     <!-- API Configuration -->
     <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
         <h3 class="text-lg font-medium text-gray-900 mb-4">🔐 API Configuration</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
                 <label for="apiKey" class="block text-sm font-medium text-gray-700 mb-2">
                     API Key
                     <span class="tooltip text-gray-400" data-tooltip="Get your API key from Merchant Portal > Integrations">ⓘ</span>
                 </label>
                 <input type="text" id="apiKey" value="d9ccf8bc-ed63-44ad-a54c-9d8fee63df6b"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500"
+                       onchange="updateAmwalKeyPreview()">
             </div>
             <div>
                 <label for="storeId" class="block text-sm font-medium text-gray-700 mb-2">
@@ -137,6 +294,39 @@
                 <input type="text" id="originHeader" value="amwal-tech.github.io"
                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
             </div>
+            <div>
+                <label for="amwalKey" class="block text-sm font-medium text-gray-700 mb-2">
+                    X-Amwal-Key Header
+                    <span class="tooltip text-gray-400" data-tooltip="Environment key for sandbox/production selection">ⓘ</span>
+                </label>
+                <input type="text" id="amwalKey" value="sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333"
+                       placeholder="prod-amwal-{apiKey} or sandbox-amwal-{apiKey}"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+            </div>
+        </div>
+
+        <div class="mt-4 flex gap-2">
+            <button type="button" onclick="setAmwalKey('prod')"
+                    class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200 transition-colors">
+                🟢 Set Production Key
+            </button>
+            <button type="button" onclick="setAmwalKey('sandbox')"
+                    class="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded hover:bg-yellow-200 transition-colors">
+                🟡 Set Sandbox Key
+            </button>
+            <button type="button" onclick="clearAmwalKey()"
+                    class="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded hover:bg-gray-200 transition-colors">
+                🚫 Clear Header
+            </button>
+        </div>
+
+        <!-- Environment Info -->
+        <div id="environmentInfo" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">🟢</span>
+                <span class="text-sm font-medium text-green-800">Production Environment</span>
+            </div>
+            <p class="text-xs text-green-700 mt-1">Using production mode. Real payments will be processed.</p>
         </div>
     </div>
 
@@ -152,6 +342,8 @@
                 onclick="showTab('status')">⚡ Check Status</button>
         <button class="tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent"
                 onclick="showTab('resolve')">🔧 Resolve Link</button>
+        <button class="tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent"
+                onclick="showTab('refund')">💸 Process Refund</button>
     </div>
 
     <!-- Create Payment Tab -->
@@ -185,10 +377,10 @@
                     </div>
                     <div>
                         <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
-                            Payment Title
+                            Payment Title *
                             <span class="tooltip text-gray-400" data-tooltip="Descriptive title that customers will see">ⓘ</span>
                         </label>
-                        <input type="text" id="title" maxlength="200" placeholder="Invoice #INV-2024-001"
+                        <input type="text" id="title" required maxlength="200" placeholder="Invoice #INV-2024-001"
                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
                     </div>
                     <div>
@@ -579,10 +771,129 @@
             <div id="resolveResult"></div>
         </div>
     </div>
+
+    <!-- Process Refund Tab -->
+    <div id="refund" class="tab-content hidden">
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 class="text-xl font-medium text-gray-900 mb-6">💸 Process Transaction Refund</h2>
+            <div class="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <h4 class="font-medium text-orange-800 mb-2">⚠️ Important Refund Information</h4>
+                <ul class="text-sm text-orange-700 space-y-1">
+                    <li>• Refunds can only be processed on completed transactions</li>
+                    <li>• Partial refunds are supported - enter amount less than original transaction</li>
+                    <li>• Full refunds should match the original transaction amount</li>
+                    <li>• Refund processing time varies by payment method</li>
+                    <li>• You'll receive a refund reference number for tracking</li>
+                </ul>
+            </div>
+            <form id="refundForm" class="space-y-4">
+                <div>
+                    <label for="transactionIdRefund" class="block text-sm font-medium text-gray-700 mb-1">
+                        Transaction ID *
+                        <span class="tooltip text-gray-400" data-tooltip="The transaction ID from a completed payment that you want to refund">ⓘ</span>
+                    </label>
+                    <input type="text" id="transactionIdRefund" required placeholder="Enter transaction ID (UUID)"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                </div>
+                <div>
+                    <label for="refundAmount" class="block text-sm font-medium text-gray-700 mb-1">
+                        Refund Amount *
+                        <span class="tooltip text-gray-400" data-tooltip="Amount to refund in SAR. Can be partial or full amount of original transaction">ⓘ</span>
+                    </label>
+                    <input type="number" id="refundAmount" required step="0.01" min="0.01" placeholder="299.99"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500">
+                </div>
+                <div class="pt-4 border-t border-gray-200">
+                    <button type="submit" id="refundBtn"
+                            class="bg-red-600 text-white px-8 py-3 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <span id="refundLoader" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" style="display: none;"></span>
+                        Process Refund
+                    </button>
+                    <button type="button" onclick="fillRefundExample()"
+                            class="ml-3 bg-gray-100 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-200 transition-colors">
+                        Fill Example
+                    </button>
+                </div>
+            </form>
+            <div id="refundResult"></div>
+        </div>
+    </div>
 </div>
 
 <script>
-    const API_BASE = 'https://backend.sa.amwal.tech';
+    // PHP proxy URL (same file with ?proxy parameter)
+    const PROXY_URL = '<?php echo $_SERVER['PHP_SELF']; ?>?proxy=1';
+
+    // X-Amwal-Key management
+    function setAmwalKey(type) {
+        const apiKey = document.getElementById('apiKey').value;
+        const amwalKeyField = document.getElementById('amwalKey');
+
+        if (!apiKey) {
+            alert('Please enter an API Key first');
+            return;
+        }
+
+        if (type === 'prod') {
+            amwalKeyField.value = `prod-amwal-5563d261-8545-418b-b122-8767a2e59931`;
+        } else if (type === 'sandbox') {
+            amwalKeyField.value = `sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333`;
+        }
+
+        updateAmwalKeyStatus();
+    }
+
+    function clearAmwalKey() {
+        document.getElementById('amwalKey').value = '';
+        updateAmwalKeyStatus();
+    }
+
+    function updateAmwalKeyPreview() {
+        updateAmwalKeyStatus();
+    }
+
+    function updateAmwalKeyStatus() {
+        const amwalKey = document.getElementById('amwalKey').value;
+        const environmentInfo = document.getElementById('environmentInfo');
+
+        if (!amwalKey) {
+            environmentInfo.className = 'mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg';
+            environmentInfo.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">🚫</span>
+                    <span class="text-sm font-medium text-gray-800">No Environment Header</span>
+                </div>
+                <p class="text-xs text-gray-700 mt-1">X-Amwal-Key header will not be sent with requests. May use default production behavior.</p>
+            `;
+        } else if (amwalKey.includes('sandbox')) {
+            environmentInfo.className = 'mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg';
+            environmentInfo.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">🟡</span>
+                    <span class="text-sm font-medium text-yellow-800">Sandbox Environment</span>
+                </div>
+                <p class="text-xs text-yellow-700 mt-1">Using sandbox mode. No real payments will be processed. Perfect for testing.</p>
+            `;
+        } else if (amwalKey.includes('prod')) {
+            environmentInfo.className = 'mt-4 p-3 bg-green-50 border border-green-200 rounded-lg';
+            environmentInfo.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">🟢</span>
+                    <span class="text-sm font-medium text-green-800">Production Environment</span>
+                </div>
+                <p class="text-xs text-green-700 mt-1">Using production mode. Real payments will be processed.</p>
+            `;
+        } else {
+            environmentInfo.className = 'mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg';
+            environmentInfo.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">🔧</span>
+                    <span class="text-sm font-medium text-blue-800">Custom Environment Key</span>
+                </div>
+                <p class="text-xs text-blue-700 mt-1">Using custom X-Amwal-Key value: <code class="bg-blue-100 px-1 rounded text-xs">${amwalKey}</code></p>
+            `;
+        }
+    }
 
     // Tab management
     function showTab(tabName) {
@@ -608,41 +919,110 @@
         event.target.classList.add('border-gray-900', 'text-gray-900');
     }
 
-    // API Helper function
+    // API Helper function that uses PHP proxy with enhanced error handling
     async function makeAPICall(endpoint, method = 'POST', data = null) {
         const apiKey = document.getElementById('apiKey').value;
         const storeId = document.getElementById('storeId').value;
         const originHeader = document.getElementById('originHeader').value;
+        const amwalKey = document.getElementById('amwalKey').value.trim();
 
         if (!apiKey || !storeId) {
             throw new Error('Please configure API Key and Store ID');
         }
 
-        const url = `${API_BASE}${endpoint}`;
-        const options = {
+        // Prepare data for PHP proxy
+        const proxyData = {
+            apiKey,
+            storeId,
+            originHeader,
+            amwalKey,
+            endpoint,
             method,
-            headers: {
-                'Authorization': apiKey,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
+            data
         };
+
+        try {
+            const response = await fetch(PROXY_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(proxyData)
+            });
+
+            const result = await response.json();
+
+            if (response.status === 429) {
+                throw new Error('Rate limit exceeded (100 requests/hour). Please wait before making more requests.');
+            }
+
+            if (response.status === 400) {
+                throw new Error(result.error || 'Bad request - please check your input data');
+            }
+
+            if (response.status === 502) {
+                throw new Error('Service temporarily unavailable. Please try again later.');
+            }
+
+            if (!response.ok) {
+                // Enhanced error message extraction
+                let errorMessage = '';
+                if (result.detail) {
+                    errorMessage = result.detail;
+                } else if (result.error) {
+                    errorMessage = result.error;
+                } else if (result.message) {
+                    errorMessage = result.message;
+                } else if (typeof result === 'string') {
+                    errorMessage = result;
+                } else {
+                    errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                }
+
+                // Create an error with the full response data for debugging
+                const error = new Error(errorMessage);
+                error.response = result;
+                error.status = response.status;
+                throw error;
+            }
+
+            return result;
+        } catch (fetchError) {
+            if (fetchError.name === 'TypeError') {
+                throw new Error('Network error - please check your internet connection');
+            }
+            throw fetchError;
+        }
+    }
+
+    // Generate curl command (for display purposes)
+    function generateCurlCommand(endpoint, method = 'POST', data = null) {
+        const apiKey = document.getElementById('apiKey').value;
+        const originHeader = document.getElementById('originHeader').value;
+        const amwalKey = document.getElementById('amwalKey').value.trim();
+        const url = `https://backend.sa.amwal.tech${endpoint}`;
+
+        let curl = `curl --request ${method} \\\n`;
+        curl += `     --url '${url}' \\\n`;
+        curl += `     --header 'Authorization: ${apiKey}' \\\n`;
+        curl += `     --header 'Accept: application/json' \\\n`;
+        curl += `     --header 'Content-Type: application/json'`;
+
         // Add Origin header if provided
         if (originHeader) {
-            options.headers['Origin'] = `https://${originHeader}`;
+            curl += ` \\\n     --header 'Origin: https://${originHeader}'`;
+        }
+
+        // Add X-Amwal-Key header if provided
+        if (amwalKey) {
+            curl += ` \\\n     --header 'X-Amwal-Key: ${amwalKey}'`;
         }
 
         if (data) {
-            options.body = JSON.stringify(data);
-        }
-        const response = await fetch(url, options);
-        const result = await response.json();
-
-        if (!response.ok) {
-            throw new Error(result.message || result.error || `HTTP ${response.status}: ${response.statusText}`);
+            curl += ` \\\n     --data '${JSON.stringify(data, null, 2)}'`;
         }
 
-        return result;
+        return curl;
     }
 
     // Show result function with curl command and better JSON formatting
@@ -687,7 +1067,7 @@
             const curlHeader = document.createElement('div');
             curlHeader.className = 'flex items-center justify-between mb-2';
             curlHeader.innerHTML = `
-                    <span class="text-sm font-medium text-gray-300">📡 cURL Request</span>
+                    <span class="text-sm font-medium text-gray-300">📡 Equivalent cURL Request</span>
                     <button onclick="copyToClipboard(\`${curlCommand.replace(/`/g, '\\`')}\`)"
                             class="text-xs text-gray-400 hover:text-white underline">
                         copy
@@ -711,7 +1091,7 @@
             const jsonHeader = document.createElement('div');
             jsonHeader.className = 'flex items-center justify-between mb-2 font-sans';
             jsonHeader.innerHTML = `
-                    <span class="text-sm font-medium text-gray-600">📄 Response</span>
+                    <span class="text-sm font-medium text-gray-600">📄 Response (via PHP Proxy)</span>
                     <button onclick="copyToClipboard(\`${JSON.stringify(data, null, 2).replace(/`/g, '\\`')}\`)"
                             class="text-xs text-gray-500 hover:text-gray-700 underline">
                         copy json
@@ -733,30 +1113,6 @@
             document.getElementById('paymentIdStatus').value = data.payment_link_id;
             document.getElementById('paymentIdResolve').value = data.payment_link_id;
         }
-    }
-
-    // Generate curl command
-    function generateCurlCommand(endpoint, method = 'POST', data = null) {
-        const apiKey = document.getElementById('apiKey').value;
-        const originHeader = document.getElementById('originHeader').value;
-        const url = `${API_BASE}${endpoint}`;
-
-        let curl = `curl --request ${method} \\\n`;
-        curl += `     --url '${url}' \\\n`;
-        curl += `     --header 'Authorization: ${apiKey}' \\\n`;
-        curl += `     --header 'Accept: application/json' \\\n`;
-        curl += `     --header 'Content-Type: application/json'`;
-
-        // Add Origin header if provided
-        if (originHeader) {
-            curl += ` \\\n     --header 'Origin: https://${originHeader}'`;
-        }
-
-        if (data) {
-            curl += ` \\\n     --data '${JSON.stringify(data, null, 2)}'`;
-        }
-
-        return curl;
     }
 
     // Loading state management
@@ -824,6 +1180,9 @@
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('only_show_bank_installments').addEventListener('change', validateInstallmentOptions);
         document.getElementById('only_show_pay_in_full').addEventListener('change', validateInstallmentOptions);
+
+        // Update X-Amwal-Key status on load
+        updateAmwalKeyStatus();
     });
 
     // Create Payment
@@ -1079,6 +1438,11 @@
                     <button onclick="document.getElementById('paymentIdResolve').value='${payment.id}'; showTab('resolve')" class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded hover:bg-orange-200 transition-colors">
                         🔧 Test Resolve
                     </button>
+                    ${payment.status && payment.status.toLowerCase() === 'paid' ? `
+                    <button onclick="showRefundForPayment('${payment.id}')" class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200 transition-colors">
+                        💸 Process Refund
+                    </button>
+                    ` : ''}
                 </div>
             `;
 
@@ -1250,12 +1614,12 @@
         instructionsDiv.innerHTML = `
                 <h4 class="font-medium text-blue-900 mb-2">🎉 Next Steps</h4>
                 <div class="text-sm text-blue-800 space-y-2">
-                    <p>Your payment link has been created successfully! Here's what you can do next:</p>
+                    <p>Your payment link has been created successfully via secure PHP proxy! Here's what you can do next:</p>
                     <ul class="list-disc list-inside space-y-1 ml-2">
                         <li>Use the <strong>Payment Details</strong> tab to view complete payment information and transactions</li>
                         <li>Use the <strong>Check Status</strong> tab to monitor payment status changes</li>
                         <li>
-                            <a href="${paymentUrl}" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-medium">
+                            <a href="${paymentUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline font-medium">
                                 🔗 Open payment link
                             </a>
                             to test the payment flow directly
@@ -1322,9 +1686,216 @@
         const defaultExpiry = new Date();
         defaultExpiry.setDate(defaultExpiry.getDate() + 30);
         document.getElementById('selectedDate').value = defaultExpiry.toISOString().slice(0, 16);
+
+        // Update X-Amwal-Key status on load
+        updateAmwalKeyStatus();
     });
 
-    // Add Enter key support for input fields
+    // Process Refund
+    document.getElementById('refundForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const transactionId = document.getElementById('transactionIdRefund').value.trim();
+        const refund_amount = parseFloat(document.getElementById('refundAmount').value);
+
+        if (!transactionId || !refund_amount) {
+            showResult('refundResult', '❌ Error', { error: 'Please enter both transaction ID and refund amount' }, 'error');
+            return;
+        }
+
+        setLoading('refundBtn', 'refundLoader', true);
+
+        try {
+            const refundData = { refund_amount };
+
+            const result = await makeAPICall(`/transactions/refund/${transactionId}/`, 'POST', refundData);
+            const curlCommand = generateCurlCommand(`/transactions/refund/${transactionId}/`, 'POST', refundData);
+
+            showResult('refundResult', '✅ Refund processed successfully', result, 'success', curlCommand);
+
+            // Add refund success details
+            if (result.key) {
+                const refundInfo = document.createElement('div');
+                refundInfo.className = 'mt-4 p-4 bg-green-50 border border-green-200 rounded-lg';
+                refundInfo.innerHTML = `
+                    <h4 class="font-medium text-green-900 mb-2">💳 Refund Details</h4>
+                    <div class="text-sm text-green-800 space-y-2">
+                        <p><strong>Refund Reference:</strong> <code class="bg-green-100 px-2 py-1 rounded text-green-900 font-mono">${result.key}</code></p>
+                        <p><strong>Amount Refunded:</strong> ${refund_amount} SAR</p>
+                        <p><strong>Status:</strong> ${result.status}</p>
+                        <div class="mt-3 pt-2 border-t border-green-200">
+                            <p class="text-xs text-green-700">
+                                📝 Please save the refund reference number for customer service and reconciliation purposes.
+                                The refund will be processed to the original payment method within 3-7 business days.
+                            </p>
+                        </div>
+                        <div class="flex gap-2 mt-3">
+                            <button onclick="copyToClipboard('${result.key}')"
+                                    class="text-xs text-green-700 hover:text-green-900 underline">
+                                Copy Reference Number
+                            </button>
+                            <button onclick="copyToClipboard('Transaction ID: ${transactionId}\\nRefund Reference: ${result.key}\\nAmount: ${refund_amount} SAR\\nStatus: ${result.status}')"
+                                    class="text-xs text-green-700 hover:text-green-900 underline">
+                                Copy Full Details
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('refundResult').appendChild(refundInfo);
+            }
+
+        } catch (error) {
+            const curlCommand = generateCurlCommand(`/transactions/refund/${transactionId}/`, 'POST', { refund_amount });
+            let errorMessage = '❌ Error processing refund';
+            let interpretation = '';
+
+            console.error('Refund Error Details:', error);
+
+            // Show the raw error response for debugging
+            let errorData = { error: error.message };
+            if (error.response) {
+                errorData = {
+                    error_message: error.message,
+                    api_response: error.response,
+                    status_code: error.status
+                };
+            }
+
+            // Handle specific refund error cases
+            if (error.message.includes('You are not allowed to refund this transaction') || error.message.includes('not allowed to refund')) {
+                errorMessage = '❌ Refund Not Allowed';
+                interpretation = `
+                    <div class="mt-4 p-3 bg-red-50 rounded-lg text-sm">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-lg">🚫</span>
+                            <span class="text-red-700 font-medium">You are not authorized to refund this transaction</span>
+                        </div>
+                        <p class="text-red-600 text-xs">
+                            This transaction cannot be refunded due to authorization restrictions. Possible reasons:
+                        </p>
+                        <ul class="text-red-600 text-xs mt-2 ml-4 list-disc">
+                            <li>Transaction belongs to a different store or merchant</li>
+                            <li>Your API key doesn't have refund permissions</li>
+                            <li>Transaction is in a state that doesn't allow refunds</li>
+                            <li>Refund window has expired for this payment method</li>
+                        </ul>
+                        <p class="text-red-600 text-xs mt-2 font-medium">
+                            💡 Please verify the transaction ID and ensure it belongs to your store.
+                        </p>
+                        <div class="mt-3 pt-2 border-t border-red-200">
+                            <p class="text-red-600 text-xs font-medium">
+                                🔍 Debug Info: Check the full API response below for more details.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            } else if (error.message.includes('not refundable')) {
+                errorMessage = '❌ Transaction Not Refundable';
+                interpretation = `
+                    <div class="mt-4 p-3 bg-red-50 rounded-lg text-sm">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-lg">🚫</span>
+                            <span class="text-red-700 font-medium">This transaction cannot be refunded</span>
+                        </div>
+                        <p class="text-red-600 text-xs">
+                            Possible reasons: Transaction is too old, already refunded, or payment method doesn't support refunds.
+                        </p>
+                    </div>
+                `;
+            } else if (error.message.includes('refund_amount')) {
+                errorMessage = '❌ Invalid Refund Amount';
+                interpretation = `
+                    <div class="mt-4 p-3 bg-red-50 rounded-lg text-sm">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-lg">💰</span>
+                            <span class="text-red-700 font-medium">Refund amount is invalid</span>
+                        </div>
+                        <p class="text-red-600 text-xs">
+                            The refund amount exceeds the original transaction amount or remaining refundable balance.
+                        </p>
+                    </div>
+                `;
+            } else if (error.message.includes('not found')) {
+                errorMessage = '❌ Transaction Not Found';
+                interpretation = `
+                    <div class="mt-4 p-3 bg-red-50 rounded-lg text-sm">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-lg">🔍</span>
+                            <span class="text-red-700 font-medium">Transaction not found</span>
+                        </div>
+                        <p class="text-red-600 text-xs">
+                            Please verify the transaction ID is correct and the transaction belongs to your store.
+                        </p>
+                    </div>
+                `;
+            } else {
+                // Generic error case - show full details for debugging
+                interpretation = `
+                    <div class="mt-4 p-3 bg-red-50 rounded-lg text-sm">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-lg">⚠️</span>
+                            <span class="text-red-700 font-medium">Refund request failed</span>
+                        </div>
+                        <p class="text-red-600 text-xs">
+                            The API returned an error. Check the response details below for specific information about why the refund failed.
+                        </p>
+                        <div class="mt-3 pt-2 border-t border-red-200">
+                            <p class="text-red-600 text-xs font-medium">
+                                🔍 Error Message: "${error.message}"
+                            </p>
+                            ${error.status ? `<p class="text-red-600 text-xs mt-1">HTTP Status: ${error.status}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            showResult('refundResult', errorMessage, errorData, 'error', curlCommand);
+
+            if (interpretation) {
+                document.getElementById('refundResult').insertAdjacentHTML('beforeend', interpretation);
+            }
+        } finally {
+            setLoading('refundBtn', 'refundLoader', false);
+        }
+    });
+
+    // Fill example refund data
+    function fillRefundExample() {
+        document.getElementById('transactionIdRefund').value = 'a7de62db-0d50-4a79-aae9-811b665d7e37';
+        document.getElementById('refundAmount').value = '149.50';
+    }
+
+    // Show refund form for a specific payment
+    async function showRefundForPayment(paymentId) {
+        try {
+            // First get payment details to find transactions
+            const result = await makeAPICall(`/payment_links/${paymentId}/details`, 'POST', {});
+
+            if (result.transactions && result.transactions.length > 0) {
+                // Find the first completed transaction
+                const completedTransaction = result.transactions.find(t =>
+                    t.status === 'completed' || t.status === 'paid'
+                );
+
+                if (completedTransaction) {
+                    document.getElementById('transactionIdRefund').value = completedTransaction.id;
+                    document.getElementById('refundAmount').value = parseFloat(completedTransaction.amount || completedTransaction.payment_amount || 0).toFixed(2);
+                    showTab('refund');
+
+                    // Scroll to refund section
+                    setTimeout(() => {
+                        document.getElementById('refund').scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                } else {
+                    alert('No completed transactions found for this payment that can be refunded.');
+                }
+            } else {
+                alert('No transactions found for this payment.');
+            }
+        } catch (error) {
+            alert('Error loading payment details: ' + error.message);
+        }
+    }
     document.getElementById('paymentIdDetails').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') getPaymentDetails();
     });
