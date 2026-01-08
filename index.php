@@ -723,7 +723,7 @@
                   country-code="SA"
                   locale="en"
                   label="Pay Now"
-                  address-required="false"
+                  address-required="true"
                   class="w-full">
                 </amwal-checkout-button>
               </div>
