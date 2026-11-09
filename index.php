@@ -1244,19 +1244,19 @@
     // Default environments
     DEFAULTS: {
       sandbox: {
-        merchantId: 'sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333',
+        merchantId: 'sandbox-amwal-c1edaa49-af17-4c17-9153-037547131d19',
         payUrl: 'https://pay.sa.amwal.tech',
         apiUrl: 'https://backend.sa.amwal.tech',
         debug: true
       },
       production: {
-        merchantId: 'prod-amwal-5563d261-8545-418b-b122-8767a2e59931',
+        merchantId: 'prod-amwal-32e567c8-a2ef-40a2-93b5-728f145a0b8d',
         payUrl: 'https://pay.sa.amwal.tech',
         apiUrl: 'https://backend.sa.amwal.tech',
         debug: false
       },
       custom: {
-        merchantId: 'sandbox-amwal-b87482f2-55da-486f-9ec5-e2ceb47a0333',
+        merchantId: 'sandbox-amwal-c1edaa49-af17-4c17-9153-037547131d19',
         payUrl: 'https://pay.amwal.dev',
         apiUrl: 'https://qa.amwal.dev',
         debug: true
